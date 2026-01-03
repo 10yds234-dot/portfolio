@@ -49,21 +49,32 @@
         .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 220px; display: flex; justify-content: center; }
         .item img { width: 100%; height: auto; max-height: 82vh; object-fit: contain; display: block; }
 
-        /* 인디케이터 */
-        .dots-container { position: fixed; top: 300px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 2500; transition: all 0.4s; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; }
+        /* 인디케이터 (공통 스타일) */
+        .dots-container { 
+            display: flex; gap: 12px; z-index: 2500; transition: all 0.4s; 
+        }
+        .dot { 
+            width: 8px; height: 8px; border-radius: 50%; 
+            border: 1px solid var(--navy); background-color: transparent; 
+            cursor: pointer; transition: background-color 0.3s;
+        }
         .dot.active { background-color: var(--navy); }
+
+        /* 상단 인디케이터 위치 */
+        #main-indicator { position: fixed; top: 300px; left: 50%; transform: translateX(-50%); }
+
+        /* 하단 인디케이터 위치 */
+        #bottom-indicator { margin-top: 100px; margin-bottom: 50px; position: relative; }
 
         /* 모바일 전용 스타일 */
         @media (max-width: 768px) {
             :root { --spacing: 24px; }
             nav { padding-top: 30px; }
             .logo { font-size: 1.3rem; }
-            .contact-trigger { font-size: 0.9rem; }
             .nav-arrow { display: none; } 
             .content-container { padding-top: 250px; }
             .item { margin-bottom: 100px; }
-            .dots-container { top: 200px; }
+            #main-indicator { top: 200px; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
 
@@ -104,6 +115,11 @@
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_02.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_04.JPG"></div>
+                    
+                    <div class="dots-container bottom-dots">
+                        <div class="dot active" onclick="goToSlide(0)"></div>
+                        <div class="dot" onclick="goToSlide(1)"></div>
+                    </div>
                 </div>
             </article>
 
@@ -113,6 +129,11 @@
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_02.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_04.JPG"></div>
+
+                    <div class="dots-container bottom-dots">
+                        <div class="dot" onclick="goToSlide(0)"></div>
+                        <div class="dot active" onclick="goToSlide(1)"></div>
+                    </div>
                 </div>
             </article>
         </div>
@@ -131,10 +152,10 @@
         let currentSlide = 0;
         const slider = document.getElementById('slider');
         const sections = document.querySelectorAll('.series-section');
-        const dots = document.querySelectorAll('.dot');
         const indicatorContainer = document.getElementById('main-indicator');
 
         function checkScroll(el) {
+            // 상단 인디케이터만 스크롤 시 숨김 처리
             if (el.scrollTop > 50) {
                 indicatorContainer.style.opacity = "0";
                 indicatorContainer.style.visibility = "hidden";
@@ -146,11 +167,16 @@
 
         function updateSlider() {
             slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
             
-            // 다른 섹션의 스크롤 위치를 초기화하지 않음 (유지)
+            // 모든 인디케이터(상단+하단)의 점들을 찾아서 활성화 상태 업데이트
+            const allDotsContainers = document.querySelectorAll('.dots-container');
+            allDotsContainers.forEach(container => {
+                const dots = container.querySelectorAll('.dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                });
+            });
+
             indicatorContainer.style.opacity = "1";
             indicatorContainer.style.visibility = "visible";
         }
@@ -181,7 +207,7 @@
             setTimeout(() => lightbox.style.display = 'none', 400);
         }
 
-        // 스와이프 제스처 로직
+        // 스와이프 제스처 로직 (80px 민감도)
         let touchstartX = 0;
         let touchstartY = 0;
         let touchendX = 0;
@@ -200,7 +226,6 @@
             const yDiff = touchstartY - touchendY;
 
             if (document.getElementById('lightbox').style.display !== 'flex') {
-                // 민감도 설정: 가로 80px 이상 이동 & 가로 이동이 세로 이동보다 클 때
                 if (Math.abs(xDiff) > 80 && Math.abs(xDiff) > Math.abs(yDiff) * 2) {
                     if (xDiff > 0) moveSlide(1);
                     else moveSlide(-1);
