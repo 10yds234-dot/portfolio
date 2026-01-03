@@ -12,7 +12,6 @@
             --photo-max-width: 850px;
         }
 
-        /* 공통 스타일 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { 
             background-color: var(--bg); color: var(--navy); 
@@ -20,7 +19,6 @@
             -webkit-font-smoothing: antialiased; overflow: hidden; height: 100%;
         }
 
-        /* 네비게이션 */
         nav {
             position: fixed; top: 0; width: 100%; padding: 60px var(--spacing) 40px;
             display: flex; justify-content: space-between; align-items: flex-start; z-index: 1000;
@@ -31,7 +29,6 @@
         #email-text { display: block; margin-top: 12px; font-size: 1rem; font-weight: 300; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 화살표 (PC 전용) */
         .nav-arrow {
             position: fixed; top: 50%; transform: translateY(-50%);
             font-size: 2.2rem; color: var(--navy); cursor: pointer; z-index: 2000;
@@ -40,33 +37,26 @@
         .arrow-prev { left: calc(50% - 520px); } 
         .arrow-next { right: calc(50% - 520px); }
 
-        /* 슬라이더 구조 */
+        /* 슬라이더 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { display: flex; height: 100vh; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         .series-section { flex: 0 0 100vw; height: 100vh; overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .series-section::-webkit-scrollbar { display: none; }
-        .content-container { width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 380px; padding-bottom: 300px; }
+        .content-container { width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 380px; }
+        
         .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 220px; display: flex; justify-content: center; }
         .item img { width: 100%; height: auto; max-height: 82vh; object-fit: contain; display: block; }
 
-        /* 인디케이터 (공통 스타일) */
-        .dots-container { 
-            display: flex; gap: 12px; z-index: 2500; transition: all 0.4s; 
-        }
-        .dot { 
-            width: 8px; height: 8px; border-radius: 50%; 
-            border: 1px solid var(--navy); background-color: transparent; 
-            cursor: pointer; transition: background-color 0.3s;
-        }
+        /* 인디케이터 스타일 */
+        .dots-container { display: flex; gap: 12px; z-index: 2500; transition: all 0.4s; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; }
         .dot.active { background-color: var(--navy); }
 
-        /* 상단 인디케이터 위치 */
         #main-indicator { position: fixed; top: 300px; left: 50%; transform: translateX(-50%); }
+        
+        /* 하단 인디케이터 래퍼 */
+        .bottom-dots-wrapper { width: 100%; display: flex; justify-content: center; padding: 100px 0 250px; }
 
-        /* 하단 인디케이터 위치 */
-        #bottom-indicator { margin-top: 100px; margin-bottom: 50px; position: relative; }
-
-        /* 모바일 전용 스타일 */
         @media (max-width: 768px) {
             :root { --spacing: 24px; }
             nav { padding-top: 30px; }
@@ -75,10 +65,10 @@
             .content-container { padding-top: 250px; }
             .item { margin-bottom: 100px; }
             #main-indicator { top: 200px; }
+            .bottom-dots-wrapper { padding: 60px 0 180px; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
 
-        /* 라이트박스 & 푸터 */
         #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); display: none; justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; opacity: 0; transition: opacity 0.4s; }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; }
@@ -116,9 +106,11 @@
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_04.JPG"></div>
                     
-                    <div class="dots-container bottom-dots">
-                        <div class="dot active" onclick="goToSlide(0)"></div>
-                        <div class="dot" onclick="goToSlide(1)"></div>
+                    <div class="bottom-dots-wrapper">
+                        <div class="dots-container">
+                            <div class="dot active" onclick="goToSlide(0)"></div>
+                            <div class="dot" onclick="goToSlide(1)"></div>
+                        </div>
                     </div>
                 </div>
             </article>
@@ -130,9 +122,11 @@
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_04.JPG"></div>
 
-                    <div class="dots-container bottom-dots">
-                        <div class="dot" onclick="goToSlide(0)"></div>
-                        <div class="dot active" onclick="goToSlide(1)"></div>
+                    <div class="bottom-dots-wrapper">
+                        <div class="dots-container">
+                            <div class="dot" onclick="goToSlide(0)"></div>
+                            <div class="dot active" onclick="goToSlide(1)"></div>
+                        </div>
                     </div>
                 </div>
             </article>
@@ -145,17 +139,13 @@
     </footer>
 
     <script>
-        function toggleEmail() {
-            document.getElementById('email-text').classList.toggle('show');
-        }
-
+        function toggleEmail() { document.getElementById('email-text').classList.toggle('show'); }
         let currentSlide = 0;
         const slider = document.getElementById('slider');
         const sections = document.querySelectorAll('.series-section');
         const indicatorContainer = document.getElementById('main-indicator');
 
         function checkScroll(el) {
-            // 상단 인디케이터만 스크롤 시 숨김 처리
             if (el.scrollTop > 50) {
                 indicatorContainer.style.opacity = "0";
                 indicatorContainer.style.visibility = "hidden";
@@ -167,16 +157,12 @@
 
         function updateSlider() {
             slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-            
-            // 모든 인디케이터(상단+하단)의 점들을 찾아서 활성화 상태 업데이트
-            const allDotsContainers = document.querySelectorAll('.dots-container');
-            allDotsContainers.forEach(container => {
+            document.querySelectorAll('.dots-container').forEach(container => {
                 const dots = container.querySelectorAll('.dot');
                 dots.forEach((dot, index) => {
                     dot.classList.toggle('active', index === currentSlide);
                 });
             });
-
             indicatorContainer.style.opacity = "1";
             indicatorContainer.style.visibility = "visible";
         }
@@ -188,10 +174,7 @@
             updateSlider();
         }
 
-        function goToSlide(index) {
-            currentSlide = index;
-            updateSlider();
-        }
+        function goToSlide(index) { currentSlide = index; updateSlider(); }
 
         function openLightbox(element) {
             const imgSrc = element.querySelector('img').src;
@@ -207,28 +190,19 @@
             setTimeout(() => lightbox.style.display = 'none', 400);
         }
 
-        // 스와이프 제스처 로직 (80px 민감도)
-        let touchstartX = 0;
-        let touchstartY = 0;
-        let touchendX = 0;
-        let touchendY = 0;
-
+        let touchstartX = 0; let touchstartY = 0; let touchendX = 0; let touchendY = 0;
         document.addEventListener('touchstart', e => {
             touchstartX = e.changedTouches[0].screenX;
             touchstartY = e.changedTouches[0].screenY;
         }, {passive: true});
-
         document.addEventListener('touchend', e => {
             touchendX = e.changedTouches[0].screenX;
             touchendY = e.changedTouches[0].screenY;
-            
             const xDiff = touchstartX - touchendX;
             const yDiff = touchstartY - touchendY;
-
             if (document.getElementById('lightbox').style.display !== 'flex') {
                 if (Math.abs(xDiff) > 80 && Math.abs(xDiff) > Math.abs(yDiff) * 2) {
-                    if (xDiff > 0) moveSlide(1);
-                    else moveSlide(-1);
+                    if (xDiff > 0) moveSlide(1); else moveSlide(-1);
                 }
             }
         }, {passive: true});
