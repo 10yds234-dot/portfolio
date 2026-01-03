@@ -184,17 +184,41 @@
             setTimeout(() => lightbox.style.display = 'none', 400);
         }
 
-        // 스와이프 제스처 추가
-        let touchstartX = 0;
-        let touchendX = 0;
-        document.addEventListener('touchstart', e => touchstartX = e.changedTouches[0].screenX);
-        document.addEventListener('touchend', e => {
-            touchendX = e.changedTouches[0].screenX;
-            if (Math.abs(touchstartX - touchendX) > 50) {
-                if (touchendX < touchstartX) moveSlide(1);
-                else moveSlide(-1);
-            }
-        });
+       // 스와이프 제스처 변수
+let touchstartX = 0;
+let touchstartY = 0;
+let touchendX = 0;
+let touchendY = 0;
+
+document.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX;
+    touchstartY = e.changedTouches[0].screenY;
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX;
+    touchendY = e.changedTouches[0].screenY;
+    handleGesture();
+}, {passive: true});
+
+function handleGesture() {
+    const xDiff = touchstartX - touchendX;
+    const yDiff = touchstartY - touchendY;
+
+    // 라이트박스(확대보기)가 열려있을 때는 작동 안함
+    if (document.getElementById('lightbox').style.display === 'flex') return;
+
+    // 수직 스크롤보다 수평 스크롤이 더 클 때만 작동 (실수 방지)
+    // 그리고 최소 100px 이상은 움직여야 넘어감 (민감도 조절)
+    if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 100) {
+        if (xDiff > 0) {
+            moveSlide(1); // 왼쪽으로 밀기 -> 다음
+        } else {
+            moveSlide(-1); // 오른쪽으로 밀기 -> 이전
+        }
+    }
+}
     </script>
 </body>
 </html>
+
