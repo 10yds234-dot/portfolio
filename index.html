@@ -21,6 +21,7 @@
             -webkit-font-smoothing: antialiased; overflow: hidden; height: 100%;
         }
 
+        /* 네비게이션 */
         nav {
             position: fixed; top: 0; width: 100%; padding: 60px var(--spacing) 40px;
             display: flex; justify-content: space-between; align-items: flex-start; z-index: 1000;
@@ -31,6 +32,7 @@
         #email-text { display: block; margin-top: 12px; font-size: 1rem; font-weight: 300; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
         #email-text.show { opacity: 1; visibility: visible; }
 
+        /* 화살표 */
         .nav-arrow {
             position: fixed; top: 50%; transform: translateY(-50%);
             font-size: 2.2rem; color: var(--navy); cursor: pointer; z-index: 2000;
@@ -40,46 +42,44 @@
         .arrow-prev { left: calc(50% - 520px); } 
         .arrow-next { right: calc(50% - 520px); }
 
+        /* 슬라이더 구조 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { 
-            display: flex; 
-            height: 100vh; 
+            display: flex; height: 100vh; 
             transition: transform var(--transition-speed) var(--transition-timing);
             will-change: transform;
         }
         
         .series-section { 
-            flex: 0 0 100vw; 
-            height: 100vh; 
-            overflow-y: auto; 
-            scrollbar-width: none; 
-            -webkit-overflow-scrolling: touch;
-            opacity: 0.4;
-            transition: opacity 1.2s ease;
+            flex: 0 0 100vw; height: 100vh; 
+            overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+            opacity: 0.4; transition: opacity 1.2s ease;
         }
         .series-section.active { opacity: 1; }
         .series-section::-webkit-scrollbar { display: none; }
 
-        .content-container { width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 380px; }
+        .content-container { 
+            width: 100%; display: flex; flex-direction: column; align-items: center; 
+            padding-top: 350px; /* 상단 여백 확보 */
+        }
         
+        /* 인디케이터 공통 스타일 */
+        .dots-container { display: flex; gap: 12px; z-index: 50; transition: 0.3s; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.3s; }
+        .dot.active { background-color: var(--navy); }
+
+        /* 상단 인디케이터 위치: 첫 번째 사진 위 여백 조절 */
+        .top-dots-wrapper { margin-bottom: 80px; }
+
+        /* 사진 아이템 스타일 */
         .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 220px; display: flex; justify-content: center; }
         .item img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; display: block; }
         .item:last-of-type { margin-bottom: 0; }
 
-        .dots-container { display: flex; gap: 12px; z-index: 2500; transition: opacity 0.5s ease; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.3s; }
-        .dot.active { background-color: var(--navy); }
-        #main-indicator { position: fixed; top: 300px; left: 50%; transform: translateX(-50%); }
-
-        /* ★ 마이너스 여백으로 사진 쪽으로 강제 이동 ★ */
+        /* 하단 인디케이터 위치 */
         .bottom-dots-wrapper { 
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            margin-top: -120px; /* 숫자가 클수록 위로 더 붙습니다 */
-            padding-bottom: 250px; 
-            position: relative;
-            z-index: 10;
+            width: 100%; display: flex; justify-content: center; 
+            margin-top: -120px; padding-bottom: 250px; position: relative; z-index: 10;
         }
 
         @media (max-width: 768px) {
@@ -88,9 +88,8 @@
             .logo { font-size: 1.3rem; }
             .nav-arrow { display: none; } 
             .content-container { padding-top: 250px; }
+            .top-dots-wrapper { margin-bottom: 50px; }
             .item { margin-bottom: 120px; }
-            .item:last-of-type { margin-bottom: 0; }
-            #main-indicator { top: 200px; }
             .bottom-dots-wrapper { margin-top: -60px; padding-bottom: 180px; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
@@ -102,6 +101,7 @@
     </style>
 </head>
 <body>
+
     <nav>
         <div class="logo">JUNG DAUN</div>
         <div class="contact-container">
@@ -109,11 +109,6 @@
             <span id="email-text">10yds234@gmail.com</span>
         </div>
     </nav>
-
-    <div class="dots-container" id="main-indicator">
-        <div class="dot active" onclick="goToSlide(0)"></div>
-        <div class="dot" onclick="goToSlide(1)"></div>
-    </div>
 
     <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)">&#10216;</div> 
     <div class="nav-arrow arrow-next" onclick="moveSlide(1)">&#10217;</div>
@@ -124,12 +119,20 @@
 
     <div class="slider-viewport">
         <div class="horizontal-wrapper" id="slider">
-            <article class="series-section active" onscroll="checkScroll(this)">
+            <article class="series-section active">
                 <div class="content-container">
+                    <div class="top-dots-wrapper">
+                        <div class="dots-container">
+                            <div class="dot active" onclick="goToSlide(0)"></div>
+                            <div class="dot" onclick="goToSlide(1)"></div>
+                        </div>
+                    </div>
+                    
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_01.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_02.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_04.JPG"></div>
+                    
                     <div class="bottom-dots-wrapper">
                         <div class="dots-container">
                             <div class="dot active" onclick="goToSlide(0)"></div>
@@ -139,12 +142,20 @@
                 </div>
             </article>
 
-            <article class="series-section" onscroll="checkScroll(this)">
+            <article class="series-section">
                 <div class="content-container">
+                    <div class="top-dots-wrapper">
+                        <div class="dots-container">
+                            <div class="dot" onclick="goToSlide(0)"></div>
+                            <div class="dot active" onclick="goToSlide(1)"></div>
+                        </div>
+                    </div>
+
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_01.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_02.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_04.JPG"></div>
+                    
                     <div class="bottom-dots-wrapper">
                         <div class="dots-container">
                             <div class="dot" onclick="goToSlide(0)"></div>
@@ -162,36 +173,24 @@
     </footer>
 
     <script>
-        /* 자바스크립트 로직 동일 */
         function toggleEmail() { document.getElementById('email-text').classList.toggle('show'); }
+        
         let currentSlide = 0;
         const slider = document.getElementById('slider');
         const sections = document.querySelectorAll('.series-section');
-        const indicatorContainer = document.getElementById('main-indicator');
-
-        function checkScroll(el) {
-            if (el.scrollTop > 50) {
-                indicatorContainer.style.opacity = "0";
-                indicatorContainer.style.visibility = "hidden";
-            } else {
-                indicatorContainer.style.opacity = "1";
-                indicatorContainer.style.visibility = "visible";
-            }
-        }
 
         function updateSlider() {
             slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
             sections.forEach((section, index) => {
                 section.classList.toggle('active', index === currentSlide);
             });
+            // 모든 인디케이터 동기화
             document.querySelectorAll('.dots-container').forEach(container => {
                 const dots = container.querySelectorAll('.dot');
                 dots.forEach((dot, index) => {
                     dot.classList.toggle('active', index === currentSlide);
                 });
             });
-            indicatorContainer.style.opacity = "1";
-            indicatorContainer.style.visibility = "visible";
         }
 
         function moveSlide(direction) {
