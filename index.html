@@ -150,9 +150,7 @@
                 dot.classList.toggle('active', index === currentSlide);
             });
             
-            // ★ 수정됨: 시리즈 이동 시 다른 섹션의 스크롤을 초기화하는 코드를 제거했습니다.
-            // 이제 보던 사진의 위치가 그대로 유지됩니다.
-
+            // 다른 섹션의 스크롤 위치를 초기화하지 않음 (유지)
             indicatorContainer.style.opacity = "1";
             indicatorContainer.style.visibility = "visible";
         }
@@ -183,7 +181,7 @@
             setTimeout(() => lightbox.style.display = 'none', 400);
         }
 
-        // ★ 수정된 스와이프 로직 ★
+        // 스와이프 제스처 로직
         let touchstartX = 0;
         let touchstartY = 0;
         let touchendX = 0;
@@ -201,16 +199,11 @@
             const xDiff = touchstartX - touchendX;
             const yDiff = touchstartY - touchendY;
 
-            // 라이트박스가 닫혀있을 때만 슬라이드 작동
             if (document.getElementById('lightbox').style.display !== 'flex') {
-                /**
-                 * 민감도 조정: 
-                 * 1. 가로로 150px 이상 이동해야 함 (의도치 않은 클릭 방지)
-                 * 2. 가로 이동 거리가 세로 이동 거리보다 훨씬 커야 함 (수직 스크롤 시 방지)
-                 */
-                if (Math.abs(xDiff) > 150 && Math.abs(xDiff) > Math.abs(yDiff) * 2.5) {
-                    if (xDiff > 0) moveSlide(1);  // 다음
-                    else moveSlide(-1);           // 이전
+                // 민감도 설정: 가로 80px 이상 이동 & 가로 이동이 세로 이동보다 클 때
+                if (Math.abs(xDiff) > 80 && Math.abs(xDiff) > Math.abs(yDiff) * 2) {
+                    if (xDiff > 0) moveSlide(1);
+                    else moveSlide(-1);
                 }
             }
         }, {passive: true});
