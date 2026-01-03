@@ -60,7 +60,7 @@
             transform: scale(1.1);
         }
 
-        /* ★ 꺽쇠 위치 수정: 사진 영역(850px) 근처로 더 안쪽으로 이동 ★ */
+        /* 꺽쇠 위치 */
         .nav-arrow {
             position: fixed; top: 50%; transform: translateY(-50%);
             font-size: 2.2rem; color: var(--navy); cursor: pointer; z-index: 2000;
@@ -68,7 +68,6 @@
         }
         .nav-arrow:hover { opacity: 1; }
         
-        /* 화면 중앙에서 사진 너비의 절반만큼 떨어진 곳에 배치하여 사진과 가깝게 설정 */
         .arrow-prev { left: calc(50% - 520px); } 
         .arrow-next { right: calc(50% - 520px); }
 
@@ -238,6 +237,4 @@
         }
     </script>
 </body>
-
 </html>
-
