@@ -10,8 +10,8 @@
             --navy: #0A192F; 
             --spacing: 80px; 
             --photo-max-width: 850px;
-            --transition-speed: 1.4s; 
-            --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-speed: 1.2s; 
+            --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -51,7 +51,7 @@
             flex: 0 0 100vw; height: 100vh; 
             overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
             opacity: 0.8; 
-            transition: opacity var(--transition-speed) ease-in-out;
+            transition: opacity var(--transition-speed) ease;
         }
         .series-section.active { opacity: 1; }
         .series-section::-webkit-scrollbar { display: none; }
@@ -76,7 +76,7 @@
         }
 
         @media (max-width: 768px) {
-            :root { --spacing: 24px; --transition-speed: 1.1s; }
+            :root { --spacing: 24px; --transition-speed: 1.0s; }
             nav { padding-top: 30px; }
             .logo { font-size: 1.3rem; }
             .nav-arrow { display: none; } 
@@ -187,7 +187,7 @@
 
     <footer>
         <p>SEOUL, KOREA</p>
-        <p>© 2026. JUNG DAUN.</p>
+        <p>© 2026 JUNG DAUN.</p>
     </footer>
 
     <script>
@@ -247,4 +247,3 @@
     </script>
 </body>
 </html>
-
