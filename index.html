@@ -57,42 +57,33 @@
         .series-section::-webkit-scrollbar { display: none; }
 
         .content-container { 
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            /* 첫 사진과 마지막 사진이 중앙에 오도록 화면의 절반만큼 패딩 */
-            padding: 50vh 0; 
+            width: 100%; display: flex; flex-direction: column; align-items: center; 
+            padding-top: 350px; 
         }
         
         .dots-container { display: flex; gap: 12px; z-index: 50; }
         .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.4s; }
         .dot.active { background-color: var(--navy); }
+        .top-dots-wrapper { margin-bottom: 80px; }
 
-        .top-dots-wrapper { margin-bottom: 15vh; }
-        .bottom-dots-wrapper { margin-top: 15vh; }
-
-        .item { 
-            width: 100%; 
-            max-width: var(--photo-max-width); 
-            padding: 0 20px; 
-            cursor: zoom-in; 
-            /* 아이템 간의 간격을 조절하여 스크롤 흐름 유지 */
-            margin-bottom: 30vh; 
-            display: flex; 
-            justify-content: center;
-            align-items: center;
-        }
+        .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 220px; display: flex; justify-content: center; }
         .item img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; display: block; }
         .item:last-of-type { margin-bottom: 0; }
+
+        .bottom-dots-wrapper { 
+            width: 100%; display: flex; justify-content: center; 
+            margin-top: -120px; padding-bottom: 250px; position: relative; z-index: 10;
+        }
 
         @media (max-width: 768px) {
             :root { --spacing: 24px; --transition-speed: 1.0s; }
             nav { padding-top: 30px; }
             .logo { font-size: 1.3rem; }
             .nav-arrow { display: none; } 
-            .content-container { padding: 45vh 0; }
-            .item { margin-bottom: 25vh; }
+            .content-container { padding-top: 250px; }
+            .top-dots-wrapper { margin-bottom: 50px; }
+            .item { margin-bottom: 120px; }
+            .bottom-dots-wrapper { margin-top: -60px; padding-bottom: 180px; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
 
@@ -190,6 +181,7 @@
                     </div>
                 </div>
             </article>
+
         </div>
     </div>
 
@@ -207,13 +199,9 @@
 
         function updateSlider() {
             slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-            
             sections.forEach((section, index) => {
                 section.classList.toggle('active', index === currentSlide);
-                // 즉시 스크롤 초기화 (0,0 으로 이동하여 첫 사진부터 보이게 함)
-                section.scrollTo(0, 0); 
             });
-
             document.querySelectorAll('.dots-container').forEach(container => {
                 const dots = container.querySelectorAll('.dot');
                 dots.forEach((dot, index) => {
