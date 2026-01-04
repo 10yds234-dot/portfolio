@@ -214,19 +214,31 @@
         const sections = document.querySelectorAll('.series-section');
 
         function updateSlider() {
-            slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-            sections.forEach((section, index) => {
-                section.classList.toggle('active', index === currentSlide);
-                section.scrollTop = 0;
-            });
-            document.querySelectorAll('.dots-container').forEach(container => {
-                const dots = container.querySelectorAll('.dot');
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentSlide);
+    slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
+    
+    sections.forEach((section, index) => {
+        const isActive = index === currentSlide;
+        section.classList.toggle('active', isActive);
+        
+        // [수정 포인트] 
+        // 시리즈가 바뀔 때 0.6초(중간 지점) 뒤에 부드럽게 맨 위로 스크롤합니다.
+        if (isActive) {
+            setTimeout(() => {
+                section.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // 부드러운 스크롤 효과
                 });
-            });
+            }, 300); // 슬라이드 전환 애니메이션 중간쯤 시작
         }
+    });
 
+    document.querySelectorAll('.dots-container').forEach(container => {
+        const dots = container.querySelectorAll('.dot');
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlide);
+        });
+    });
+}
         function moveSlide(direction) {
             currentSlide += direction;
             if (currentSlide < 0) currentSlide = sections.length - 1;
@@ -264,3 +276,4 @@
     </script>
 </body>
 </html>
+
