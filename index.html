@@ -58,19 +58,19 @@
 
         .content-container { 
             width: 100%; display: flex; flex-direction: column; align-items: center; 
-            padding-top: 15vh; /* 첫 사진 중앙 정렬 유지 */
-            padding-bottom: 5vh; /* 하단 인디케이터를 위해 바닥 여백 축소 */
+            padding-top: 22vh; /* 1. 첫 사진 위치를 조금 더 아래로 조정 */
+            padding-bottom: 100px; /* 푸터와 겹치지 않을 정도의 최소 여백 */
         }
         
         .dots-container { display: flex; gap: 12px; z-index: 50; }
         .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.4s; }
         .dot.active { background-color: var(--navy); }
 
+        /* 인디케이터 간격 통일 */
         .top-dots-wrapper { margin-bottom: 60px; }
-        /* 하단 인디케이터 밀착 조정 */
-        .bottom-dots-wrapper { margin-top: 50px; margin-bottom: 50px; } 
+        /* 2. 하단 인디케이터를 상단과 동일한 느낌으로 밀착 */
+        .bottom-dots-wrapper { margin-top: 60px; } 
 
-        /* 사진 상하 간격 재조정 (220px) */
         .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 220px; display: flex; justify-content: center; }
         .item img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; display: block; }
         .item:last-of-type { margin-bottom: 0; }
@@ -80,9 +80,8 @@
             nav { padding-top: 30px; }
             .logo { font-size: 1.3rem; }
             .nav-arrow { display: none; } 
-            .content-container { padding-top: 15vh; }
+            .content-container { padding-top: 20vh; }
             .item { margin-bottom: 120px; }
-            .bottom-dots-wrapper { margin-top: 40px; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
 
