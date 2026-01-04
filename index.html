@@ -260,7 +260,6 @@
 <div class="slider-viewport">
     <div class="horizontal-wrapper" id="slider">
 
-        <!-- SERIES 1 -->
         <article class="series-section active">
             <div class="content-container">
 
@@ -290,7 +289,6 @@
             </div>
         </article>
 
-        <!-- SERIES 2 -->
         <article class="series-section">
             <div class="content-container">
 
@@ -320,7 +318,6 @@
             </div>
         </article>
 
-        <!-- SERIES 3 -->
         <article class="series-section">
             <div class="content-container">
 
@@ -427,8 +424,15 @@ function goToSlide(index) {
 
 
 /* =========================
-   라이트박스
+   라이트박스 (클릭 이벤트 연결 포함)
 ========================= */
+
+// 페이지의 모든 이미지 요소에 클릭 이벤트 리스너 추가
+document.querySelectorAll('.item img').forEach(img => {
+    img.addEventListener('click', (e) => {
+        openLightbox(e.target);
+    });
+});
 
 function openLightbox(target) {
     const img = target.tagName === 'IMG'
