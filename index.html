@@ -21,7 +21,6 @@
             -webkit-font-smoothing: antialiased; overflow: hidden; height: 100%;
         }
 
-        /* 상단 네비게이션 */
         nav {
             position: fixed; top: 0; width: 100%; padding: 60px var(--spacing) 40px;
             display: flex; justify-content: space-between; align-items: flex-start; z-index: 1000;
@@ -32,7 +31,7 @@
         #email-text { display: block; margin-top: 12px; font-size: 1rem; font-weight: 300; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 좌우 화살표 */
+        /* 좌우 꺽쇠(화살표) - 이 위치에 사진 중앙이 오게 됨 */
         .nav-arrow {
             position: fixed; top: 50%; transform: translateY(-50%);
             font-size: 2.2rem; color: var(--navy); cursor: pointer; z-index: 2000;
@@ -42,7 +41,6 @@
         .arrow-prev { left: calc(50% - 520px); } 
         .arrow-next { right: calc(50% - 520px); }
 
-        /* 전체 슬라이더 구조 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { 
             display: flex; height: 100vh; 
@@ -59,35 +57,36 @@
         .series-section.active { opacity: 1; }
         .series-section::-webkit-scrollbar { display: none; }
 
-        /* 사진 리스트 컨테이너 */
         .content-container { 
             width: 100%; display: flex; flex-direction: column; align-items: center; 
-            padding-top: 25vh; /* 접속 시 첫 사진이 중앙쯤 오도록 조정 */
-            padding-bottom: 40vh;
+            /* 1. 첫 사진의 중앙이 꺽쇠에 오도록 상단 패딩 조정 */
+            padding-top: 15vh; 
+            padding-bottom: 25vh;
         }
         
         .dots-container { display: flex; gap: 12px; z-index: 50; }
         .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.4s; }
         .dot.active { background-color: var(--navy); }
-        .top-dots-wrapper { margin-bottom: 100px; }
 
-        .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 25vh; display: flex; justify-content: center; }
-        .item img { width: 100%; height: auto; max-height: 85vh; object-fit: contain; display: block; }
+        /* 인디케이터 간격 최적화 */
+        .top-dots-wrapper { margin-bottom: 60px; }
+        .bottom-dots-wrapper { margin-top: 80px; } 
+
+        /* 2. 사진 상하 간격 축소 */
+        .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 150px; display: flex; justify-content: center; }
+        .item img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; display: block; }
         .item:last-of-type { margin-bottom: 0; }
-
-        .bottom-dots-wrapper { margin-top: 15vh; margin-bottom: 10vh; }
 
         @media (max-width: 768px) {
             :root { --spacing: 24px; }
             nav { padding-top: 30px; }
             .logo { font-size: 1.3rem; }
             .nav-arrow { display: none; } 
-            .content-container { padding-top: 20vh; }
-            .item { margin-bottom: 15vh; }
+            .content-container { padding-top: 15vh; }
+            .item { margin-bottom: 100px; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
 
-        /* 라이트박스 & 푸터 */
         #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); display: none; justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; opacity: 0; transition: opacity 0.4s; }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; }
@@ -199,11 +198,9 @@
 
         function updateSlider() {
             slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-            
             sections.forEach((section, index) => {
                 section.classList.toggle('active', index === currentSlide);
-                // 시리즈 변경 시 스크롤을 항상 맨 위(0)로 초기화
-                section.scrollTop = 0;
+                section.scrollTop = 0; // 시리즈 이동 시 항상 맨 위로
             });
 
             document.querySelectorAll('.dots-container').forEach(container => {
