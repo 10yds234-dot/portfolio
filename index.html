@@ -58,22 +58,28 @@
 
         .content-container { 
             width: 100%; display: flex; flex-direction: column; align-items: center; 
-            padding-top: 22vh; /* 1. 첫 사진 위치를 조금 더 아래로 조정 */
-            padding-bottom: 100px; /* 푸터와 겹치지 않을 정도의 최소 여백 */
+            padding-top: 22vh; 
+            /* 하단 인디케이터가 끝난 후 푸터 공간을 위한 최소한의 여백만 남김 */
+            padding-bottom: 120px; 
         }
         
         .dots-container { display: flex; gap: 12px; z-index: 50; }
         .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.4s; }
         .dot.active { background-color: var(--navy); }
 
-        /* 인디케이터 간격 통일 */
+        /* 상하 인디케이터 간격 완전 동일화 (60px) */
         .top-dots-wrapper { margin-bottom: 60px; }
-        /* 2. 하단 인디케이터를 상단과 동일한 느낌으로 밀착 */
         .bottom-dots-wrapper { margin-top: 60px; } 
 
-        .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 220px; display: flex; justify-content: center; }
+        .item { 
+            width: 100%; max-width: var(--photo-max-width); padding: 0 20px; 
+            cursor: zoom-in; margin-bottom: 220px; 
+            display: flex; justify-content: center; 
+        }
         .item img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; display: block; }
-        .item:last-of-type { margin-bottom: 0; }
+
+        /* [핵심] 마지막 아이템의 바닥 여백을 제거하여 하단 인디케이터를 밀착시킴 */
+        .item:last-of-type { margin-bottom: 0 !important; }
 
         @media (max-width: 768px) {
             :root { --spacing: 24px; }
@@ -124,6 +130,7 @@
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_02.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/film_04.JPG"></div>
+                    
                     <div class="bottom-dots-wrapper">
                         <div class="dots-container">
                             <div class="dot active" onclick="goToSlide(0)"></div>
@@ -147,6 +154,7 @@
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_02.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_03.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_04.JPG"></div>
+                    
                     <div class="bottom-dots-wrapper">
                         <div class="dots-container">
                             <div class="dot" onclick="goToSlide(0)"></div>
@@ -170,6 +178,7 @@
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_06.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_07.JPG"></div>
                     <div class="item" onclick="openLightbox(this)"><img src="assets/digi_08.JPG"></div>
+                    
                     <div class="bottom-dots-wrapper">
                         <div class="dots-container">
                             <div class="dot" onclick="goToSlide(0)"></div>
