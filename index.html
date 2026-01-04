@@ -488,7 +488,27 @@ document.addEventListener('touchend', e => {
         moveSlide(deltaX > 0 ? 1 : -1);
     }
 }, { passive: true });
+
+/* =========================
+   콘텐츠 보호 (우클릭 & 드래그 방지)
+========================= */
+
+// 1. 마우스 우클릭 방지
+document.addEventListener('contextmenu', e => {
+    // 라이트박스가 켜져 있거나 이미지 위일 때 특히 중요
+    if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+    }
+}, false);
+
+// 2. 이미지 드래그 방지 (이미지를 끌어서 바탕화면에 놓는 것 방지)
+document.addEventListener('dragstart', e => {
+    if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+    }
+}, false);
 </script>
 
 </body>
 </html>
+
