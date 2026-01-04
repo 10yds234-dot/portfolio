@@ -59,33 +59,31 @@
         .content-container { 
             width: 100%; display: flex; flex-direction: column; align-items: center; 
             padding-top: 22vh; 
-            padding-bottom: 0; /* 여백 완전 제거 */
+            padding-bottom: 0; 
         }
         
         .dots-container { display: flex; gap: 12px; z-index: 50; }
         .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.4s; }
         .dot.active { background-color: var(--navy); }
 
-        /* 인디케이터 간격 - 상단 60px */
         .top-dots-wrapper { margin-bottom: 60px; }
 
-        /* 하단 인디케이터: 마지막 아이템 내부에 배치하기 위해 설정 */
         .bottom-indicator-in-item {
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-top: 60px; /* 마지막 사진으로부터 정확히 60px */
-            padding-bottom: 120px; /* 푸터 공간 확보를 위한 여백 */
+            margin-top: 60px; 
+            /* 하단 스크롤 범위를 넓히기 위해 50vh로 수정 */
+            padding-bottom: 50vh; 
         }
 
         .item { 
             width: 100%; max-width: var(--photo-max-width); padding: 0 20px; 
             cursor: zoom-in; margin-bottom: 220px; 
-            display: flex; flex-direction: column; align-items: center; /* 세로 정렬로 변경 */
+            display: flex; flex-direction: column; align-items: center; 
         }
         .item img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; display: block; }
 
-        /* 마지막 사진의 마진 제거 */
         .item:last-of-type { margin-bottom: 0 !important; }
 
         @media (max-width: 768px) {
@@ -95,7 +93,7 @@
             .nav-arrow { display: none; } 
             .content-container { padding-top: 20vh; }
             .item { margin-bottom: 120px; }
-            .bottom-indicator-in-item { margin-top: 40px; padding-bottom: 80px; }
+            .bottom-indicator-in-item { margin-top: 40px; padding-bottom: 40vh; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
 
@@ -239,7 +237,7 @@
         function goToSlide(index) { currentSlide = index; updateSlider(); }
 
         function openLightbox(element) {
-            const imgSrc = element.querySelector('img').src;
+            const imgSrc = (element.tagName === 'IMG') ? element.src : element.querySelector('img').src;
             const lightbox = document.getElementById('lightbox');
             document.getElementById('lightbox-img').src = imgSrc;
             lightbox.style.display = 'flex';
