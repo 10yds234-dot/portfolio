@@ -31,7 +31,6 @@
         #email-text { display: block; margin-top: 12px; font-size: 1rem; font-weight: 300; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 좌우 꺽쇠(화살표) - 이 위치에 사진 중앙이 오게 됨 */
         .nav-arrow {
             position: fixed; top: 50%; transform: translateY(-50%);
             font-size: 2.2rem; color: var(--navy); cursor: pointer; z-index: 2000;
@@ -59,21 +58,20 @@
 
         .content-container { 
             width: 100%; display: flex; flex-direction: column; align-items: center; 
-            /* 1. 첫 사진의 중앙이 꺽쇠에 오도록 상단 패딩 조정 */
-            padding-top: 15vh; 
-            padding-bottom: 25vh;
+            padding-top: 15vh; /* 첫 사진 중앙 정렬 유지 */
+            padding-bottom: 5vh; /* 하단 인디케이터를 위해 바닥 여백 축소 */
         }
         
         .dots-container { display: flex; gap: 12px; z-index: 50; }
         .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--navy); background-color: transparent; cursor: pointer; transition: 0.4s; }
         .dot.active { background-color: var(--navy); }
 
-        /* 인디케이터 간격 최적화 */
         .top-dots-wrapper { margin-bottom: 60px; }
-        .bottom-dots-wrapper { margin-top: 80px; } 
+        /* 하단 인디케이터 밀착 조정 */
+        .bottom-dots-wrapper { margin-top: 50px; margin-bottom: 50px; } 
 
-        /* 2. 사진 상하 간격 축소 */
-        .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 150px; display: flex; justify-content: center; }
+        /* 사진 상하 간격 재조정 (220px) */
+        .item { width: 100%; max-width: var(--photo-max-width); padding: 0 20px; cursor: zoom-in; margin-bottom: 220px; display: flex; justify-content: center; }
         .item img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; display: block; }
         .item:last-of-type { margin-bottom: 0; }
 
@@ -83,7 +81,8 @@
             .logo { font-size: 1.3rem; }
             .nav-arrow { display: none; } 
             .content-container { padding-top: 15vh; }
-            .item { margin-bottom: 100px; }
+            .item { margin-bottom: 120px; }
+            .bottom-dots-wrapper { margin-top: 40px; }
             footer { right: 24px; bottom: 20px; font-size: 0.65rem; }
         }
 
@@ -200,7 +199,7 @@
             slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
             sections.forEach((section, index) => {
                 section.classList.toggle('active', index === currentSlide);
-                section.scrollTop = 0; // 시리즈 이동 시 항상 맨 위로
+                section.scrollTop = 0;
             });
 
             document.querySelectorAll('.dots-container').forEach(container => {
