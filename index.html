@@ -25,7 +25,6 @@
             font-family: 'Avenir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
             overflow: hidden; 
             height: 100%;
-            /* Safari에서의 터치 바운스 방지 */
             position: fixed;
             width: 100%;
         }
@@ -35,7 +34,6 @@
             background-image: var(--bg-image);
             background-size: cover; background-position: center;
             z-index: -2;
-            /* Safari 하드웨어 가속 */
             -webkit-transform: translateZ(0);
         }
 
@@ -75,7 +73,6 @@
         .photo-item img {
             width: 100%; height: auto; display: block;
             transition: transform 0.6s var(--transition-timing);
-            /* Safari 이미지 최적화 */
             -webkit-backface-visibility: hidden;
         }
 
@@ -105,14 +102,10 @@
             padding: 8vh 5vw; 
         }
         #lightbox.show { display: flex; opacity: 1; }
-        #lightbox img { 
-            max-width: 85%; max-height: 85%; object-fit: contain; 
-            -webkit-user-select: none; /* Safari 이미지 길게 누르기 방지 */
-        }
+        #lightbox img { max-width: 85%; max-height: 85%; object-fit: contain; -webkit-user-select: none; }
 
         .dots-nav {
-            position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
-            -webkit-transform: translateX(-50%);
+            position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); -webkit-transform: translateX(-50%);
             display: flex; gap: 14px; z-index: 1000;
         }
         .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; opacity: 0.4; transition: 0.4s; }
@@ -204,7 +197,8 @@ const DOM = {
     lightbox: document.getElementById('lightbox'),
     lightboxImg: document.getElementById('lightbox-img'),
     email: document.getElementById('email-text'),
-    swipeZone: document.getElementById('swipe-zone')
+    swipeZone: document.getElementById('swipe-zone'),
+    allImages: document.querySelectorAll('.photo-item img')
 };
 
 function toggleEmail() { DOM.email.classList.toggle('show'); }
@@ -212,8 +206,7 @@ function toggleEmail() { DOM.email.classList.toggle('show'); }
 function updateSlider() {
     const offset = -STATE.currentSlide * 100;
     DOM.slider.style.transform = `translateX(${offset}vw)`;
-    DOM.slider.style.webkitTransform = `translateX(${offset}vw)`; // Safari 가속
-    
+    DOM.slider.style.webkitTransform = `translateX(${offset}vw)`;
     DOM.sections.forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
     DOM.dots.forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
 }
@@ -223,18 +216,26 @@ function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
 function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.style.display = 'flex'; setTimeout(() => DOM.lightbox.classList.add('show'), 10); }
 function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 500); }
 
-/* 모바일 스와이프 지원 (Safari 최적화) */
-let touchStartX = 0;
-DOM.swipeZone.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-}, {passive: true});
+/* --- 프리로드 로직 추가 --- */
+function preloadGallery() {
+    DOM.allImages.forEach(img => {
+        const src = img.getAttribute('src');
+        if (src) {
+            const preloadImg = new Image();
+            preloadImg.src = src;
+        }
+    });
+}
+// 페이지 로드 후 실행 (우선순위가 높은 메인 이미지가 먼저 뜬 뒤 나머지 프리로드)
+window.addEventListener('load', preloadGallery);
+/* ------------------------ */
 
+let touchStartX = 0;
+DOM.swipeZone.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
 DOM.swipeZone.addEventListener('touchend', e => {
     let touchEndX = e.changedTouches[0].screenX;
     let diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 50) { // 50px 이상 움직였을 때만 작동
-        moveSlide(diff > 0 ? 1 : -1);
-    }
+    if (Math.abs(diff) > 50) moveSlide(diff > 0 ? 1 : -1);
 }, {passive: true});
 
 document.addEventListener('keydown', e => {
