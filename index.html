@@ -7,7 +7,7 @@
 
     <style>
         :root {
-            --bg-image: url('assets/000001.JPG'); 
+            --bg-image: url('assets/000001.webp'); /* 배경 사진 webp 적용 */
             --interface-color: #FFFFFF; 
             --spacing: 30px; 
             --photo-gap: 20px; 
@@ -76,13 +76,13 @@
             -webkit-backface-visibility: hidden;
         }
 
+        /* 화살표 설정: 고정 각도 유지 (회전 제거) */
         .nav-arrow {
             position: absolute; top: 50%; width: 50px; height: 50px;
             cursor: pointer; z-index: 2000; opacity: 0.45;
             transition: opacity 0.3s, transform 0.3s;
             display: flex; align-items: center; justify-content: center;
         }
-        
         .nav-arrow::before {
             content: ''; width: 12px; height: 12px;
             border-top: 1.5px solid var(--interface-color); border-right: 1.5px solid var(--interface-color);
@@ -216,7 +216,7 @@ function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
 function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.style.display = 'flex'; setTimeout(() => DOM.lightbox.classList.add('show'), 10); }
 function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 500); }
 
-/* --- 프리로드 로직 추가 --- */
+/* 프리로드 실행 */
 function preloadGallery() {
     DOM.allImages.forEach(img => {
         const src = img.getAttribute('src');
@@ -226,10 +226,9 @@ function preloadGallery() {
         }
     });
 }
-// 페이지 로드 후 실행 (우선순위가 높은 메인 이미지가 먼저 뜬 뒤 나머지 프리로드)
 window.addEventListener('load', preloadGallery);
-/* ------------------------ */
 
+/* 모바일 스와이프 */
 let touchStartX = 0;
 DOM.swipeZone.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
 DOM.swipeZone.addEventListener('touchend', e => {
