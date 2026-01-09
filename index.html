@@ -55,11 +55,11 @@
 
         /* ABOUT 위치를 로고에서 더 아래로 내려 비율 조정 */
         .menu-container.show { 
-            max-height: 600px; opacity: 1; margin-top: 30px; 
+            max-height: 600px; opacity: 1; margin-top: 40px; 
         }
 
-        .menu-item { margin-bottom: 30px; }
-        .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; display: block; }
+        .menu-item { margin-bottom: 35px; }
+        .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block; }
         
         /* PC에서 설명글 줄바꿈 방지 */
         .menu-content { 
@@ -92,7 +92,7 @@
         #lightbox { 
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); 
             display: none; justify-content: center; align-items: center; 
-            z-index: 3000; opacity: 0; transition: opacity 0.5s; 
+            z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer;
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox-img { max-width: 85%; max-height: 85vh; object-fit: contain; }
@@ -111,51 +111,24 @@
 
         /* [모바일] 반응형 설정 */
         @media (max-width: 850px) { 
-            /* 모바일 배경화면 90도 회전 */
             .bg-fixed {
-                width: 100vh;
-                height: 100vw;
-                top: 50%;
-                left: 50%;
+                width: 100vh; height: 100vw; top: 50%; left: 50%;
                 transform: translate(-50%, -50%) rotate(90deg);
                 background-size: cover;
             }
-
             .nav-arrow, .lb-arrow { display: none !important; } 
-            
-            nav { 
-                display: flex; 
-                align-items: flex-start; 
-                gap: 25px; 
-                top: 25px; 
-                left: 25px; 
-            }
+            nav { display: flex; align-items: flex-start; gap: 25px; top: 25px; left: 25px; }
             .logo { flex-shrink: 0; }
-
-            /* 모바일에서 이름 옆에 배치, About/Contact는 상하로 */
             .menu-container { 
-                display: flex; 
-                flex-direction: column; 
-                gap: 20px; 
-                max-width: 0; 
-                max-height: none; 
-                opacity: 0;
-                margin-top: 0 !important;
-                white-space: normal;
+                display: flex; flex-direction: column; gap: 20px; 
+                max-width: 0; max-height: none; opacity: 0;
+                margin-top: 0 !important; white-space: normal;
                 transition: max-width 0.8s var(--transition-timing), opacity 0.6s;
             }
-            .menu-container.show { 
-                max-width: 1000px; 
-                opacity: 1; 
-            }
+            .menu-container.show { max-width: 1000px; opacity: 1; }
             .menu-item { margin-bottom: 0; }
             .menu-label { font-size: 0.6rem; margin-bottom: 4px; }
-            .menu-content { 
-                font-size: 0.75rem; 
-                line-height: 1.4; 
-                white-space: normal; /* 모바일은 가로폭에 맞춰 줄바꿈 허용 */
-            }
-
+            .menu-content { font-size: 0.75rem; line-height: 1.4; white-space: normal; }
             #lightbox-img { max-width: 95%; }
             .dots-nav { bottom: 35px; }
         }
@@ -181,7 +154,7 @@
 
 <div id="lightbox" onclick="closeLightboxOutside(event)">
     <div class="lb-arrow lb-prev" onclick="changeLightBoxImg(-1, event)"></div>
-    <img id="lightbox-img" onclick="event.stopPropagation()">
+    <img id="lightbox-img">
     <div class="lb-arrow lb-next" onclick="changeLightBoxImg(1, event)"></div>
 </div>
 
@@ -276,7 +249,6 @@
         updateSlider(); 
     }
 
-    /* 라이트박스 로직 */
     function openLightbox(imgElement) {
         const currentSection = DOM.sections[STATE.currentSlide];
         const allImgs = Array.from(currentSection.querySelectorAll('.photo-item img'));
@@ -288,14 +260,16 @@
     }
 
     function changeLightBoxImg(direction, event) {
-        if (event) event.stopPropagation(); 
+        if (event) event.stopPropagation(); // 화살표 클릭 시 닫히지 않도록 방지
         STATE.lbCurrentIndex = (STATE.lbCurrentIndex + direction + STATE.lbImages.length) % STATE.lbImages.length;
         DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
     }
 
-    function closeLightboxOutside(e) { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500); }
+    function closeLightboxOutside(e) { 
+        DOM.lightbox.classList.remove('show'); 
+        setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500); 
+    }
 
-    /* 터치 스와이프 제어 */
     let touchStartX = 0;
     DOM.swipeZone.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
     DOM.swipeZone.addEventListener('touchend', e => {
@@ -311,7 +285,6 @@
         if (Math.abs(diff) > 50) changeLightBoxImg(diff > 0 ? 1 : -1);
     }, {passive: true});
 
-    /* 키보드 제어 */
     document.addEventListener('keydown', e => {
         const isLBOpen = DOM.lightbox.classList.contains('show');
         if (e.key === 'ArrowRight') isLBOpen ? changeLightBoxImg(1) : moveSlide(1);
@@ -321,4 +294,3 @@
 </script>
 </body>
 </html>
-
