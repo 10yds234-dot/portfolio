@@ -9,7 +9,7 @@
         :root {
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
-            --spacing: 60px; /* 여백을 조금 줄여서 모서리에 가깝게 배치 */
+            --spacing: 30px; /* 모서리에 더 붙이기 위해 값을 60에서 30으로 줄임 */
             --photo-max-width: 850px;
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
@@ -33,7 +33,6 @@
             background-image: var(--bg-image);
             background-size: cover;
             background-position: center center;
-            background-repeat: no-repeat;
             z-index: -2;
         }
 
@@ -44,14 +43,14 @@
             z-index: -1;
         }
 
-        /* 내비게이션: 왼쪽 상단 정렬 */
+        /* 내비게이션: 모서리에 바짝 밀착 */
         nav {
             position: fixed;
             top: var(--spacing);
             left: var(--spacing);
             display: flex;
-            flex-direction: column; /* 세로로 나열 */
-            align-items: flex-start; /* 왼쪽 정렬 */
+            flex-direction: column;
+            align-items: flex-start;
             z-index: 1000;
         }
 
@@ -60,29 +59,24 @@
             font-size: 1.8rem; 
             letter-spacing: 0.1em; 
             color: var(--interface-color);
-            margin-bottom: 12px; /* 이름과 Contact 사이 간격 */
-        }
-
-        .contact-container {
-            text-align: left;
+            margin-bottom: 4px; /* 이름과 Contact 사이를 아주 가깝게 */
+            line-height: 1;
         }
 
         .contact-trigger { 
             cursor: pointer; 
-            font-size: 0.8rem; /* Contact 크기를 살짝 줄여 이름과 대비 */
-            letter-spacing: 0.15em; 
+            font-size: 0.75rem; /* 조금 더 작게 조절 */
+            letter-spacing: 0.2em; 
             text-transform: uppercase; 
             font-weight: 300; 
             color: var(--interface-color);
-            opacity: 0.8;
-            transition: opacity 0.3s;
+            opacity: 0.7;
         }
-        .contact-trigger:hover { opacity: 1; }
         
         #email-text {
             display: block;
-            margin-top: 6px;
-            font-size: 0.8rem;
+            margin-top: 5px;
+            font-size: 0.75rem;
             opacity: 0;
             visibility: hidden;
             transition: all 0.4s ease;
@@ -113,11 +107,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 30vh; /* 메뉴와 겹치지 않게 패딩 확보 */
+            padding-top: 25vh;
         }
 
         .dots-container { display: flex; gap: 12px; margin-bottom: 60px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; transition: 0.4s; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; }
         .dot.active { background-color: var(--interface-color); }
 
         .item {
@@ -157,30 +151,27 @@
             cursor: pointer;
             z-index: 2000;
             opacity: 0.4;
-            padding: 40px;
-            transition: opacity 0.3s;
+            padding: 30px;
             color: var(--interface-color);
-            user-select: none;
         }
         .nav-arrow:hover { opacity: 1; }
-        .arrow-prev { left: 30px; }
-        .arrow-next { right: 30px; }
+        .arrow-prev { left: 20px; }
+        .arrow-next { right: 20px; }
 
         footer {
             position: fixed;
-            bottom: 40px;
+            bottom: var(--spacing);
             right: var(--spacing);
             text-align: right;
             font-size: 0.7rem;
-            opacity: 0.6;
+            opacity: 0.5;
             color: var(--interface-color);
         }
 
         @media (max-width: 768px) {
-            :root { --spacing: 30px; }
-            nav { top: 30px; left: 30px; }
-            .logo { font-size: 1.4rem; }
-            .content-container { padding-top: 25vh; }
+            :root { --spacing: 20px; }
+            .logo { font-size: 1.3rem; }
+            .content-container { padding-top: 20vh; }
         }
     </style>
 </head>
@@ -191,10 +182,8 @@
 
 <nav>
     <div class="logo">JUNG DAUN</div>
-    <div class="contact-container">
-        <div class="contact-trigger" onclick="toggleEmail()">Contact</div>
-        <span id="email-text">10yds234@gmail.com</span>
-    </div>
+    <div class="contact-trigger" onclick="toggleEmail()">Contact</div>
+    <span id="email-text">10yds234@gmail.com</span>
 </nav>
 
 <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)">&#10216;</div>
@@ -219,7 +208,6 @@
                 <div class="item"><img src="assets/A4.webp" loading="lazy"></div>
             </div>
         </article>
-
         <article class="series-section">
             <div class="content-container">
                 <div class="dots-container">
@@ -233,7 +221,6 @@
                 <div class="item"><img src="assets/B4.webp" loading="lazy"></div>
             </div>
         </article>
-
         <article class="series-section">
             <div class="content-container">
                 <div class="dots-container">
