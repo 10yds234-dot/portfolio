@@ -35,24 +35,28 @@
             transform: translateZ(0);
         }
 
-        /* 네비게이션: 가로 나열 */
+        /* [PC 기본] 상단 네비게이션: 수직 구조 */
         nav { 
             position: fixed; top: var(--spacing); left: var(--spacing); 
-            z-index: 2000; display: flex; align-items: flex-start; gap: 40px; 
+            z-index: 2000; display: block; /* PC는 위아래로 나열 */
         }
 
         .logo { 
             font-size: 1.45rem; letter-spacing: 0.02em; text-transform: uppercase; 
-            line-height: 1; cursor: pointer; flex-shrink: 0; 
+            line-height: 1; cursor: pointer; display: inline-block;
         }
         
         .menu-container { 
-            display: flex; gap: 40px; max-width: 0; overflow: hidden; 
-            transition: max-width 0.8s var(--transition-timing), opacity 0.6s; 
-            opacity: 0; white-space: nowrap;
+            max-height: 0; overflow: hidden; 
+            transition: max-height 0.8s var(--transition-timing), opacity 0.6s, margin 0.6s; 
+            opacity: 0; margin-top: 0;
         }
 
-        .menu-container.show { max-width: 1000px; opacity: 1; }
+        .menu-container.show { 
+            max-height: 500px; opacity: 1; margin-top: 15px; 
+        }
+
+        .menu-item { margin-bottom: 40px; }
         .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; display: block; }
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
 
@@ -98,13 +102,37 @@
 
         footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.6rem; opacity: 0.3; }
 
-        /* 모바일 반응형 */
+        /* [모바일] 반응형 전용 스타일 */
         @media (max-width: 850px) { 
             .nav-arrow, .lb-arrow { display: none !important; } 
-            nav { gap: 20px; top: 20px; left: 20px; }
-            .menu-container { gap: 25px; }
-            .menu-label { font-size: 0.6rem; }
-            .menu-content { font-size: 0.75rem; }
+            
+            /* 모바일에서만 가로 배치로 변경 */
+            nav { 
+                display: flex; 
+                align-items: flex-start; 
+                gap: 20px; 
+                top: 20px; 
+                left: 20px; 
+            }
+            .logo { flex-shrink: 0; }
+            .menu-container { 
+                display: flex; 
+                gap: 20px; 
+                max-width: 0; 
+                max-height: none; /* PC의 수직 애니메이션 해제 */
+                opacity: 0;
+                margin-top: 0 !important;
+                white-space: nowrap;
+                transition: max-width 0.8s var(--transition-timing), opacity 0.6s;
+            }
+            .menu-container.show { 
+                max-width: 1000px; 
+                opacity: 1; 
+            }
+            .menu-item { margin-bottom: 0; } /* 수직 여백 제거 */
+            .menu-label { font-size: 0.6rem; margin-bottom: 5px; }
+            .menu-content { font-size: 0.75rem; line-height: 1.4; }
+
             #lightbox-img { max-width: 95%; }
             .dots-nav { bottom: 30px; }
         }
@@ -225,7 +253,6 @@
         updateSlider(); 
     }
 
-    /* 라이트박스 제어 */
     function openLightbox(imgElement) {
         const currentSection = DOM.sections[STATE.currentSlide];
         const allImgs = Array.from(currentSection.querySelectorAll('.photo-item img'));
@@ -244,7 +271,6 @@
 
     function closeLightboxOutside(e) { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500); }
 
-    /* 메인 슬라이더 스와이프 */
     let touchStartX = 0;
     DOM.swipeZone.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
     DOM.swipeZone.addEventListener('touchend', e => {
@@ -252,7 +278,6 @@
         if (Math.abs(diff) > 50) moveSlide(diff > 0 ? 1 : -1);
     }, {passive: true});
 
-    /* 라이트박스 스와이프 */
     let lbTouchStartX = 0;
     DOM.lightbox.addEventListener('touchstart', e => { lbTouchStartX = e.changedTouches[0].screenX; }, {passive: true});
     DOM.lightbox.addEventListener('touchend', e => {
