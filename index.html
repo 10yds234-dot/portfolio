@@ -10,7 +10,7 @@
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
             --spacing: 30px; 
-            --photo-max-width: 850px;
+            --grid-gap: 20px; /* 사진 사이 간격 */
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
@@ -43,7 +43,7 @@
             z-index: -1;
         }
 
-        /* 내비게이션: 다시 바짝 밀착 */
+        /* 내비게이션: 왼쪽 상단 밀착 */
         nav {
             position: fixed;
             top: var(--spacing);
@@ -58,8 +58,7 @@
             font-weight: 300; 
             font-size: 1.8rem; 
             letter-spacing: 0.1em; 
-            color: var(--interface-color);
-            margin-bottom: 4px; /* 다시 밀착 */
+            margin-bottom: 4px; 
             line-height: 1;
         }
 
@@ -68,10 +67,10 @@
             font-size: 0.75rem;
             letter-spacing: 0.2em; 
             text-transform: uppercase; 
-            font-weight: 300; 
-            color: var(--interface-color);
             opacity: 0.7;
+            transition: opacity 0.3s;
         }
+        .contact-trigger:hover { opacity: 1; }
         
         #email-text {
             display: block;
@@ -79,54 +78,77 @@
             font-size: 0.75rem;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s ease;
+            transition: 0.4s;
         }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 슬라이더 및 콘텐츠 */
+        /* 슬라이더 구조 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { 
             display: flex; 
             height: 100vh; 
             transition: transform var(--transition-speed) var(--transition-timing);
-            will-change: transform;
         }
 
         .series-section { 
             flex: 0 0 100vw; 
             height: 100vh; 
-            overflow-y: auto; 
-            scrollbar-width: none;
-            opacity: 0.4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
             transition: opacity 1s ease;
         }
         .series-section.active { opacity: 1; }
 
-        .content-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 25vh;
+        /* 4분할 그리드 컨테이너 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 가로 2줄 */
+            grid-template-rows: repeat(2, 1fr);    /* 세로 2줄 */
+            gap: var(--grid-gap);
+            width: 80vw;
+            height: 70vh;
+            max-width: 1200px;
+            max-height: 800px;
         }
 
-        .dots-container { display: flex; gap: 12px; margin-bottom: 60px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; }
-        .dot.active { background-color: var(--interface-color); }
-
-        .item {
+        .grid-item {
             width: 100%;
-            max-width: var(--photo-max-width);
-            padding: 0 20px;
+            height: 100%;
+            overflow: hidden;
             cursor: zoom-in;
-            margin-bottom: 220px;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
-        .item img { width: 100%; max-height: 85vh; object-fit: contain; display: block; }
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 영역에 꽉 채움 (정방향 느낌) */
+            transition: transform 0.5s ease;
+        }
+        .grid-item:hover img { transform: scale(1.03); }
 
-        /* 라이트박스 */
+        /* 하단 시리즈 표시 점 */
+        .dots-nav {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        .dot { 
+            width: 6px; height: 6px; border-radius: 50%; 
+            border: 1px solid var(--interface-color); 
+            cursor: pointer; transition: 0.4s; 
+        }
+        .dot.active { background-color: var(--interface-color); transform: scale(1.5); }
+
+        /* 라이트박스 (확대) */
         #lightbox {
             position: fixed;
             inset: 0;
@@ -143,6 +165,7 @@
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
+        /* 좌우 화살표 */
         .nav-arrow {
             position: fixed;
             top: 50%;
@@ -150,28 +173,26 @@
             font-size: 2rem;
             cursor: pointer;
             z-index: 2000;
-            opacity: 0.4;
-            padding: 30px;
-            color: var(--interface-color);
+            opacity: 0.3;
+            padding: 20px;
+            transition: 0.3s;
+            user-select: none;
         }
         .nav-arrow:hover { opacity: 1; }
-        .arrow-prev { left: 20px; }
-        .arrow-next { right: 20px; }
+        .arrow-prev { left: var(--spacing); }
+        .arrow-next { right: var(--spacing); }
 
         footer {
             position: fixed;
             bottom: var(--spacing);
             right: var(--spacing);
-            text-align: right;
             font-size: 0.7rem;
             opacity: 0.5;
-            color: var(--interface-color);
         }
 
         @media (max-width: 768px) {
-            :root { --spacing: 20px; }
-            .logo { font-size: 1.3rem; }
-            .content-container { padding-top: 20vh; }
+            .grid-container { width: 90vw; height: 60vh; gap: 10px; }
+            .nav-arrow { display: none; }
         }
     </style>
 </head>
@@ -189,6 +210,12 @@
 <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)">&#10216;</div>
 <div class="nav-arrow arrow-next" onclick="moveSlide(1)">&#10217;</div>
 
+<div class="dots-nav" id="dots-container">
+    <div class="dot active" onclick="goToSlide(0)"></div>
+    <div class="dot" onclick="goToSlide(1)"></div>
+    <div class="dot" onclick="goToSlide(2)"></div>
+</div>
+
 <div id="lightbox" onclick="closeLightbox()">
     <img id="lightbox-img" src="" alt="">
 </div>
@@ -196,42 +223,27 @@
 <div class="slider-viewport">
     <div class="horizontal-wrapper" id="slider">
         <article class="series-section active">
-            <div class="content-container">
-                <div class="dots-container">
-                    <div class="dot active" onclick="goToSlide(0)"></div>
-                    <div class="dot" onclick="goToSlide(1)"></div>
-                    <div class="dot" onclick="goToSlide(2)"></div>
-                </div>
-                <div class="item"><img src="assets/A1.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/A2.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/A3.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/A4.webp" loading="lazy"></div>
+            <div class="grid-container">
+                <div class="grid-item"><img src="assets/A1.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/A2.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/A3.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/A4.webp" onclick="openLightbox(this.src)"></div>
             </div>
         </article>
         <article class="series-section">
-            <div class="content-container">
-                <div class="dots-container">
-                    <div class="dot" onclick="goToSlide(0)"></div>
-                    <div class="dot active" onclick="goToSlide(1)"></div>
-                    <div class="dot" onclick="goToSlide(2)"></div>
-                </div>
-                <div class="item"><img src="assets/B1.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/B2.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/B3.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/B4.webp" loading="lazy"></div>
+            <div class="grid-container">
+                <div class="grid-item"><img src="assets/B1.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/B2.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/B3.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/B4.webp" onclick="openLightbox(this.src)"></div>
             </div>
         </article>
         <article class="series-section">
-            <div class="content-container">
-                <div class="dots-container">
-                    <div class="dot" onclick="goToSlide(0)"></div>
-                    <div class="dot" onclick="goToSlide(1)"></div>
-                    <div class="dot active" onclick="goToSlide(2)"></div>
-                </div>
-                <div class="item"><img src="assets/C1.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/C2.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/C3.webp" loading="lazy"></div>
-                <div class="item"><img src="assets/C4.webp" loading="lazy"></div>
+            <div class="grid-container">
+                <div class="grid-item"><img src="assets/C1.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/C2.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/C3.webp" onclick="openLightbox(this.src)"></div>
+                <div class="grid-item"><img src="assets/C4.webp" onclick="openLightbox(this.src)"></div>
             </div>
         </article>
     </div>
@@ -247,25 +259,18 @@ const STATE = { currentSlide: 0, slideCount: 3 };
 const DOM = {
     slider: document.getElementById('slider'),
     sections: document.querySelectorAll('.series-section'),
+    dots: document.querySelectorAll('.dot'),
     lightbox: document.getElementById('lightbox'),
     lightboxImg: document.getElementById('lightbox-img'),
-    email: document.getElementById('email-text'),
-    dots: document.querySelectorAll('.dots-container')
+    email: document.getElementById('email-text')
 };
 
 function toggleEmail() { DOM.email.classList.toggle('show'); }
 
 function updateSlider() {
     DOM.slider.style.transform = `translateX(-${STATE.currentSlide * 100}vw)`;
-    DOM.sections.forEach((s, i) => {
-        s.classList.toggle('active', i === STATE.currentSlide);
-        if (i === STATE.currentSlide) s.scrollTo({ top: 0 });
-    });
-    DOM.dots.forEach(container => {
-        container.querySelectorAll('.dot').forEach((dot, i) => {
-            dot.classList.toggle('active', i === STATE.currentSlide);
-        });
-    });
+    DOM.sections.forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
+    DOM.dots.forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
 }
 
 function moveSlide(d) { 
@@ -275,19 +280,17 @@ function moveSlide(d) {
 
 function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
 
-document.querySelectorAll('.item img').forEach(img => {
-    img.addEventListener('click', () => {
-        DOM.lightboxImg.src = img.src;
-        DOM.lightbox.style.display = 'flex';
-        setTimeout(() => DOM.lightbox.classList.add('show'), 10);
-    });
-});
+function openLightbox(src) {
+    DOM.lightboxImg.src = src;
+    DOM.lightbox.style.display = 'flex';
+    setTimeout(() => DOM.lightbox.classList.add('show'), 10);
+}
 
 function closeLightbox() {
     DOM.lightbox.classList.remove('show');
     setTimeout(() => {
         DOM.lightbox.style.display = 'none';
-        DOM.lightboxImg.src = ''; 
+        DOM.lightboxImg.src = '';
     }, 400);
 }
 
