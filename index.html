@@ -34,33 +34,24 @@
             z-index: -2;
         }
 
-        /* 왼쪽 상단 메뉴: 로고와 컨택 사이 간격 미세 조정 */
+        /* 왼쪽 상단 메뉴: 이름과 컨택 간격 미세 조정 반영 */
         nav {
             position: fixed; top: var(--spacing); left: var(--spacing);
             display: flex; flex-direction: column; align-items: flex-start;
             z-index: 1000;
         }
         .logo { 
-            font-weight: 300; 
-            font-size: 1.6rem; 
-            letter-spacing: 0.1em; 
-            margin-bottom: 8px; /* 2px에서 8px로 아주 살짝 늘림 */
+            font-weight: 300; font-size: 1.6rem; letter-spacing: 0.1em; 
+            margin-bottom: 8px; /* 요청하신 대로 살짝 내림 */
             line-height: 1; 
         }
         .contact-trigger { 
-            cursor: pointer; 
-            font-size: 0.7rem; 
-            letter-spacing: 0.2em; 
-            text-transform: uppercase; 
-            opacity: 0.6; 
+            cursor: pointer; font-size: 0.7rem; letter-spacing: 0.2em; 
+            text-transform: uppercase; opacity: 0.6; 
         }
         #email-text { 
-            display: block; 
-            margin-top: 6px; 
-            font-size: 0.7rem; 
-            opacity: 0; 
-            visibility: hidden; 
-            transition: 0.4s; 
+            display: block; margin-top: 6px; font-size: 0.7rem; 
+            opacity: 0; visibility: hidden; transition: 0.4s; 
         }
         #email-text.show { opacity: 1; visibility: visible; }
 
@@ -75,22 +66,12 @@
         .series-section.active { opacity: 1; }
 
         .masonry-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: var(--photo-gap);
-            width: 70vw;
-            max-width: var(--container-max-width);
-            margin: 0 auto;
-            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            gap: var(--photo-gap); width: 70vw; max-width: var(--container-max-width);
+            margin: 0 auto; position: relative;
         }
 
-        .masonry-col {
-            display: flex;
-            flex-direction: column;
-            gap: var(--photo-gap);
-            flex: 1;
-        }
+        .masonry-col { display: flex; flex-direction: column; gap: var(--photo-gap); flex: 1; }
 
         .photo-item { width: 100%; cursor: zoom-in; display: flex; justify-content: center; }
         .photo-item img {
@@ -98,7 +79,7 @@
             transition: transform 0.6s var(--transition-timing);
         }
 
-        /* 세련된 얇은 화살표 */
+        /* 세련된 얇은 화살표 및 간격 확장 반영 */
         .nav-arrow {
             position: absolute; top: 50%; width: 50px; height: 50px;
             cursor: pointer; z-index: 2000; opacity: 0.15;
@@ -167,17 +148,49 @@
                 <div class="nav-arrow arrow-next" onclick="moveSlide(1)"></div>
             </div>
         </article>
-        </div>
+
+        <article class="series-section">
+            <div class="masonry-container">
+                <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)"></div>
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/B1.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/B2.webp" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/B3.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/B4.webp" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="nav-arrow arrow-next" onclick="moveSlide(1)"></div>
+            </div>
+        </article>
+
+        <article class="series-section">
+            <div class="masonry-container">
+                <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)"></div>
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/C1.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/C2.webp" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/C3.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/C4.webp" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="nav-arrow arrow-next" onclick="moveSlide(1)"></div>
+            </div>
+        </article>
+    </div>
 </div>
 
 <div class="dots-nav">
     <div class="dot active" onclick="goToSlide(0)"></div>
+    <div class="dot" onclick="goToSlide(1)"></div>
+    <div class="dot" onclick="goToSlide(2)"></div>
 </div>
 
 <footer><p>© 2026 JUNG DAUN.</p></footer>
 
 <script>
-const STATE = { currentSlide: 0, slideCount: 1 };
+const STATE = { currentSlide: 0, slideCount: 3 };
 const DOM = {
     slider: document.getElementById('slider'),
     sections: document.querySelectorAll('.series-section'),
