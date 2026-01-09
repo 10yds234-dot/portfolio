@@ -9,7 +9,7 @@
         :root {
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
-            --spacing: 30px; /* 모서리에 더 붙이기 위해 값을 60에서 30으로 줄임 */
+            --spacing: 30px; 
             --photo-max-width: 850px;
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
@@ -43,7 +43,7 @@
             z-index: -1;
         }
 
-        /* 내비게이션: 모서리에 바짝 밀착 */
+        /* 내비게이션 배치 */
         nav {
             position: fixed;
             top: var(--spacing);
@@ -59,23 +59,26 @@
             font-size: 1.8rem; 
             letter-spacing: 0.1em; 
             color: var(--interface-color);
-            margin-bottom: 4px; /* 이름과 Contact 사이를 아주 가깝게 */
+            /* 이름과 아래 요소 사이 간격 확보 */
+            margin-bottom: 30px; 
             line-height: 1;
         }
 
         .contact-trigger { 
             cursor: pointer; 
-            font-size: 0.75rem; /* 조금 더 작게 조절 */
+            font-size: 0.75rem;
             letter-spacing: 0.2em; 
             text-transform: uppercase; 
             font-weight: 300; 
             color: var(--interface-color);
             opacity: 0.7;
+            transition: opacity 0.3s;
         }
+        .contact-trigger:hover { opacity: 1; }
         
         #email-text {
             display: block;
-            margin-top: 5px;
+            margin-top: 8px;
             font-size: 0.75rem;
             opacity: 0;
             visibility: hidden;
@@ -83,7 +86,7 @@
         }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 슬라이더 구조 */
+        /* 슬라이더 및 콘텐츠 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { 
             display: flex; 
@@ -143,6 +146,7 @@
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
+        /* 내비게이션 화살표 */
         .nav-arrow {
             position: fixed;
             top: 50%;
@@ -170,7 +174,7 @@
 
         @media (max-width: 768px) {
             :root { --spacing: 20px; }
-            .logo { font-size: 1.3rem; }
+            .logo { font-size: 1.3rem; margin-bottom: 20px; }
             .content-container { padding-top: 20vh; }
         }
     </style>
