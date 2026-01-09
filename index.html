@@ -10,7 +10,7 @@
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
             --spacing: 30px; 
-            --grid-gap: 40px; /* 비율이 다를 때 겹쳐 보이지 않게 간격을 넉넉히 조절 */
+            --grid-gap: 15px; /* 사진 사이의 좁은 간격 */
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
@@ -26,6 +26,7 @@
             height: 100%;
         }
 
+        /* 배경 레이어 */
         .bg-fixed {
             position: fixed;
             inset: 0;
@@ -35,6 +36,7 @@
             z-index: -2;
         }
 
+        /* 내비게이션: 이름과 컨택 밀착 */
         nav {
             position: fixed;
             top: var(--spacing);
@@ -46,24 +48,39 @@
         }
 
         .logo { 
-            font-weight: 300; font-size: 1.8rem; letter-spacing: 0.1em; 
-            margin-bottom: 4px; line-height: 1;
+            font-weight: 300; 
+            font-size: 1.8rem; 
+            letter-spacing: 0.1em; 
+            margin-bottom: 4px; 
+            line-height: 1;
         }
 
         .contact-trigger { 
-            cursor: pointer; font-size: 0.75rem; letter-spacing: 0.2em; 
-            text-transform: uppercase; opacity: 0.7;
+            cursor: pointer; 
+            font-size: 0.75rem;
+            letter-spacing: 0.2em; 
+            text-transform: uppercase; 
+            opacity: 0.7;
+            transition: opacity 0.3s;
         }
         
         #email-text {
-            display: block; margin-top: 5px; font-size: 0.75rem;
-            opacity: 0; visibility: hidden; transition: 0.4s;
+            display: block;
+            margin-top: 5px;
+            font-size: 0.75rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.4s;
         }
         #email-text.show { opacity: 1; visibility: visible; }
 
         /* 슬라이더 구조 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
-        .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); }
+        .horizontal-wrapper { 
+            display: flex; 
+            height: 100vh; 
+            transition: transform var(--transition-speed) var(--transition-timing);
+        }
 
         .series-section { 
             flex: 0 0 100vw; 
@@ -76,20 +93,23 @@
         }
         .series-section.active { opacity: 1; }
 
-        /* 그리드: 사진 비율 유지 설정 */
+        /* 가변형 밀착 그리드 컨테이너 */
         .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
             gap: var(--grid-gap);
-            width: 85vw;
-            height: 75vh;
-            max-width: 1400px;
+            width: 90vw;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .grid-item {
-            width: 100%;
-            height: 100%;
+            flex: 0 1 auto;
+            /* 원본 비율을 유지하며 한 화면에 4장이 보이기 위한 크기 제한 */
+            max-width: calc(48% - var(--grid-gap)); 
+            max-height: 42vh; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -97,48 +117,76 @@
         }
 
         .grid-item img {
+            width: auto;
+            height: auto;
             max-width: 100%;
             max-height: 100%;
-            /* 핵심: cover 대신 contain을 사용하여 원본 비율 유지 */
-            object-fit: contain; 
-            transition: transform 0.5s var(--transition-timing);
+            display: block;
+            transition: transform 0.5s ease;
         }
         .grid-item:hover img { transform: scale(1.02); }
 
-        /* 라이트박스 */
+        /* 하단 점 내비게이션 */
+        .dots-nav {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        .dot { 
+            width: 6px; height: 6px; border-radius: 50%; 
+            border: 1px solid var(--interface-color); 
+            cursor: pointer; transition: 0.4s; 
+        }
+        .dot.active { background-color: var(--interface-color); transform: scale(1.3); }
+
+        /* 라이트박스: 확대 시 화면에 딱 맞게 */
         #lightbox {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.98); 
-            display: none; justify-content: center; align-items: center;
-            z-index: 3000; cursor: zoom-out; padding: 40px; opacity: 0; transition: opacity 0.4s;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.98); 
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            cursor: zoom-out;
+            padding: 40px;
+            opacity: 0;
+            transition: opacity 0.4s;
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 네비게이션 요소들 */
-        .dots-nav {
-            position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 15px; z-index: 1000;
-        }
-        .dot { 
-            width: 6px; height: 6px; border-radius: 50%; 
-            border: 1px solid var(--interface-color); cursor: pointer; 
-        }
-        .dot.active { background-color: var(--interface-color); }
-
+        /* 좌우 화살표 */
         .nav-arrow {
-            position: fixed; top: 50%; transform: translateY(-50%);
-            font-size: 2rem; cursor: pointer; z-index: 2000; opacity: 0.3; padding: 20px; color: #fff;
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 2000;
+            opacity: 0.3;
+            padding: 20px;
+            transition: 0.3s;
+            color: #fff;
         }
-        .arrow-prev { left: var(--spacing); }
-        .arrow-next { right: var(--spacing); }
+        .nav-arrow:hover { opacity: 1; }
+        .arrow-prev { left: 20px; }
+        .arrow-next { right: 20px; }
 
         footer {
-            position: fixed; bottom: var(--spacing); right: var(--spacing);
-            font-size: 0.7rem; opacity: 0.5;
+            position: fixed;
+            bottom: var(--spacing);
+            right: var(--spacing);
+            font-size: 0.7rem;
+            opacity: 0.5;
         }
 
         @media (max-width: 768px) {
-            .grid-container { height: 60vh; grid-gap: 20px; }
+            .grid-item { max-width: calc(50% - 10px); max-height: 35vh; }
             .nav-arrow { display: none; }
         }
     </style>
@@ -163,7 +211,7 @@
 </div>
 
 <div id="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" src="">
+    <img id="lightbox-img" src="" alt="">
 </div>
 
 <div class="slider-viewport">
@@ -233,7 +281,10 @@ function openLightbox(src) {
 
 function closeLightbox() {
     DOM.lightbox.classList.remove('show');
-    setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 400);
+    setTimeout(() => {
+        DOM.lightbox.style.display = 'none';
+        DOM.lightboxImg.src = '';
+    }, 400);
 }
 
 document.addEventListener('keydown', e => {
