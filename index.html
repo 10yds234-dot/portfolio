@@ -7,6 +7,7 @@
 
     <style>
         :root {
+            /* 1. 경로 주의: 파일명이 000001.JPG 인지 000001.jpg 인지 꼭 확인하세요! */
             --bg-image: url('assets/000001.JPG'); 
             --navy: #0A192F; 
             --spacing: 80px; 
@@ -18,7 +19,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body, html { 
-            background-color: #000;
+            background-color: #000; /* 기본 배경은 검정 */
             color: var(--navy); 
             font-family: 'Avenir', 'Avenir Next', 'Inter', -apple-system, sans-serif; 
             -webkit-font-smoothing: antialiased; 
@@ -26,20 +27,24 @@
             height: 100%;
         }
 
-        /* 배경 레이어 */
+        /* 2. 배경 설정 보강 (3번 반영) */
         .bg-fixed {
             position: fixed;
             inset: 0;
             background-image: var(--bg-image);
             background-size: cover;
-            background-position: center;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* 배경 고정 */
             z-index: -2;
         }
 
+        /* 3. 배경 투명도 테스트 (2번 반영) */
+        /* 배경이 보이면 0.5~0.8 사이로 숫자를 높여보세요 */
         .bg-dimmer {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.8); 
+            background: rgba(255, 255, 255, 0.3); /* 테스트를 위해 0.3으로 낮춤 */
             z-index: -1;
         }
 
@@ -48,9 +53,9 @@
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 80px var(--spacing) 40px; /* 좌우 여백 적용 */
+            padding: 80px var(--spacing) 40px;
             display: flex;
-            justify-content: space-between; /* 양 끝으로 배치 */
+            justify-content: space-between;
             align-items: flex-start;
             z-index: 1000;
         }
@@ -62,18 +67,9 @@
             text-align: left;
         }
 
-        .contact-container { 
-            text-align: right;
-        }
-
-        .contact-trigger {
-            cursor: pointer;
-            font-size: 0.9rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 300;
-        }
-
+        .contact-container { text-align: right; }
+        .contact-trigger { cursor: pointer; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 300; }
+        
         #email-text {
             display: block;
             margin-top: 10px;
@@ -82,10 +78,8 @@
             visibility: hidden;
             transition: all 0.4s ease;
         }
-
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 슬라이더 구조 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { 
             display: flex; 
@@ -110,7 +104,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 25vh; /* 상단 여백 소폭 조정 */
+            padding-top: 25vh;
         }
 
         .dots-container { display: flex; gap: 12px; margin-bottom: 60px; }
@@ -127,14 +121,8 @@
             justify-content: center;
         }
 
-        .item img {
-            width: 100%;
-            max-height: 85vh;
-            object-fit: contain;
-            display: block;
-        }
+        .item img { width: 100%; max-height: 85vh; object-fit: contain; display: block; }
 
-        /* 라이트박스 */
         #lightbox {
             position: fixed;
             inset: 0;
@@ -150,7 +138,6 @@
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; }
 
-        /* 화살표 내비게이션 */
         .nav-arrow {
             position: fixed;
             top: 50%;
@@ -180,7 +167,6 @@
             :root { --spacing: 24px; }
             .nav-arrow { display: none; }
             nav { padding: 40px var(--spacing); }
-            .logo { font-size: 1.4rem; }
             .content-container { padding-top: 20vh; }
         }
     </style>
@@ -207,7 +193,6 @@
 
 <div class="slider-viewport">
     <div class="horizontal-wrapper" id="slider">
-
         <article class="series-section active">
             <div class="content-container">
                 <div class="dots-container">
@@ -249,7 +234,6 @@
                 <div class="item"><img src="assets/C4.webp" loading="lazy"></div>
             </div>
         </article>
-
     </div>
 </div>
 
@@ -277,7 +261,6 @@ function updateSlider() {
         s.classList.toggle('active', i === STATE.currentSlide);
         if (i === STATE.currentSlide) s.scrollTo({ top: 0 });
     });
-    
     DOM.dots.forEach(container => {
         container.querySelectorAll('.dot').forEach((dot, i) => {
             dot.classList.toggle('active', i === STATE.currentSlide);
@@ -311,6 +294,5 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeLightbox();
 });
 </script>
-
 </body>
 </html>
