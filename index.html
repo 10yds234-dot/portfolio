@@ -122,16 +122,18 @@
             flex: 1;
         }
 
-        .photo-item {
-            width: 100%;
-            cursor: zoom-in;
-        }
-
-        .photo-item img {
+        /* 이미지 스타일 및 호버 효과 */
+        .masonry-col img {
             width: 100%;
             height: auto;
             display: block;
+            cursor: zoom-in;
+            transition: transform 0.6s var(--transition-timing);
             -webkit-backface-visibility: hidden;
+        }
+
+        .masonry-col img:hover {
+            transform: scale(1.02);
         }
 
         .nav-arrow {
@@ -145,6 +147,7 @@
             align-items: center;
             justify-content: center;
             transition: 0.3s;
+            z-index: 2000;
         }
 
         .nav-arrow::before {
@@ -159,10 +162,18 @@
             left: var(--arrow-distance);
             transform: translateY(-50%) rotate(-135deg);
         }
+        .arrow-prev:hover {
+            opacity: 1;
+            transform: translateY(-50%) rotate(-135deg) scale(1.1);
+        }
 
         .arrow-next {
             right: var(--arrow-distance);
             transform: translateY(-50%) rotate(45deg);
+        }
+        .arrow-next:hover {
+            opacity: 1;
+            transform: translateY(-50%) rotate(45deg) scale(1.1);
         }
 
         #lightbox {
@@ -223,34 +234,29 @@
             opacity: 0.4;
         }
 
+        /* 공통 모바일/태블릿 화살표 제거 */
         @media (max-width: 850px) {
             .nav-arrow { display: none; }
         }
 
-        /* ===============================
-           iPad Portrait (세로)
-           =============================== */
+        /* iPad 세로 모드 최적화 */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
             .masonry-container {
                 width: 85vw;
                 flex-direction: column;
                 gap: 24px;
             }
-
             .dots-nav {
                 bottom: 70px;
             }
         }
 
-        /* ===============================
-           iPad Landscape (가로)
-           =============================== */
+        /* iPad 가로 모드 최적화 */
         @media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
             .masonry-container {
                 width: 80vw;
                 max-width: 900px;
             }
-
             :root {
                 --arrow-distance: -90px;
             }
@@ -275,7 +281,6 @@
 <div class="slider-viewport" id="swipe-zone">
     <div class="horizontal-wrapper" id="slider">
 
-        <!-- SERIES A -->
         <article class="series-section active">
             <div class="masonry-container">
                 <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)"></div>
@@ -291,7 +296,36 @@
             </div>
         </article>
 
-        <!-- SERIES B / C 동일 구조 -->
+        <article class="series-section">
+            <div class="masonry-container">
+                <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)"></div>
+                <div class="masonry-col">
+                    <img src="assets/B1.webp" onclick="openLightbox(this.src)">
+                    <img src="assets/B2.webp" onclick="openLightbox(this.src)">
+                </div>
+                <div class="masonry-col">
+                    <img src="assets/B3.webp" onclick="openLightbox(this.src)">
+                    <img src="assets/B4.webp" onclick="openLightbox(this.src)">
+                </div>
+                <div class="nav-arrow arrow-next" onclick="moveSlide(1)"></div>
+            </div>
+        </article>
+
+        <article class="series-section">
+            <div class="masonry-container">
+                <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)"></div>
+                <div class="masonry-col">
+                    <img src="assets/C1.webp" onclick="openLightbox(this.src)">
+                    <img src="assets/C2.webp" onclick="openLightbox(this.src)">
+                </div>
+                <div class="masonry-col">
+                    <img src="assets/C3.webp" onclick="openLightbox(this.src)">
+                    <img src="assets/C4.webp" onclick="openLightbox(this.src)">
+                </div>
+                <div class="nav-arrow arrow-next" onclick="moveSlide(1)"></div>
+            </div>
+        </article>
+
     </div>
 </div>
 
@@ -316,7 +350,8 @@
         lightbox: document.getElementById('lightbox'),
         lightboxImg: document.getElementById('lightbox-img'),
         email: document.getElementById('email-text'),
-        swipeZone: document.getElementById('swipe-zone')
+        swipeZone: document.getElementById('swipe-zone'),
+        allImages: document.querySelectorAll('.masonry-col img')
     };
 
     function toggleEmail() {
@@ -325,6 +360,7 @@
 
     function updateSlider() {
         DOM.slider.style.transform = `translateX(${-STATE.currentSlide * 100}vw)`;
+        DOM.slider.style.webkitTransform = `translateX(${-STATE.currentSlide * 100}vw)`;
         DOM.sections.forEach((s,i)=>s.classList.toggle('active', i===STATE.currentSlide));
         DOM.dots.forEach((d,i)=>d.classList.toggle('active', i===STATE.currentSlide));
     }
@@ -342,14 +378,27 @@
     function openLightbox(src) {
         DOM.lightboxImg.src = src;
         DOM.lightbox.style.display = 'flex';
-        setTimeout(()=>DOM.lightbox.classList.add('show'),10);
+        setTimeout(()=>DOM.lightbox.classList.add('show'), 10);
     }
 
     function closeLightbox() {
         DOM.lightbox.classList.remove('show');
-        setTimeout(()=>DOM.lightbox.style.display='none',500);
+        setTimeout(()=> {
+            DOM.lightbox.style.display = 'none';
+            DOM.lightboxImg.src = '';
+        }, 500);
     }
 
+    // 프리로드 함수
+    function preloadImages() {
+        DOM.allImages.forEach(img => {
+            const pre = new Image();
+            pre.src = img.src;
+        });
+    }
+    window.addEventListener('load', preloadImages);
+
+    // 스와이프 로직
     let startX = 0;
     DOM.swipeZone.addEventListener('touchstart', e=>{
         startX = e.changedTouches[0].screenX;
@@ -359,6 +408,13 @@
         const diff = startX - e.changedTouches[0].screenX;
         if(Math.abs(diff)>50) moveSlide(diff>0?1:-1);
     }, {passive:true});
+
+    // 키보드 지원
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') moveSlide(1);
+        if (e.key === 'ArrowLeft') moveSlide(-1);
+        if (e.key === 'Escape') closeLightbox();
+    });
 </script>
 
 </body>
