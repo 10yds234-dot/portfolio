@@ -35,6 +35,7 @@
             transform: translateZ(0);
         }
 
+        /* 상단 네비게이션 및 펼쳐지는 메뉴 */
         nav { position: fixed; top: var(--spacing); left: var(--spacing); z-index: 2000; }
         .logo { font-size: 1.45rem; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; cursor: pointer; display: inline-block; }
         
@@ -44,12 +45,14 @@
         .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; display: block; }
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
 
+        /* 점 인디케이터 최적화 (클릭 영역 확장) */
         .dots-nav { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); display: flex; z-index: 1000; }
         .dot-wrapper { padding: 15px 10px; cursor: pointer; }
         .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid #fff; opacity: 0.2; transition: 0.4s; pointer-events: none; }
         .dot-wrapper:hover .dot { opacity: 0.6; }
         .dot.active { background-color: #fff; opacity: 0.9; transform: scale(1.2); }
 
+        /* 슬라이더 영역 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; touch-action: pan-y; }
         .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); will-change: transform; transform: translate3d(0, 0, 0); }
         .series-section { flex: 0 0 100vw; width: 100vw; display: flex; justify-content: center; align-items: center; opacity: 0.15; transition: opacity 1.3s ease; }
@@ -66,7 +69,7 @@
         .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); }
         .nav-arrow:hover { opacity: 0.8; }
 
-        /* [수정] 라이트박스 디자인 개선 */
+        /* 라이트박스 */
         #lightbox { 
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); 
             display: none; justify-content: center; align-items: center; 
@@ -74,9 +77,9 @@
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox-img { 
-            max-width: 85%; max-height: 85vh; /* 적당한 크기 조정 */
+            max-width: 85%; max-height: 85vh;
             object-fit: contain; box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            transition: transform 0.4s ease;
+            /* 전환 효과 제거됨 */
         }
 
         /* 라이트박스 내부 화살표 */
@@ -224,9 +227,7 @@
         updateSlider(); 
     }
 
-    /* [신규] 라이트박스 로직 */
     function openLightbox(imgElement) {
-        // 현재 활성화된 섹션 내의 모든 이미지 수집
         const currentSection = DOM.sections[STATE.currentSlide];
         const allImgs = Array.from(currentSection.querySelectorAll('.photo-item img'));
         STATE.lbImages = allImgs.map(img => img.src);
@@ -238,15 +239,10 @@
     }
 
     function changeLightBoxImg(direction, event) {
-        if (event) event.stopPropagation(); // 배경 클릭 이벤트 방지
+        if (event) event.stopPropagation(); 
         STATE.lbCurrentIndex = (STATE.lbCurrentIndex + direction + STATE.lbImages.length) % STATE.lbImages.length;
-        
-        // 부드러운 전환을 위해 투명도 조절
-        DOM.lightboxImg.style.opacity = 0;
-        setTimeout(() => {
-            DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
-            DOM.lightboxImg.style.opacity = 1;
-        }, 150);
+        // 즉각 전환 (효과 없음)
+        DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
     }
 
     function closeLightbox() { 
@@ -254,7 +250,6 @@
         setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500); 
     }
 
-    // 터치 및 키보드 이벤트
     let touchStartX = 0;
     DOM.swipeZone.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
     DOM.swipeZone.addEventListener('touchend', e => {
