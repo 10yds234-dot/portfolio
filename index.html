@@ -17,10 +17,10 @@
             --photo-gap: 20px; 
             --container-max-width: 650px; 
             --arrow-distance: -150px; 
-            /* [수정] 전환 시간: 1.8s -> 1.4s로 소폭 단축 */
-            --transition-speed: 1.4s; 
-            /* [수정] 곡선: 초반에 더 빠르게 반응하는 커브로 변경 */
-            --transition-timing: cubic-bezier(0.23, 1, 0.32, 1);
+            /* [수정] 1.4s에서 아주 조금만 더 여유 있게 1.55s로 설정 */
+            --transition-speed: 1.55s; 
+            /* [수정] 곡선의 탄력을 유지하되 조금 더 우아하게 (Ease-Out-Quart 계열) */
+            --transition-timing: cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
@@ -55,7 +55,8 @@
 
         .series-section { 
             flex: 0 0 100vw; width: 100vw; display: flex; justify-content: center; align-items: center; 
-            opacity: 0.15; transition: opacity 1.2s ease; 
+            /* 페이드 효과도 슬라이드 속도에 맞춰 자연스럽게 조정 */
+            opacity: 0.15; transition: opacity 1.3s ease; 
         }
         .series-section.active { opacity: 1; }
 
@@ -80,7 +81,6 @@
 
         #lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.98); display: none; justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; opacity: 0; transition: opacity 0.5s; padding: 5vh; }
         #lightbox.show { display: flex; opacity: 1; }
-        #lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; }
 
         footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.6rem; opacity: 0.3; }
 
@@ -175,8 +175,8 @@
         DOM.sections.forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
         DOM.dots.forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
         
-        // [수정] 이동 시간(1.4s)에 맞춰 클릭 차단 시간 조정
-        setTimeout(() => { STATE.isMoving = false; }, 1400);
+        // [수정] 1.55s 시간차에 맞춰 중복 클릭 방지
+        setTimeout(() => { STATE.isMoving = false; }, 1550);
     }
 
     function moveSlide(d) { 
@@ -204,6 +204,7 @@
         setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500); 
     }
 
+    // 간단한 프리로드 (렉 방지용 브라우저 캐싱)
     window.addEventListener('load', () => {
         DOM.sections.forEach(section => {
             const imgs = section.querySelectorAll('img');
