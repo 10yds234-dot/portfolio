@@ -34,7 +34,6 @@
             z-index: -2;
         }
 
-        /* 왼쪽 상단 메뉴: 이름과 컨택 간격 미세 조정 반영 */
         nav {
             position: fixed; top: var(--spacing); left: var(--spacing);
             display: flex; flex-direction: column; align-items: flex-start;
@@ -42,7 +41,7 @@
         }
         .logo { 
             font-weight: 300; font-size: 1.6rem; letter-spacing: 0.1em; 
-            margin-bottom: 8px; /* 요청하신 대로 살짝 내림 */
+            margin-bottom: 8px; 
             line-height: 1; 
         }
         .contact-trigger { 
@@ -79,22 +78,29 @@
             transition: transform 0.6s var(--transition-timing);
         }
 
-        /* 세련된 얇은 화살표 및 간격 확장 반영 */
+        /* 화살표: 기본 상태의 시인성 강화 */
         .nav-arrow {
             position: absolute; top: 50%; width: 50px; height: 50px;
-            cursor: pointer; z-index: 2000; opacity: 0.15;
-            transition: opacity 0.4s, transform 0.4s;
+            cursor: pointer; z-index: 2000; 
+            opacity: 0.45; /* 0.15에서 0.45로 상향하여 평상시에도 잘 보이게 함 */
+            transition: opacity 0.3s, transform 0.3s;
             display: flex; align-items: center; justify-content: center;
         }
-        .nav-arrow:hover { opacity: 0.9; }
+        .nav-arrow:hover { 
+            opacity: 1; 
+            transform: translateY(-50%) scale(1.15); /* 호버 시 약간 커지는 효과 추가 */
+        }
         .nav-arrow::before {
-            content: ''; width: 11px; height: 11px;
-            border-top: 1px solid var(--interface-color);
-            border-right: 1px solid var(--interface-color);
+            content: ''; width: 12px; height: 12px;
+            border-top: 1.5px solid var(--interface-color); /* 선 두께를 아주 미세하게 보강 */
+            border-right: 1.5px solid var(--interface-color);
             display: block;
         }
         .arrow-prev { left: var(--arrow-distance); transform: translateY(-50%) rotate(-135deg); }
+        .arrow-prev:hover { transform: translateY(-50%) rotate(-135deg) scale(1.15); }
+
         .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); }
+        .arrow-next:hover { transform: translateY(-50%) rotate(45deg) scale(1.15); }
 
         #lightbox {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.96); 
