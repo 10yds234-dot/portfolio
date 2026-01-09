@@ -10,7 +10,7 @@
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
             --spacing: 30px; 
-            --photo-gap: 12px; /* 간격을 좁혀서 더 밀도 있게 */
+            --photo-gap: 12px;
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
@@ -32,7 +32,6 @@
             z-index: -2;
         }
 
-        /* 왼쪽 상단 메뉴 */
         nav {
             position: fixed; top: var(--spacing); left: var(--spacing);
             display: flex; flex-direction: column; align-items: flex-start;
@@ -43,7 +42,6 @@
         #email-text { display: block; margin-top: 4px; font-size: 0.7rem; opacity: 0; visibility: hidden; transition: 0.4s; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 메인 슬라이더 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); }
 
@@ -54,14 +52,14 @@
         }
         .series-section.active { opacity: 1; }
 
-        /* 중앙 밀집형 콤팩트 컨테이너 */
+        /* 중앙 밀집형 그리드 */
         .masonry-container {
             display: flex;
             justify-content: center;
-            align-items: center; /* 세로 중앙 */
+            align-items: center;
             gap: var(--photo-gap);
-            width: 70vw; /* 너비를 줄임 */
-            max-width: 650px; /* 아주 작고 콤팩트하게 모음 */
+            width: 70vw;
+            max-width: 650px;
             margin: 0 auto;
         }
 
@@ -77,11 +75,8 @@
             cursor: zoom-in;
             display: flex;
             justify-content: center;
-            filter: grayscale(20%); /* 살짝 차분한 톤 */
             transition: filter 0.4s ease;
         }
-        .photo-item:hover { filter: grayscale(0%); }
-
         .photo-item img {
             width: 100%;
             height: auto;
@@ -90,7 +85,24 @@
         }
         .photo-item:hover img { transform: scale(1.015); }
 
-        /* 하단 도트 */
+        /* 라이트박스: 사진이 작게 보이도록 수정 */
+        #lightbox {
+            position: fixed; inset: 0; 
+            background: rgba(0, 0, 0, 0.96); 
+            display: none; justify-content: center; align-items: center;
+            z-index: 3000; cursor: zoom-out; 
+            opacity: 0; transition: opacity 0.5s;
+            /* 여백을 대폭 늘려 사진이 작게 느껴지도록 설정 */
+            padding: 15vh 15vw; 
+        }
+        #lightbox.show { display: flex; opacity: 1; }
+        #lightbox img { 
+            max-width: 80%; /* 전체 화면의 80%까지만 차지 */
+            max-height: 80%; 
+            object-fit: contain; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); /* 미세한 그림자로 깊이감 부여 */
+        }
+
         .dots-nav {
             position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
             display: flex; gap: 12px; z-index: 1000;
@@ -98,16 +110,6 @@
         .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; opacity: 0.5; transition: 0.4s; }
         .dot.active { background-color: var(--interface-color); opacity: 1; transform: scale(1.2); }
 
-        /* 라이트박스 */
-        #lightbox {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.96); 
-            display: none; justify-content: center; align-items: center;
-            z-index: 3000; cursor: zoom-out; padding: 60px; opacity: 0; transition: opacity 0.5s;
-        }
-        #lightbox.show { display: flex; opacity: 1; }
-        #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-        /* 화살표 */
         .nav-arrow { position: fixed; top: 50%; transform: translateY(-50%); font-size: 1.5rem; cursor: pointer; z-index: 2000; opacity: 0.2; padding: 30px; color: #fff; transition: 0.3s; }
         .nav-arrow:hover { opacity: 0.8; }
         .arrow-prev { left: 10px; }
@@ -117,7 +119,8 @@
 
         @media (max-width: 768px) {
             .masonry-container { width: 85vw; max-width: 450px; }
-            .nav-arrow { display: none; }
+            #lightbox { padding: 10vh 5vw; } /* 모바일은 조금 더 확보 */
+            #lightbox img { max-width: 90%; max-height: 90%; }
         }
     </style>
 </head>
@@ -158,7 +161,6 @@
                 </div>
             </div>
         </article>
-
         <article class="series-section">
             <div class="masonry-container">
                 <div class="masonry-col">
@@ -171,7 +173,6 @@
                 </div>
             </div>
         </article>
-
         <article class="series-section">
             <div class="masonry-container">
                 <div class="masonry-col">
