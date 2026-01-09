@@ -35,7 +35,7 @@
             transform: translateZ(0);
         }
 
-        /* [PC 기본] 네비게이션: 수직 구조 및 비율 최적화 */
+        /* [PC 기본] 네비게이션 */
         nav { 
             position: fixed; top: var(--spacing); left: var(--spacing); 
             z-index: 2000; display: block;
@@ -53,7 +53,6 @@
             opacity: 0; margin-top: 0;
         }
 
-        /* ABOUT 위치를 로고에서 더 아래로 내려 비율 조정 */
         .menu-container.show { 
             max-height: 600px; opacity: 1; margin-top: 40px; 
         }
@@ -259,8 +258,12 @@
         setTimeout(() => DOM.lightbox.classList.add('show'), 10);
     }
 
+    /* 수정 포인트: preventDefault() 적용 */
     function changeLightBoxImg(direction, event) {
-        if (event) event.stopPropagation(); // 화살표 클릭 시 닫히지 않도록 방지
+        if (event) {
+            event.preventDefault(); // 더블클릭 하이라이트 방지
+            event.stopPropagation(); // 라이트박스 닫힘 방지
+        }
         STATE.lbCurrentIndex = (STATE.lbCurrentIndex + direction + STATE.lbImages.length) % STATE.lbImages.length;
         DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
     }
