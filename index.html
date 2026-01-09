@@ -17,10 +17,10 @@
             --photo-gap: 20px; 
             --container-max-width: 650px; 
             --arrow-distance: -150px; 
-            /* [수정] 속도를 1.2s -> 1.8s로 늦춤 */
-            --transition-speed: 1.8s; 
-            /* [수정] 가속도를 더 부드럽고 우아하게 (Quart 커브) */
-            --transition-timing: cubic-bezier(0.77, 0, 0.175, 1);
+            /* [수정] 전환 시간: 1.8s -> 1.4s로 소폭 단축 */
+            --transition-speed: 1.4s; 
+            /* [수정] 곡선: 초반에 더 빠르게 반응하는 커브로 변경 */
+            --transition-timing: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
@@ -41,7 +41,7 @@
         .logo { font-size: 1.45rem; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; }
         .contact-trigger { cursor: pointer; font-size: 0.68rem; opacity: 0.4; margin-top: 14px; text-transform: uppercase; transition: opacity 0.3s; }
         .contact-trigger:hover { opacity: 1; }
-        #email-text { display: block; margin-top: 10px; font-size: 0.68rem; opacity: 0; visibility: hidden; transition: 0.6s; }
+        #email-text { display: block; margin-top: 10px; font-size: 0.68rem; opacity: 0; visibility: hidden; transition: 0.5s; }
         #email-text.show { opacity: 0.8; visibility: visible; }
 
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; touch-action: pan-y; }
@@ -55,8 +55,7 @@
 
         .series-section { 
             flex: 0 0 100vw; width: 100vw; display: flex; justify-content: center; align-items: center; 
-            /* 페이드 효과도 속도에 맞춰 약간 더 부드럽게 */
-            opacity: 0.1; transition: opacity var(--transition-speed) ease; 
+            opacity: 0.15; transition: opacity 1.2s ease; 
         }
         .series-section.active { opacity: 1; }
 
@@ -176,8 +175,8 @@
         DOM.sections.forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
         DOM.dots.forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
         
-        // [수정] 이동 시간(1.8s)만큼 클릭 방지
-        setTimeout(() => { STATE.isMoving = false; }, 1800);
+        // [수정] 이동 시간(1.4s)에 맞춰 클릭 차단 시간 조정
+        setTimeout(() => { STATE.isMoving = false; }, 1400);
     }
 
     function moveSlide(d) { 
@@ -205,7 +204,6 @@
         setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500); 
     }
 
-    // 간단한 프리로드
     window.addEventListener('load', () => {
         DOM.sections.forEach(section => {
             const imgs = section.querySelectorAll('img');
