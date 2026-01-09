@@ -39,22 +39,13 @@
             display: flex; flex-direction: column; align-items: flex-start;
             z-index: 1000;
         }
-        .logo { 
-            font-weight: 300; font-size: 1.6rem; letter-spacing: 0.1em; 
-            margin-bottom: 8px; 
-            line-height: 1; 
-        }
-        .contact-trigger { 
-            cursor: pointer; font-size: 0.7rem; letter-spacing: 0.2em; 
-            text-transform: uppercase; opacity: 0.6; 
-        }
-        #email-text { 
-            display: block; margin-top: 6px; font-size: 0.7rem; 
-            opacity: 0; visibility: hidden; transition: 0.4s; 
-        }
+        .logo { font-weight: 300; font-size: 1.6rem; letter-spacing: 0.1em; margin-bottom: 8px; line-height: 1; }
+        .contact-trigger { cursor: pointer; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+        #email-text { display: block; margin-top: 6px; font-size: 0.7rem; opacity: 0; visibility: hidden; transition: 0.4s; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
+        /* 슬라이더 영역 */
+        .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; touch-action: pan-y; }
         .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); }
 
         .series-section { 
@@ -78,29 +69,19 @@
             transition: transform 0.6s var(--transition-timing);
         }
 
-        /* 화살표: 기본 상태의 시인성 강화 */
         .nav-arrow {
             position: absolute; top: 50%; width: 50px; height: 50px;
-            cursor: pointer; z-index: 2000; 
-            opacity: 0.45; /* 0.15에서 0.45로 상향하여 평상시에도 잘 보이게 함 */
-            transition: opacity 0.3s, transform 0.3s;
-            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 2000; opacity: 0.45;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center;
         }
-        .nav-arrow:hover { 
-            opacity: 1; 
-            transform: translateY(-50%) scale(1.15); /* 호버 시 약간 커지는 효과 추가 */
-        }
+        .nav-arrow:hover { opacity: 1; transform: translateY(-50%) scale(1.15); }
         .nav-arrow::before {
             content: ''; width: 12px; height: 12px;
-            border-top: 1.5px solid var(--interface-color); /* 선 두께를 아주 미세하게 보강 */
-            border-right: 1.5px solid var(--interface-color);
+            border-top: 1.5px solid var(--interface-color); border-right: 1.5px solid var(--interface-color);
             display: block;
         }
         .arrow-prev { left: var(--arrow-distance); transform: translateY(-50%) rotate(-135deg); }
-        .arrow-prev:hover { transform: translateY(-50%) rotate(-135deg) scale(1.15); }
-
         .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); }
-        .arrow-next:hover { transform: translateY(-50%) rotate(45deg) scale(1.15); }
 
         #lightbox {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.96); 
@@ -138,7 +119,7 @@
     <img id="lightbox-img" src="">
 </div>
 
-<div class="slider-viewport">
+<div class="slider-viewport" id="swipe-zone">
     <div class="horizontal-wrapper" id="slider">
         <article class="series-section active">
             <div class="masonry-container">
@@ -203,7 +184,8 @@ const DOM = {
     dots: document.querySelectorAll('.dot'),
     lightbox: document.getElementById('lightbox'),
     lightboxImg: document.getElementById('lightbox-img'),
-    email: document.getElementById('email-text')
+    email: document.getElementById('email-text'),
+    swipeZone: document.getElementById('swipe-zone')
 };
 
 function toggleEmail() { DOM.email.classList.toggle('show'); }
@@ -216,6 +198,15 @@ function moveSlide(d) { STATE.currentSlide = (STATE.currentSlide + d + STATE.sli
 function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
 function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.style.display = 'flex'; setTimeout(() => DOM.lightbox.classList.add('show'), 10); }
 function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 500); }
+
+/* 모바일 스와이프 기능 적용 */
+let touchStartX = 0;
+DOM.swipeZone.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+DOM.swipeZone.addEventListener('touchend', e => {
+    let touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 60) moveSlide(1);  // 왼쪽으로 밀면 다음 사진
+    if (touchEndX - touchStartX > 60) moveSlide(-1); // 오른쪽으로 밀면 이전 사진
+}, {passive: true});
 
 document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') moveSlide(1);
