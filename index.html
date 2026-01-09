@@ -35,10 +35,10 @@
             transform: translateZ(0);
         }
 
-        /* [PC 기본] 상단 네비게이션: 수직 구조 */
+        /* [PC] 상단 네비게이션: 수직 구조 */
         nav { 
             position: fixed; top: var(--spacing); left: var(--spacing); 
-            z-index: 2000; display: block; /* PC는 위아래로 나열 */
+            z-index: 2000; display: block;
         }
 
         .logo { 
@@ -53,12 +53,17 @@
         }
 
         .menu-container.show { 
-            max-height: 500px; opacity: 1; margin-top: 15px; 
+            max-height: 600px; opacity: 1; margin-top: 15px; 
         }
 
         .menu-item { margin-bottom: 40px; }
         .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; display: block; }
-        .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
+        
+        /* 1. PC에서 About 설명 줄바꿈 방지 */
+        .menu-content { 
+            font-size: 0.85rem; line-height: 1.6; opacity: 0.9; 
+            white-space: nowrap; 
+        }
 
         /* 점 인디케이터 */
         .dots-nav { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); display: flex; z-index: 1000; }
@@ -102,11 +107,20 @@
 
         footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.6rem; opacity: 0.3; }
 
-        /* [모바일] 반응형 전용 스타일 */
+        /* [모바일] 반응형 */
         @media (max-width: 850px) { 
+            /* 2. 모바일 배경화면 90도 회전 */
+            .bg-fixed {
+                width: 100vh;
+                height: 100vw;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(90deg);
+                object-fit: cover;
+            }
+
             .nav-arrow, .lb-arrow { display: none !important; } 
             
-            /* 모바일에서만 가로 배치로 변경 */
             nav { 
                 display: flex; 
                 align-items: flex-start; 
@@ -115,23 +129,30 @@
                 left: 20px; 
             }
             .logo { flex-shrink: 0; }
+
+            /* 3. 모바일에서 이름 옆에 배치되되, About과 Contact는 상하로 배치 */
             .menu-container { 
                 display: flex; 
+                flex-direction: column; /* 세로 나열 */
                 gap: 20px; 
                 max-width: 0; 
-                max-height: none; /* PC의 수직 애니메이션 해제 */
+                max-height: none; 
                 opacity: 0;
                 margin-top: 0 !important;
-                white-space: nowrap;
+                white-space: normal; /* 모바일은 줄바꿈 허용 */
                 transition: max-width 0.8s var(--transition-timing), opacity 0.6s;
             }
             .menu-container.show { 
                 max-width: 1000px; 
                 opacity: 1; 
             }
-            .menu-item { margin-bottom: 0; } /* 수직 여백 제거 */
-            .menu-label { font-size: 0.6rem; margin-bottom: 5px; }
-            .menu-content { font-size: 0.75rem; line-height: 1.4; }
+            .menu-item { margin-bottom: 0; }
+            .menu-label { font-size: 0.6rem; margin-bottom: 3px; }
+            .menu-content { 
+                font-size: 0.75rem; 
+                line-height: 1.4; 
+                white-space: normal; /* 모바일은 가로폭 제한을 위해 해제 */
+            }
 
             #lightbox-img { max-width: 95%; }
             .dots-nav { bottom: 30px; }
@@ -147,7 +168,7 @@
     <div id="dropdown-menu" class="menu-container">
         <div class="menu-item">
             <span class="menu-label">About</span>
-            <div class="menu-content">Shooting and showcasing photos,<br>based in Seoul.</div>
+            <div class="menu-content">Shooting and showcasing photos, based in Seoul.</div>
         </div>
         <div class="menu-item">
             <span class="menu-label">Contact</span>
