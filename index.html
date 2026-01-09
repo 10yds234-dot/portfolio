@@ -9,7 +9,7 @@
         :root {
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
-            --spacing: 30px; /* 모서리에 더 붙이기 위해 값을 60에서 30으로 줄임 */
+            --spacing: 30px; 
             --photo-max-width: 850px;
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
@@ -43,7 +43,7 @@
             z-index: -1;
         }
 
-        /* 내비게이션: 모서리에 바짝 밀착 */
+        /* 내비게이션: 다시 바짝 밀착 */
         nav {
             position: fixed;
             top: var(--spacing);
@@ -59,13 +59,13 @@
             font-size: 1.8rem; 
             letter-spacing: 0.1em; 
             color: var(--interface-color);
-            margin-bottom: 4px; /* 이름과 Contact 사이를 아주 가깝게 */
+            margin-bottom: 4px; /* 다시 밀착 */
             line-height: 1;
         }
 
         .contact-trigger { 
             cursor: pointer; 
-            font-size: 0.75rem; /* 조금 더 작게 조절 */
+            font-size: 0.75rem;
             letter-spacing: 0.2em; 
             text-transform: uppercase; 
             font-weight: 300; 
@@ -83,7 +83,7 @@
         }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 슬라이더 구조 */
+        /* 슬라이더 및 콘텐츠 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { 
             display: flex; 
