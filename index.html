@@ -75,7 +75,6 @@
             cursor: zoom-in;
             display: flex;
             justify-content: center;
-            transition: filter 0.4s ease;
         }
         .photo-item img {
             width: 100%;
@@ -85,22 +84,23 @@
         }
         .photo-item:hover img { transform: scale(1.015); }
 
-        /* 라이트박스: 사진이 작게 보이도록 수정 */
+        /* 라이트박스 수정: 세로 사진 최적화 */
         #lightbox {
             position: fixed; inset: 0; 
             background: rgba(0, 0, 0, 0.96); 
             display: none; justify-content: center; align-items: center;
             z-index: 3000; cursor: zoom-out; 
             opacity: 0; transition: opacity 0.5s;
-            /* 여백을 대폭 늘려 사진이 작게 느껴지도록 설정 */
-            padding: 15vh 15vw; 
+            /* 여백을 8vh로 줄여 세로 사진 높이를 확보 */
+            padding: 8vh 5vw; 
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { 
-            max-width: 80%; /* 전체 화면의 80%까지만 차지 */
-            max-height: 80%; 
+            /* 가로든 세로든 화면의 85% 정도까지만 적절히 커지도록 설정 */
+            max-width: 85%;
+            max-height: 85%; 
             object-fit: contain; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); /* 미세한 그림자로 깊이감 부여 */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
         .dots-nav {
@@ -119,8 +119,7 @@
 
         @media (max-width: 768px) {
             .masonry-container { width: 85vw; max-width: 450px; }
-            #lightbox { padding: 10vh 5vw; } /* 모바일은 조금 더 확보 */
-            #lightbox img { max-width: 90%; max-height: 90%; }
+            #lightbox { padding: 5vh 5vw; }
         }
     </style>
 </head>
