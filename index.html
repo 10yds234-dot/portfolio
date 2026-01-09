@@ -8,8 +8,8 @@
     <style>
         :root {
             --bg-image: url('assets/000001.JPG'); 
-            --interface-color: #FFFFFF; /* 흰색 인터페이스 */
-            --spacing: 80px; 
+            --interface-color: #FFFFFF; 
+            --spacing: 60px; /* 여백을 조금 줄여서 모서리에 가깝게 배치 */
             --photo-max-width: 850px;
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
@@ -26,7 +26,7 @@
             height: 100%;
         }
 
-        /* 배경 레이어 (색상 조절 제거) */
+        /* 배경 레이어 */
         .bg-fixed {
             position: fixed;
             inset: 0;
@@ -37,46 +37,52 @@
             z-index: -2;
         }
 
-        /* 딤머 레이어 투명 처리 */
         .bg-dimmer {
             position: fixed;
             inset: 0;
-            background: transparent; /* 배경색 조절하지 않음 */
+            background: transparent;
             z-index: -1;
         }
 
-        /* 내비게이션 */
+        /* 내비게이션: 왼쪽 상단 정렬 */
         nav {
             position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 80px var(--spacing) 40px;
+            top: var(--spacing);
+            left: var(--spacing);
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            flex-direction: column; /* 세로로 나열 */
+            align-items: flex-start; /* 왼쪽 정렬 */
             z-index: 1000;
         }
 
-        .logo {
-            font-weight: 300;
-            font-size: 1.8rem;
-            letter-spacing: 0.1em;
+        .logo { 
+            font-weight: 300; 
+            font-size: 1.8rem; 
+            letter-spacing: 0.1em; 
             color: var(--interface-color);
+            margin-bottom: 12px; /* 이름과 Contact 사이 간격 */
         }
 
-        .contact-trigger {
-            cursor: pointer;
-            font-size: 0.9rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 300;
-            color: var(--interface-color);
+        .contact-container {
+            text-align: left;
         }
+
+        .contact-trigger { 
+            cursor: pointer; 
+            font-size: 0.8rem; /* Contact 크기를 살짝 줄여 이름과 대비 */
+            letter-spacing: 0.15em; 
+            text-transform: uppercase; 
+            font-weight: 300; 
+            color: var(--interface-color);
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .contact-trigger:hover { opacity: 1; }
         
         #email-text {
             display: block;
-            margin-top: 10px;
-            font-size: 0.85rem;
+            margin-top: 6px;
+            font-size: 0.8rem;
             opacity: 0;
             visibility: hidden;
             transition: all 0.4s ease;
@@ -97,7 +103,7 @@
             height: 100vh; 
             overflow-y: auto; 
             scrollbar-width: none;
-            opacity: 0.4; /* 비활성 슬라이드 투명도 */
+            opacity: 0.4;
             transition: opacity 1s ease;
         }
         .series-section.active { opacity: 1; }
@@ -107,19 +113,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 25vh;
+            padding-top: 30vh; /* 메뉴와 겹치지 않게 패딩 확보 */
         }
 
-        /* 흰색 점(Dots) */
         .dots-container { display: flex; gap: 12px; margin-bottom: 60px; }
-        .dot { 
-            width: 8px; 
-            height: 8px; 
-            border-radius: 50%; 
-            border: 1px solid var(--interface-color); 
-            cursor: pointer; 
-            transition: 0.4s; 
-        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; transition: 0.4s; }
         .dot.active { background-color: var(--interface-color); }
 
         .item {
@@ -144,9 +142,13 @@
             align-items: center;
             z-index: 3000;
             cursor: zoom-out;
+            padding: 40px;
+            opacity: 0;
+            transition: opacity 0.4s;
         }
+        #lightbox.show { display: flex; opacity: 1; }
+        #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 흰색 화살표 */
         .nav-arrow {
             position: fixed;
             top: 50%;
@@ -164,7 +166,6 @@
         .arrow-prev { left: 30px; }
         .arrow-next { right: 30px; }
 
-        /* 흰색 푸터 */
         footer {
             position: fixed;
             bottom: 40px;
@@ -176,9 +177,10 @@
         }
 
         @media (max-width: 768px) {
-            :root { --spacing: 24px; }
-            nav { padding: 40px var(--spacing); }
-            .content-container { padding-top: 20vh; }
+            :root { --spacing: 30px; }
+            nav { top: 30px; left: 30px; }
+            .logo { font-size: 1.4rem; }
+            .content-container { padding-top: 25vh; }
         }
     </style>
 </head>
@@ -199,7 +201,7 @@
 <div class="nav-arrow arrow-next" onclick="moveSlide(1)">&#10217;</div>
 
 <div id="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" alt="">
+    <img id="lightbox-img" src="" alt="">
 </div>
 
 <div class="slider-viewport">
@@ -254,7 +256,6 @@
 </footer>
 
 <script>
-// 기존 슬라이더 & 라이트박스 스크립트 동일 유지
 const STATE = { currentSlide: 0, slideCount: 3 };
 const DOM = {
     slider: document.getElementById('slider'),
@@ -297,7 +298,10 @@ document.querySelectorAll('.item img').forEach(img => {
 
 function closeLightbox() {
     DOM.lightbox.classList.remove('show');
-    setTimeout(() => DOM.lightbox.style.display = 'none', 400);
+    setTimeout(() => {
+        DOM.lightbox.style.display = 'none';
+        DOM.lightboxImg.src = ''; 
+    }, 400);
 }
 
 document.addEventListener('keydown', e => {
