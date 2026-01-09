@@ -44,7 +44,6 @@
         #email-text { display: block; margin-top: 6px; font-size: 0.7rem; opacity: 0; visibility: hidden; transition: 0.4s; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 슬라이더 영역 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; touch-action: pan-y; }
         .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); }
 
@@ -69,19 +68,39 @@
             transition: transform 0.6s var(--transition-timing);
         }
 
+        /* 화살표: 기본 및 호버 상태 수정 */
         .nav-arrow {
             position: absolute; top: 50%; width: 50px; height: 50px;
             cursor: pointer; z-index: 2000; opacity: 0.45;
-            transition: 0.3s; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.3s, transform 0.3s;
+            display: flex; align-items: center; justify-content: center;
         }
-        .nav-arrow:hover { opacity: 1; transform: translateY(-50%) scale(1.15); }
+        
         .nav-arrow::before {
             content: ''; width: 12px; height: 12px;
             border-top: 1.5px solid var(--interface-color); border-right: 1.5px solid var(--interface-color);
             display: block;
         }
-        .arrow-prev { left: var(--arrow-distance); transform: translateY(-50%) rotate(-135deg); }
-        .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); }
+
+        /* 이전 버튼: 회전 고정 및 호버 시 확대만 적용 */
+        .arrow-prev { 
+            left: var(--arrow-distance); 
+            transform: translateY(-50%) rotate(-135deg); 
+        }
+        .arrow-prev:hover { 
+            opacity: 1;
+            transform: translateY(-50%) rotate(-135deg) scale(1.15); 
+        }
+
+        /* 다음 버튼: 회전 고정 및 호버 시 확대만 적용 */
+        .arrow-next { 
+            right: var(--arrow-distance); 
+            transform: translateY(-50%) rotate(45deg); 
+        }
+        .arrow-next:hover { 
+            opacity: 1;
+            transform: translateY(-50%) rotate(45deg) scale(1.15); 
+        }
 
         #lightbox {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.96); 
@@ -199,13 +218,13 @@ function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
 function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.style.display = 'flex'; setTimeout(() => DOM.lightbox.classList.add('show'), 10); }
 function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 500); }
 
-/* 모바일 스와이프 기능 적용 */
+/* 모바일 스와이프 기능 */
 let touchStartX = 0;
 DOM.swipeZone.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
 DOM.swipeZone.addEventListener('touchend', e => {
     let touchEndX = e.changedTouches[0].screenX;
-    if (touchStartX - touchEndX > 60) moveSlide(1);  // 왼쪽으로 밀면 다음 사진
-    if (touchEndX - touchStartX > 60) moveSlide(-1); // 오른쪽으로 밀면 이전 사진
+    if (touchStartX - touchEndX > 60) moveSlide(1);
+    if (touchEndX - touchStartX > 60) moveSlide(-1);
 }, {passive: true});
 
 document.addEventListener('keydown', e => {
