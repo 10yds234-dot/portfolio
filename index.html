@@ -7,260 +7,96 @@
 
     <style>
         :root {
-            --bg-image: url('assets/000001.webp');
-            --interface-color: #FFFFFF;
-            --spacing: 30px;
-            --photo-gap: 20px;
-            --container-max-width: 650px;
-            --arrow-distance: -150px;
-            --transition-speed: 1.2s;
+            --bg-image: url('assets/000001.webp'); 
+            --interface-color: #FFFFFF; 
+            --spacing: 30px; 
+            --photo-gap: 20px; 
+            --container-max-width: 650px; 
+            --arrow-distance: -150px; 
+            --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
 
+        /* 기본 설정 생략... (이전과 동일) */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-
-        html, body {
-            background: #000;
-            color: var(--interface-color);
-            font-family: 'Avenir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow: hidden;
-            height: 100%;
-            position: fixed;
-            width: 100%;
+        body, html { 
+            background-color: #000; color: var(--interface-color); 
+            font-family: 'Avenir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            overflow: hidden; height: 100%; position: fixed; width: 100%;
         }
 
         .bg-fixed {
-            position: fixed;
-            inset: 0;
-            background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center;
-            z-index: -2;
+            position: fixed; inset: 0; background-image: var(--bg-image);
+            background-size: cover; background-position: center; z-index: -2;
             -webkit-transform: translateZ(0);
         }
 
-        /* ---------- NAV ---------- */
         nav {
-            position: fixed;
-            top: var(--spacing);
-            left: var(--spacing);
-            z-index: 1000;
+            position: fixed; top: var(--spacing); left: var(--spacing);
+            display: flex; flex-direction: column; align-items: flex-start; z-index: 1000;
         }
-
-        .logo {
-            font-weight: 300;
-            font-size: 1.6rem;
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
-        }
-
-        .contact-trigger {
-            cursor: pointer;
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            opacity: 0.6;
-        }
-
-        #email-text {
-            margin-top: 6px;
-            font-size: 0.7rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.4s;
-        }
+        .logo { font-weight: 300; font-size: 1.6rem; letter-spacing: 0.1em; margin-bottom: 8px; line-height: 1; }
+        .contact-trigger { cursor: pointer; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+        #email-text { display: block; margin-top: 6px; font-size: 0.7rem; opacity: 0; visibility: hidden; transition: 0.4s; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* ---------- SLIDER ---------- */
-        .slider-viewport {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            touch-action: pan-y;
-        }
-
-        .horizontal-wrapper {
-            display: flex;
-            height: 100vh;
-            transition: transform var(--transition-speed) var(--transition-timing);
+        .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; touch-action: pan-y; }
+        .horizontal-wrapper { 
+            display: flex; height: 100vh; 
+            transition: transform var(--transition-speed) var(--transition-timing); 
             -webkit-transition: -webkit-transform var(--transition-speed) var(--transition-timing);
         }
 
-        .series-section {
-            flex: 0 0 100vw;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
+        .series-section { flex: 0 0 100vw; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 1s ease; }
         .series-section.active { opacity: 1; }
 
-        /* ---------- MASONRY (DESKTOP 기준) ---------- */
-        .masonry-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* 상단 정렬 유지 */
-            gap: var(--photo-gap);
-            width: 70vw;
-            max-width: var(--container-max-width);
-            margin: 0 auto;
-            position: relative;
-        }
+        .masonry-container { display: flex; justify-content: center; align-items: center; gap: var(--photo-gap); width: 70vw; max-width: var(--container-max-width); margin: 0 auto; position: relative; }
+        .masonry-col { display: flex; flex-direction: column; gap: var(--photo-gap); flex: 1; }
+        .photo-item { width: 100%; cursor: zoom-in; display: flex; justify-content: center; }
+        .photo-item img { width: 100%; height: auto; display: block; transition: transform 0.6s var(--transition-timing); -webkit-backface-visibility: hidden; }
 
-        .masonry-col {
-            display: flex;
-            flex-direction: column;
-            gap: var(--photo-gap);
-            flex: 1;
-        }
+        .nav-arrow { position: absolute; top: 50%; width: 50px; height: 50px; cursor: pointer; z-index: 2000; opacity: 0.45; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .nav-arrow::before { content: ''; width: 12px; height: 12px; border-top: 1.5px solid var(--interface-color); border-right: 1.5px solid var(--interface-color); display: block; }
+        .arrow-prev { left: var(--arrow-distance); transform: translateY(-50%) rotate(-135deg); -webkit-transform: translateY(-50%) rotate(-135deg); }
+        .arrow-prev:hover { opacity: 1; transform: translateY(-50%) rotate(-135deg) scale(1.15); -webkit-transform: translateY(-50%) rotate(-135deg) scale(1.15); }
+        .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); -webkit-transform: translateY(-50%) rotate(45deg); }
+        .arrow-next:hover { opacity: 1; transform: translateY(-50%) rotate(45deg) scale(1.15); -webkit-transform: translateY(-50%) rotate(45deg) scale(1.15); }
 
-        .photo-item {
-            width: 100%;
-            cursor: zoom-in;
-            overflow: hidden;
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.6s var(--transition-timing);
-            -webkit-backface-visibility: hidden;
-        }
-
-        /* 데스크탑에서만 이미지 호버 효과 */
-        @media (hover: hover) {
-            .photo-item img:hover { transform: scale(1.03); }
-        }
-
-        /* ---------- ARROWS ---------- */
-        .nav-arrow {
-            position: absolute;
-            top: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            opacity: 0.45;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .nav-arrow::before {
-            content: '';
-            width: 12px;
-            height: 12px;
-            border-top: 1.5px solid var(--interface-color);
-            border-right: 1.5px solid var(--interface-color);
-        }
-
-        .arrow-prev {
-            left: var(--arrow-distance);
-            transform: translateY(-50%) rotate(-135deg);
-        }
-        .arrow-next {
-            right: var(--arrow-distance);
-            transform: translateY(-50%) rotate(45deg);
-        }
-
-        /* ---------- LIGHTBOX ---------- */
-        #lightbox {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.96);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            cursor: zoom-out;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
+        #lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.96); display: none; justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; opacity: 0; transition: opacity 0.5s; padding: 8vh 5vw; }
         #lightbox.show { display: flex; opacity: 1; }
+        #lightbox img { max-width: 85%; max-height: 85%; object-fit: contain; -webkit-user-select: none; }
 
-        #lightbox img {
-            max-width: 85%;
-            max-height: 85%;
-            object-fit: contain;
-            -webkit-user-select: none;
-        }
-
-        /* ---------- DOTS ---------- */
+        /* --- 인디케이터 수정 부분 --- */
         .dots-nav {
-            position: fixed;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 16px;
-            z-index: 1000;
+            position: fixed; bottom: 50px; left: 50%; 
+            transform: translateX(-50%); -webkit-transform: translateX(-50%);
+            display: flex; gap: 16px; z-index: 1000;
         }
+        .dot { 
+            width: 6px; height: 6px; /* 4px -> 6px로 크기 확대 */
+            border-radius: 50%; 
+            border: 1px solid var(--interface-color); 
+            cursor: pointer; 
+            opacity: 0.3; 
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .dot:hover { opacity: 0.7; }
+        .dot.active { 
+            background-color: var(--interface-color); 
+            opacity: 1; 
+            transform: scale(1.3); /* 활성화 시 미세하게 더 커짐 */
+        }
+        /* ------------------------ */
 
-        .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            border: 1px solid var(--interface-color);
-            cursor: pointer;
-            opacity: 0.3;
-            transition: 0.4s;
-        }
-        .dot.active {
-            background: var(--interface-color);
-            opacity: 1;
-            transform: scale(1.3);
-        }
+        footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.65rem; opacity: 0.4; }
 
-        /* ---------- FOOTER ---------- */
-        footer {
-            position: fixed;
-            bottom: var(--spacing);
-            right: var(--spacing);
-            font-size: 0.65rem;
-            opacity: 0.4;
-        }
-
-        /* ---------- RESPONSIVE ---------- */
-        @media (max-width: 1100px) {
-            :root { --arrow-distance: -80px; }
-        }
-        @media (max-width: 850px) {
-            .nav-arrow { display: none; }
-        }
-
-        /* iPad Portrait (세로) */
-        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
-            .masonry-container {
-                width: 85vw;
-                max-width: none;
-                flex-direction: column;
-                align-items: center;
-                gap: 24px;
-            }
-            .masonry-col { width: 100%; }
-            .dots-nav { bottom: 70px; }
-        }
-
-        /* iPad Landscape (가로) */
-        @media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
-            .masonry-container {
-                width: 80vw;
-                max-width: 900px;
-            }
-            :root { --arrow-distance: -90px; }
-        }
+        @media (max-width: 1100px) { :root { --arrow-distance: -80px; } }
+        @media (max-width: 850px) { .nav-arrow { display: none; } }
     </style>
 </head>
-
 <body>
 
 <div class="bg-fixed"></div>
-
 <nav>
     <div class="logo">JUNG DAUN</div>
     <div class="contact-trigger" onclick="toggleEmail()">Contact</div>
@@ -273,7 +109,6 @@
 
 <div class="slider-viewport" id="swipe-zone">
     <div class="horizontal-wrapper" id="slider">
-
         <article class="series-section active">
             <div class="masonry-container">
                 <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)"></div>
@@ -318,7 +153,6 @@
                 <div class="nav-arrow arrow-next" onclick="moveSlide(1)"></div>
             </div>
         </article>
-
     </div>
 </div>
 
@@ -328,91 +162,51 @@
     <div class="dot" onclick="goToSlide(2)"></div>
 </div>
 
-<footer>© 2026 JUNG DAUN.</footer>
+<footer><p>© 2026 JUNG DAUN.</p></footer>
 
 <script>
-const STATE = {
-    currentSlide: 0,
-    slideCount: document.querySelectorAll('.series-section').length
-};
+    /* 스크립트 부분 동일... */
+    const STATE = { currentSlide: 0, slideCount: 3 };
+    const DOM = {
+        slider: document.getElementById('slider'),
+        sections: document.querySelectorAll('.series-section'),
+        dots: document.querySelectorAll('.dot'),
+        lightbox: document.getElementById('lightbox'),
+        lightboxImg: document.getElementById('lightbox-img'),
+        email: document.getElementById('email-text'),
+        swipeZone: document.getElementById('swipe-zone'),
+        allImages: document.querySelectorAll('.photo-item img')
+    };
 
-const DOM = {
-    slider: document.getElementById('slider'),
-    sections: document.querySelectorAll('.series-section'),
-    dots: document.querySelectorAll('.dot'),
-    lightbox: document.getElementById('lightbox'),
-    lightboxImg: document.getElementById('lightbox-img'),
-    email: document.getElementById('email-text'),
-    swipeZone: document.getElementById('swipe-zone'),
-    allImages: document.querySelectorAll('.photo-item img')
-};
+    function toggleEmail() { DOM.email.classList.toggle('show'); }
+    function updateSlider() {
+        const offset = -STATE.currentSlide * 100;
+        DOM.slider.style.transform = `translateX(${offset}vw)`;
+        DOM.slider.style.webkitTransform = `translateX(${offset}vw)`;
+        DOM.sections.forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
+        DOM.dots.forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
+    }
+    function moveSlide(d) { STATE.currentSlide = (STATE.currentSlide + d + STATE.slideCount) % STATE.slideCount; updateSlider(); }
+    function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
+    function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.style.display = 'flex'; setTimeout(() => DOM.lightbox.classList.add('show'), 10); }
+    function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 500); }
 
-function toggleEmail() {
-    DOM.email.classList.toggle('show');
-}
+    function preloadGallery() { DOM.allImages.forEach(img => { const src = img.getAttribute('src'); if (src) { const preloadImg = new Image(); preloadImg.src = src; } }); }
+    window.addEventListener('load', preloadGallery);
 
-function updateSlider() {
-    const offset = -STATE.currentSlide * 100;
-    DOM.slider.style.transform = `translateX(${offset}vw)`;
-    DOM.slider.style.webkitTransform = `translateX(${offset}vw)`;
-    DOM.sections.forEach((s,i)=>s.classList.toggle('active', i===STATE.currentSlide));
-    DOM.dots.forEach((d,i)=>d.classList.toggle('active', i===STATE.currentSlide));
-}
+    let touchStartX = 0;
+    DOM.swipeZone.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+    DOM.swipeZone.addEventListener('touchend', e => {
+        let touchEndX = e.changedTouches[0].screenX;
+        let diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) moveSlide(diff > 0 ? 1 : -1);
+    }, {passive: true});
 
-function moveSlide(d) {
-    STATE.currentSlide = (STATE.currentSlide + d + STATE.slideCount) % STATE.slideCount;
-    updateSlider();
-}
-
-function goToSlide(i) {
-    STATE.currentSlide = i;
-    updateSlider();
-}
-
-function openLightbox(src) {
-    DOM.lightboxImg.src = src;
-    DOM.lightbox.style.display = 'flex';
-    setTimeout(()=>DOM.lightbox.classList.add('show'), 10);
-}
-
-function closeLightbox() {
-    DOM.lightbox.classList.remove('show');
-    setTimeout(()=> {
-        DOM.lightbox.style.display = 'none';
-        DOM.lightboxImg.src = '';
-    }, 500);
-}
-
-// 프리로드 함수 (미세 조정 제안 반영)
-function preloadGallery() {
-    DOM.allImages.forEach(img => {
-        const src = img.getAttribute('src');
-        if (src) {
-            const pre = new Image();
-            pre.src = src;
-        }
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') moveSlide(1);
+        if (e.key === 'ArrowLeft') moveSlide(-1);
+        if (e.key === 'Escape') closeLightbox();
     });
-}
-window.addEventListener('load', preloadGallery);
-
-// 스와이프 로직
-let touchStartX = 0;
-DOM.swipeZone.addEventListener('touchstart', e=>{
-    touchStartX = e.changedTouches[0].screenX;
-}, {passive:true});
-
-DOM.swipeZone.addEventListener('touchend', e=>{
-    const diff = touchStartX - e.changedTouches[0].screenX;
-    if(Math.abs(diff)>50) moveSlide(diff>0?1:-1);
-}, {passive:true});
-
-// 키보드 방향키 및 ESC 제어
-document.addEventListener('keydown', e=>{
-    if(e.key==='ArrowRight') moveSlide(1);
-    if(e.key==='ArrowLeft') moveSlide(-1);
-    if(e.key==='Escape') closeLightbox();
-});
 </script>
-
 </body>
 </html>
