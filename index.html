@@ -10,7 +10,7 @@
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
             --spacing: 30px; 
-            --grid-gap: 20px; /* 사진 사이 간격 */
+            --grid-gap: 40px; /* 비율이 다를 때 겹쳐 보이지 않게 간격을 넉넉히 조절 */
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
@@ -26,7 +26,6 @@
             height: 100%;
         }
 
-        /* 배경 레이어 */
         .bg-fixed {
             position: fixed;
             inset: 0;
@@ -36,14 +35,6 @@
             z-index: -2;
         }
 
-        .bg-dimmer {
-            position: fixed;
-            inset: 0;
-            background: transparent;
-            z-index: -1;
-        }
-
-        /* 내비게이션: 왼쪽 상단 밀착 */
         nav {
             position: fixed;
             top: var(--spacing);
@@ -55,40 +46,24 @@
         }
 
         .logo { 
-            font-weight: 300; 
-            font-size: 1.8rem; 
-            letter-spacing: 0.1em; 
-            margin-bottom: 4px; 
-            line-height: 1;
+            font-weight: 300; font-size: 1.8rem; letter-spacing: 0.1em; 
+            margin-bottom: 4px; line-height: 1;
         }
 
         .contact-trigger { 
-            cursor: pointer; 
-            font-size: 0.75rem;
-            letter-spacing: 0.2em; 
-            text-transform: uppercase; 
-            opacity: 0.7;
-            transition: opacity 0.3s;
+            cursor: pointer; font-size: 0.75rem; letter-spacing: 0.2em; 
+            text-transform: uppercase; opacity: 0.7;
         }
-        .contact-trigger:hover { opacity: 1; }
         
         #email-text {
-            display: block;
-            margin-top: 5px;
-            font-size: 0.75rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.4s;
+            display: block; margin-top: 5px; font-size: 0.75rem;
+            opacity: 0; visibility: hidden; transition: 0.4s;
         }
         #email-text.show { opacity: 1; visibility: visible; }
 
         /* 슬라이더 구조 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
-        .horizontal-wrapper { 
-            display: flex; 
-            height: 100vh; 
-            transition: transform var(--transition-speed) var(--transition-timing);
-        }
+        .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); }
 
         .series-section { 
             flex: 0 0 100vw; 
@@ -101,97 +76,69 @@
         }
         .series-section.active { opacity: 1; }
 
-        /* 4분할 그리드 컨테이너 */
+        /* 그리드: 사진 비율 유지 설정 */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 가로 2줄 */
-            grid-template-rows: repeat(2, 1fr);    /* 세로 2줄 */
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
             gap: var(--grid-gap);
-            width: 80vw;
-            height: 70vh;
-            max-width: 1200px;
-            max-height: 800px;
+            width: 85vw;
+            height: 75vh;
+            max-width: 1400px;
         }
 
         .grid-item {
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            cursor: zoom-in;
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: zoom-in;
         }
 
         .grid-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 영역에 꽉 채움 (정방향 느낌) */
-            transition: transform 0.5s ease;
+            max-width: 100%;
+            max-height: 100%;
+            /* 핵심: cover 대신 contain을 사용하여 원본 비율 유지 */
+            object-fit: contain; 
+            transition: transform 0.5s var(--transition-timing);
         }
-        .grid-item:hover img { transform: scale(1.03); }
+        .grid-item:hover img { transform: scale(1.02); }
 
-        /* 하단 시리즈 표시 점 */
-        .dots-nav {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            z-index: 1000;
-        }
-        .dot { 
-            width: 6px; height: 6px; border-radius: 50%; 
-            border: 1px solid var(--interface-color); 
-            cursor: pointer; transition: 0.4s; 
-        }
-        .dot.active { background-color: var(--interface-color); transform: scale(1.5); }
-
-        /* 라이트박스 (확대) */
+        /* 라이트박스 */
         #lightbox {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.98); 
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            cursor: zoom-out;
-            padding: 40px;
-            opacity: 0;
-            transition: opacity 0.4s;
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.98); 
+            display: none; justify-content: center; align-items: center;
+            z-index: 3000; cursor: zoom-out; padding: 40px; opacity: 0; transition: opacity 0.4s;
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 좌우 화살표 */
-        .nav-arrow {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 2rem;
-            cursor: pointer;
-            z-index: 2000;
-            opacity: 0.3;
-            padding: 20px;
-            transition: 0.3s;
-            user-select: none;
+        /* 네비게이션 요소들 */
+        .dots-nav {
+            position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 15px; z-index: 1000;
         }
-        .nav-arrow:hover { opacity: 1; }
+        .dot { 
+            width: 6px; height: 6px; border-radius: 50%; 
+            border: 1px solid var(--interface-color); cursor: pointer; 
+        }
+        .dot.active { background-color: var(--interface-color); }
+
+        .nav-arrow {
+            position: fixed; top: 50%; transform: translateY(-50%);
+            font-size: 2rem; cursor: pointer; z-index: 2000; opacity: 0.3; padding: 20px; color: #fff;
+        }
         .arrow-prev { left: var(--spacing); }
         .arrow-next { right: var(--spacing); }
 
         footer {
-            position: fixed;
-            bottom: var(--spacing);
-            right: var(--spacing);
-            font-size: 0.7rem;
-            opacity: 0.5;
+            position: fixed; bottom: var(--spacing); right: var(--spacing);
+            font-size: 0.7rem; opacity: 0.5;
         }
 
         @media (max-width: 768px) {
-            .grid-container { width: 90vw; height: 60vh; gap: 10px; }
+            .grid-container { height: 60vh; grid-gap: 20px; }
             .nav-arrow { display: none; }
         }
     </style>
@@ -199,7 +146,6 @@
 <body>
 
 <div class="bg-fixed"></div>
-<div class="bg-dimmer"></div>
 
 <nav>
     <div class="logo">JUNG DAUN</div>
@@ -210,14 +156,14 @@
 <div class="nav-arrow arrow-prev" onclick="moveSlide(-1)">&#10216;</div>
 <div class="nav-arrow arrow-next" onclick="moveSlide(1)">&#10217;</div>
 
-<div class="dots-nav" id="dots-container">
+<div class="dots-nav">
     <div class="dot active" onclick="goToSlide(0)"></div>
     <div class="dot" onclick="goToSlide(1)"></div>
     <div class="dot" onclick="goToSlide(2)"></div>
 </div>
 
 <div id="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" src="" alt="">
+    <img id="lightbox-img" src="">
 </div>
 
 <div class="slider-viewport">
@@ -250,7 +196,6 @@
 </div>
 
 <footer>
-    <p>SEOUL, KOREA</p>
     <p>© 2026 JUNG DAUN.</p>
 </footer>
 
@@ -288,10 +233,7 @@ function openLightbox(src) {
 
 function closeLightbox() {
     DOM.lightbox.classList.remove('show');
-    setTimeout(() => {
-        DOM.lightbox.style.display = 'none';
-        DOM.lightboxImg.src = '';
-    }, 400);
+    setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 400);
 }
 
 document.addEventListener('keydown', e => {
