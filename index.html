@@ -10,7 +10,7 @@
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
             --spacing: 30px; 
-            --grid-gap: 15px; /* 사진 사이의 좁은 간격 */
+            --photo-gap: 20px; /* 사진 사이의 명확한 간격 */
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
@@ -20,173 +20,100 @@
         body, html { 
             background-color: #000;
             color: var(--interface-color); 
-            font-family: 'Avenir', 'Avenir Next', 'Inter', -apple-system, sans-serif; 
-            -webkit-font-smoothing: antialiased; 
+            font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif; 
             overflow: hidden; 
             height: 100%;
         }
 
-        /* 배경 레이어 */
         .bg-fixed {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center center;
+            background-size: cover; background-position: center;
             z-index: -2;
         }
 
-        /* 내비게이션: 이름과 컨택 밀착 */
+        /* 왼쪽 상단 메뉴 */
         nav {
-            position: fixed;
-            top: var(--spacing);
-            left: var(--spacing);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            position: fixed; top: var(--spacing); left: var(--spacing);
+            display: flex; flex-direction: column; align-items: flex-start;
             z-index: 1000;
         }
-
-        .logo { 
-            font-weight: 300; 
-            font-size: 1.8rem; 
-            letter-spacing: 0.1em; 
-            margin-bottom: 4px; 
-            line-height: 1;
-        }
-
-        .contact-trigger { 
-            cursor: pointer; 
-            font-size: 0.75rem;
-            letter-spacing: 0.2em; 
-            text-transform: uppercase; 
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        
-        #email-text {
-            display: block;
-            margin-top: 5px;
-            font-size: 0.75rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.4s;
-        }
+        .logo { font-weight: 300; font-size: 1.8rem; letter-spacing: 0.1em; margin-bottom: 4px; line-height: 1; }
+        .contact-trigger { cursor: pointer; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
+        #email-text { display: block; margin-top: 5px; font-size: 0.75rem; opacity: 0; visibility: hidden; transition: 0.4s; }
         #email-text.show { opacity: 1; visibility: visible; }
 
-        /* 슬라이더 구조 */
+        /* 메인 슬라이더 */
         .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
-        .horizontal-wrapper { 
-            display: flex; 
-            height: 100vh; 
-            transition: transform var(--transition-speed) var(--transition-timing);
-        }
+        .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); }
 
         .series-section { 
-            flex: 0 0 100vw; 
-            height: 100vh; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 1s ease;
+            flex: 0 0 100vw; height: 100vh; 
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 1s ease;
         }
         .series-section.active { opacity: 1; }
 
-        /* 가변형 밀착 그리드 컨테이너 */
-        .grid-container {
+        /* 유동적 벽돌 구조 (Masonry 레이아웃 핵심) */
+        .masonry-container {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: var(--grid-gap);
-            width: 90vw;
-            max-width: 1200px;
+            gap: var(--photo-gap);
+            width: 85vw;
+            max-width: 1000px; /* 크기를 줄여 한눈에 들어오게 설정 */
             margin: 0 auto;
         }
 
-        .grid-item {
-            flex: 0 1 auto;
-            /* 원본 비율을 유지하며 한 화면에 4장이 보이기 위한 크기 제한 */
-            max-width: calc(48% - var(--grid-gap)); 
-            max-height: 42vh; 
+        /* 2열 구조로 나누어 사진들이 서로 침범하지 않게 배치 */
+        .masonry-col {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-in;
+            flex-direction: column;
+            gap: var(--photo-gap);
+            flex: 1;
         }
 
-        .grid-item img {
-            width: auto;
-            height: auto;
-            max-width: 100%;
-            max-height: 100%;
+        .photo-item {
+            width: 100%;
+            cursor: zoom-in;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .photo-item img {
+            width: 100%; /* 열 너비에 맞춤 */
+            height: auto; /* 원본 비율 유지 */
             display: block;
             transition: transform 0.5s ease;
         }
-        .grid-item:hover img { transform: scale(1.02); }
+        .photo-item:hover img { transform: scale(1.03); }
 
         /* 하단 점 내비게이션 */
         .dots-nav {
-            position: fixed;
-            bottom: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            z-index: 1000;
+            position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 15px; z-index: 1000;
         }
-        .dot { 
-            width: 6px; height: 6px; border-radius: 50%; 
-            border: 1px solid var(--interface-color); 
-            cursor: pointer; transition: 0.4s; 
-        }
+        .dot { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; }
         .dot.active { background-color: var(--interface-color); transform: scale(1.3); }
 
-        /* 라이트박스: 확대 시 화면에 딱 맞게 */
+        /* 라이트박스 */
         #lightbox {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.98); 
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            cursor: zoom-out;
-            padding: 40px;
-            opacity: 0;
-            transition: opacity 0.4s;
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.98); 
+            display: none; justify-content: center; align-items: center;
+            z-index: 3000; cursor: zoom-out; padding: 40px; opacity: 0; transition: opacity 0.4s;
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 좌우 화살표 */
-        .nav-arrow {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 2rem;
-            cursor: pointer;
-            z-index: 2000;
-            opacity: 0.3;
-            padding: 20px;
-            transition: 0.3s;
-            color: #fff;
-        }
-        .nav-arrow:hover { opacity: 1; }
+        .nav-arrow { position: fixed; top: 50%; transform: translateY(-50%); font-size: 2rem; cursor: pointer; z-index: 2000; opacity: 0.3; padding: 20px; color: #fff; }
         .arrow-prev { left: 20px; }
         .arrow-next { right: 20px; }
 
-        footer {
-            position: fixed;
-            bottom: var(--spacing);
-            right: var(--spacing);
-            font-size: 0.7rem;
-            opacity: 0.5;
-        }
+        footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.7rem; opacity: 0.5; }
 
         @media (max-width: 768px) {
-            .grid-item { max-width: calc(50% - 10px); max-height: 35vh; }
+            .masonry-container { width: 90vw; }
             .nav-arrow { display: none; }
         }
     </style>
@@ -211,41 +138,53 @@
 </div>
 
 <div id="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" src="" alt="">
+    <img id="lightbox-img" src="">
 </div>
 
 <div class="slider-viewport">
     <div class="horizontal-wrapper" id="slider">
         <article class="series-section active">
-            <div class="grid-container">
-                <div class="grid-item"><img src="assets/A1.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/A2.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/A3.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/A4.webp" onclick="openLightbox(this.src)"></div>
+            <div class="masonry-container">
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/A1.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/A2.webp" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/A3.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/A4.webp" onclick="openLightbox(this.src)"></div>
+                </div>
             </div>
         </article>
+
         <article class="series-section">
-            <div class="grid-container">
-                <div class="grid-item"><img src="assets/B1.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/B2.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/B3.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/B4.webp" onclick="openLightbox(this.src)"></div>
+            <div class="masonry-container">
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/B1.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/B2.webp" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/B3.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/B4.webp" onclick="openLightbox(this.src)"></div>
+                </div>
             </div>
         </article>
+
         <article class="series-section">
-            <div class="grid-container">
-                <div class="grid-item"><img src="assets/C1.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/C2.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/C3.webp" onclick="openLightbox(this.src)"></div>
-                <div class="grid-item"><img src="assets/C4.webp" onclick="openLightbox(this.src)"></div>
+            <div class="masonry-container">
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/C1.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/C2.webp" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="masonry-col">
+                    <div class="photo-item"><img src="assets/C3.webp" onclick="openLightbox(this.src)"></div>
+                    <div class="photo-item"><img src="assets/C4.webp" onclick="openLightbox(this.src)"></div>
+                </div>
             </div>
         </article>
     </div>
 </div>
 
-<footer>
-    <p>© 2026 JUNG DAUN.</p>
-</footer>
+<footer><p>© 2026 JUNG DAUN.</p></footer>
 
 <script>
 const STATE = { currentSlide: 0, slideCount: 3 };
@@ -259,33 +198,15 @@ const DOM = {
 };
 
 function toggleEmail() { DOM.email.classList.toggle('show'); }
-
 function updateSlider() {
     DOM.slider.style.transform = `translateX(-${STATE.currentSlide * 100}vw)`;
     DOM.sections.forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
     DOM.dots.forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
 }
-
-function moveSlide(d) { 
-    STATE.currentSlide = (STATE.currentSlide + d + STATE.slideCount) % STATE.slideCount; 
-    updateSlider(); 
-}
-
+function moveSlide(d) { STATE.currentSlide = (STATE.currentSlide + d + STATE.slideCount) % STATE.slideCount; updateSlider(); }
 function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
-
-function openLightbox(src) {
-    DOM.lightboxImg.src = src;
-    DOM.lightbox.style.display = 'flex';
-    setTimeout(() => DOM.lightbox.classList.add('show'), 10);
-}
-
-function closeLightbox() {
-    DOM.lightbox.classList.remove('show');
-    setTimeout(() => {
-        DOM.lightbox.style.display = 'none';
-        DOM.lightboxImg.src = '';
-    }, 400);
-}
+function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.style.display = 'flex'; setTimeout(() => DOM.lightbox.classList.add('show'), 10); }
+function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 400); }
 
 document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') moveSlide(1);
