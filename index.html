@@ -10,7 +10,7 @@
             --bg-image: url('assets/000001.JPG'); 
             --interface-color: #FFFFFF; 
             --spacing: 30px; 
-            --photo-gap: 20px; /* 사진 사이의 명확한 간격 */
+            --photo-gap: 12px; /* 간격을 좁혀서 더 밀도 있게 */
             --transition-speed: 1.2s; 
             --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
         }
@@ -20,7 +20,7 @@
         body, html { 
             background-color: #000;
             color: var(--interface-color); 
-            font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif; 
+            font-family: 'Avenir', 'Inter', sans-serif; 
             overflow: hidden; 
             height: 100%;
         }
@@ -38,9 +38,9 @@
             display: flex; flex-direction: column; align-items: flex-start;
             z-index: 1000;
         }
-        .logo { font-weight: 300; font-size: 1.8rem; letter-spacing: 0.1em; margin-bottom: 4px; line-height: 1; }
-        .contact-trigger { cursor: pointer; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
-        #email-text { display: block; margin-top: 5px; font-size: 0.75rem; opacity: 0; visibility: hidden; transition: 0.4s; }
+        .logo { font-weight: 300; font-size: 1.6rem; letter-spacing: 0.1em; margin-bottom: 2px; line-height: 1; }
+        .contact-trigger { cursor: pointer; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+        #email-text { display: block; margin-top: 4px; font-size: 0.7rem; opacity: 0; visibility: hidden; transition: 0.4s; }
         #email-text.show { opacity: 1; visibility: visible; }
 
         /* 메인 슬라이더 */
@@ -54,18 +54,17 @@
         }
         .series-section.active { opacity: 1; }
 
-        /* 유동적 벽돌 구조 (Masonry 레이아웃 핵심) */
+        /* 중앙 밀집형 콤팩트 컨테이너 */
         .masonry-container {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* 세로 중앙 */
             gap: var(--photo-gap);
-            width: 85vw;
-            max-width: 1000px; /* 크기를 줄여 한눈에 들어오게 설정 */
+            width: 70vw; /* 너비를 줄임 */
+            max-width: 650px; /* 아주 작고 콤팩트하게 모음 */
             margin: 0 auto;
         }
 
-        /* 2열 구조로 나누어 사진들이 서로 침범하지 않게 배치 */
         .masonry-col {
             display: flex;
             flex-direction: column;
@@ -76,44 +75,48 @@
         .photo-item {
             width: 100%;
             cursor: zoom-in;
-            overflow: hidden;
             display: flex;
             justify-content: center;
+            filter: grayscale(20%); /* 살짝 차분한 톤 */
+            transition: filter 0.4s ease;
         }
+        .photo-item:hover { filter: grayscale(0%); }
 
         .photo-item img {
-            width: 100%; /* 열 너비에 맞춤 */
-            height: auto; /* 원본 비율 유지 */
+            width: 100%;
+            height: auto;
             display: block;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s var(--transition-timing);
         }
-        .photo-item:hover img { transform: scale(1.03); }
+        .photo-item:hover img { transform: scale(1.015); }
 
-        /* 하단 점 내비게이션 */
+        /* 하단 도트 */
         .dots-nav {
-            position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 15px; z-index: 1000;
+            position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 12px; z-index: 1000;
         }
-        .dot { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; }
-        .dot.active { background-color: var(--interface-color); transform: scale(1.3); }
+        .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid var(--interface-color); cursor: pointer; opacity: 0.5; transition: 0.4s; }
+        .dot.active { background-color: var(--interface-color); opacity: 1; transform: scale(1.2); }
 
         /* 라이트박스 */
         #lightbox {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.98); 
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.96); 
             display: none; justify-content: center; align-items: center;
-            z-index: 3000; cursor: zoom-out; padding: 40px; opacity: 0; transition: opacity 0.4s;
+            z-index: 3000; cursor: zoom-out; padding: 60px; opacity: 0; transition: opacity 0.5s;
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        .nav-arrow { position: fixed; top: 50%; transform: translateY(-50%); font-size: 2rem; cursor: pointer; z-index: 2000; opacity: 0.3; padding: 20px; color: #fff; }
-        .arrow-prev { left: 20px; }
-        .arrow-next { right: 20px; }
+        /* 화살표 */
+        .nav-arrow { position: fixed; top: 50%; transform: translateY(-50%); font-size: 1.5rem; cursor: pointer; z-index: 2000; opacity: 0.2; padding: 30px; color: #fff; transition: 0.3s; }
+        .nav-arrow:hover { opacity: 0.8; }
+        .arrow-prev { left: 10px; }
+        .arrow-next { right: 10px; }
 
-        footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.7rem; opacity: 0.5; }
+        footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.65rem; opacity: 0.4; letter-spacing: 0.05em; }
 
         @media (max-width: 768px) {
-            .masonry-container { width: 90vw; }
+            .masonry-container { width: 85vw; max-width: 450px; }
             .nav-arrow { display: none; }
         }
     </style>
@@ -206,7 +209,7 @@ function updateSlider() {
 function moveSlide(d) { STATE.currentSlide = (STATE.currentSlide + d + STATE.slideCount) % STATE.slideCount; updateSlider(); }
 function goToSlide(i) { STATE.currentSlide = i; updateSlider(); }
 function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.style.display = 'flex'; setTimeout(() => DOM.lightbox.classList.add('show'), 10); }
-function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 400); }
+function closeLightbox() { DOM.lightbox.classList.remove('show'); setTimeout(() => { DOM.lightbox.style.display = 'none'; DOM.lightboxImg.src = ''; }, 500); }
 
 document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') moveSlide(1);
