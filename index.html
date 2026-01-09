@@ -17,10 +17,10 @@
             --photo-gap: 20px; 
             --container-max-width: 650px; 
             --arrow-distance: -150px; 
-            /* [수정] 1.4s에서 아주 조금만 더 여유 있게 1.55s로 설정 */
-            --transition-speed: 1.55s; 
-            /* [수정] 곡선의 탄력을 유지하되 조금 더 우아하게 (Ease-Out-Quart 계열) */
-            --transition-timing: cubic-bezier(0.165, 0.84, 0.44, 1);
+            /* [수정] 속도감을 유지하기 위해 시간을 1.6s로 조정 */
+            --transition-speed: 1.6s; 
+            /* [핵심 수정] 느림-빠름-느림을 구현하는 S자 곡선 */
+            --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
@@ -55,7 +55,6 @@
 
         .series-section { 
             flex: 0 0 100vw; width: 100vw; display: flex; justify-content: center; align-items: center; 
-            /* 페이드 효과도 슬라이드 속도에 맞춰 자연스럽게 조정 */
             opacity: 0.15; transition: opacity 1.3s ease; 
         }
         .series-section.active { opacity: 1; }
@@ -175,8 +174,8 @@
         DOM.sections.forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
         DOM.dots.forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
         
-        // [수정] 1.55s 시간차에 맞춰 중복 클릭 방지
-        setTimeout(() => { STATE.isMoving = false; }, 1550);
+        // 이동 시간(1.6s)만큼 중복 클릭 방지
+        setTimeout(() => { STATE.isMoving = false; }, 1600);
     }
 
     function moveSlide(d) { 
@@ -204,7 +203,6 @@
         setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500); 
     }
 
-    // 간단한 프리로드 (렉 방지용 브라우저 캐싱)
     window.addEventListener('load', () => {
         DOM.sections.forEach(section => {
             const imgs = section.querySelectorAll('img');
