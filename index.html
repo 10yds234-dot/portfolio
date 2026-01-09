@@ -10,9 +10,7 @@
             --bg: #FFFFFF;
             --navy: #0A192F; 
             --spacing: 80px; 
-            --photo-max-width: 1200px; /* 전체 너비 확장 */
-            --transition-speed: 1.2s; 
-            --transition-timing: cubic-bezier(0.2, 0.65, 0.3, 1);
+            --photo-max-width: 1100px; 
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,105 +20,68 @@
             color: var(--navy); 
             font-family: 'Avenir', 'Avenir Next', 'Inter', -apple-system, sans-serif; 
             -webkit-font-smoothing: antialiased; 
-            overflow: hidden; 
             height: 100%;
+            overflow-y: auto; /* 전체 나열을 위해 세로 스크롤 허용 */
         }
 
-        /* 1. 이름 정중앙 배치 */
+        /* 1. 이름 위치 조정 (조금 아래로) */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 60px var(--spacing);
+            padding: 100px var(--spacing) 40px; /* 상단 패딩을 60px에서 100px로 늘림 */
             display: flex;
-            justify-content: center; /* 중앙 정렬 */
+            justify-content: center;
             align-items: center;
             z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.8); /* 스크롤 시 이름 가독성 */
         }
 
         .logo {
             font-weight: 300;
             font-size: 1.8rem;
             letter-spacing: 0.1em;
-            text-align: center;
         }
 
         .contact-container { 
             position: absolute;
             right: var(--spacing);
-            text-align: right; 
         }
 
-        .contact-trigger {
-            cursor: pointer;
-            font-size: 0.9rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-
-        #email-text {
-            display: block;
-            margin-top: 8px;
-            font-size: 0.8rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-        }
-
-        #email-text.show { opacity: 1; visibility: visible; }
-
-        /* 슬라이더 및 그리드 설정 */
-        .slider-viewport {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .horizontal-wrapper { 
-            display: flex;
-            height: 100vh;
-            transition: transform var(--transition-speed) var(--transition-timing);
-        }
-
-        .series-section { 
-            flex: 0 0 100vw;
-            height: 100vh;
-            overflow-y: auto;
-            padding: 0 var(--spacing);
-        }
-
-        /* 2. 이미지를 작게 나열 (Grid 레이아웃) */
-        .content-container {
+        /* 2. 12장 사진 그리드 배치 */
+        .main-content {
             width: 100%;
             max-width: var(--photo-max-width);
             margin: 0 auto;
+            padding: 220px 20px 100px; /* 로고 아래 공간 확보 */
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 작게 나열 */
-            gap: 20px;
-            padding-top: 25vh;
-            padding-bottom: 10vh;
+            /* 가로 4장씩 배치 */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; /* 사진 사이 간격 */
         }
 
         .item {
             width: 100%;
             cursor: zoom-in;
-            transition: opacity 0.3s ease;
+            overflow: hidden;
         }
-
-        .item:hover { opacity: 0.7; }
 
         .item img {
             width: 100%;
-            aspect-ratio: 1 / 1; /* 정사각형 정렬로 깔끔하게 */
+            height: auto;
+            aspect-ratio: 3 / 4; /* 세로형 사진 기준, 필요시 1/1로 변경 가능 */
             object-fit: cover;
             display: block;
+            transition: transform 0.3s ease;
         }
 
-        /* 3. 라이트박스 배경을 검은색으로 변경 */
+        .item:hover img { transform: scale(1.05); }
+
+        /* 3. 라이트박스 검은색 배경 */
         #lightbox {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.95); /* 검은색 배경 */
+            background: #000000; /* 완전한 검은색 */
             display: none;
             justify-content: center;
             align-items: center;
@@ -133,36 +94,19 @@
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; }
 
-        /* 불필요해진 요소 제거 및 화살표 조정 */
-        .nav-arrow {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 2000;
-            cursor: pointer;
-            font-size: 2rem;
-            opacity: 0.3;
-        }
-        .arrow-prev { left: 30px; }
-        .arrow-next { right: 30px; }
-
         footer {
-            position: fixed;
-            bottom: 40px;
-            width: 100%;
+            padding: 40px 0;
             text-align: center;
             font-size: 0.7rem;
             opacity: 0.4;
-            pointer-events: none;
         }
 
         @media (max-width: 768px) {
-            :root { --spacing: 20px; }
-            .content-container { 
-                grid-template-columns: repeat(3, 1fr); /* 모바일에서도 한눈에 보이게 3열 */
-                gap: 10px;
+            nav { padding: 60px 20px 20px; }
+            .main-content { 
+                grid-template-columns: repeat(2, 1fr); /* 모바일은 2열이 적당해요 */
+                padding-top: 150px;
             }
-            .logo { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -171,47 +115,28 @@
 <nav>
     <div class="logo">JUNG DAUN</div>
     <div class="contact-container">
-        <div class="contact-trigger" onclick="toggleEmail()">Contact</div>
-        <span id="email-text">10yds234@gmail.com</span>
+        <div class="contact-trigger" onclick="toggleEmail()" style="cursor:pointer; font-size:0.9rem;">Contact</div>
+        <span id="email-text" style="display:none; position:absolute; top:25px; right:0; font-size:0.8rem;">10yds234@gmail.com</span>
     </div>
 </nav>
 
-<div class="nav-arrow arrow-prev" onclick="moveSlide(-1)">&#10216;</div>
-<div class="nav-arrow arrow-next" onclick="moveSlide(1)">&#10217;</div>
+<main class="main-content">
+    <div class="item"><img src="assets/film_01.JPG"></div>
+    <div class="item"><img src="assets/film_02.JPG"></div>
+    <div class="item"><img src="assets/film_03.JPG"></div>
+    <div class="item"><img src="assets/film_04.JPG"></div>
+    <div class="item"><img src="assets/digi_01.JPG"></div>
+    <div class="item"><img src="assets/digi_02.JPG"></div>
+    <div class="item"><img src="assets/digi_03.JPG"></div>
+    <div class="item"><img src="assets/digi_04.JPG"></div>
+    <div class="item"><img src="assets/digi_05.JPG"></div>
+    <div class="item"><img src="assets/digi_06.JPG"></div>
+    <div class="item"><img src="assets/digi_07.JPG"></div>
+    <div class="item"><img src="assets/digi_08.JPG"></div>
+</main>
 
 <div id="lightbox" onclick="closeLightbox()">
     <img id="lightbox-img" alt="">
-</div>
-
-<div class="slider-viewport">
-    <div class="horizontal-wrapper" id="slider">
-        <article class="series-section active">
-            <div class="content-container">
-                <div class="item"><img src="assets/film_01.JPG"></div>
-                <div class="item"><img src="assets/film_02.JPG"></div>
-                <div class="item"><img src="assets/film_03.JPG"></div>
-                <div class="item"><img src="assets/film_04.JPG"></div>
-            </div>
-        </article>
-
-        <article class="series-section">
-            <div class="content-container">
-                <div class="item"><img src="assets/digi_01.JPG"></div>
-                <div class="item"><img src="assets/digi_02.JPG"></div>
-                <div class="item"><img src="assets/digi_03.JPG"></div>
-                <div class="item"><img src="assets/digi_04.JPG"></div>
-            </div>
-        </article>
-
-        <article class="series-section">
-            <div class="content-container">
-                <div class="item"><img src="assets/digi_05.JPG"></div>
-                <div class="item"><img src="assets/digi_06.JPG"></div>
-                <div class="item"><img src="assets/digi_07.JPG"></div>
-                <div class="item"><img src="assets/digi_08.JPG"></div>
-            </div>
-        </article>
-    </div>
 </div>
 
 <footer>
@@ -219,37 +144,25 @@
 </footer>
 
 <script>
-const STATE = { currentSlide: 0, slideCount: 3 };
-const DOM = {
-    slider: document.getElementById('slider'),
-    sections: document.querySelectorAll('.series-section'),
-    lightbox: document.getElementById('lightbox'),
-    lightboxImg: document.getElementById('lightbox-img'),
-    email: document.getElementById('email-text')
-};
-
-function toggleEmail() { DOM.email.classList.toggle('show'); }
-
-function updateSlider() {
-    DOM.slider.style.transform = `translateX(-${STATE.currentSlide * 100}vw)`;
-}
-
-function moveSlide(direction) {
-    STATE.currentSlide = (STATE.currentSlide + direction + STATE.slideCount) % STATE.slideCount;
-    updateSlider();
+function toggleEmail() {
+    const email = document.getElementById('email-text');
+    email.style.display = email.style.display === 'none' ? 'block' : 'none';
 }
 
 document.querySelectorAll('.item img').forEach(img => {
     img.addEventListener('click', () => {
-        DOM.lightboxImg.src = img.src;
-        DOM.lightbox.style.display = 'flex';
-        setTimeout(() => DOM.lightbox.classList.add('show'), 10);
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        lightboxImg.src = img.src;
+        lightbox.style.display = 'flex';
+        setTimeout(() => lightbox.classList.add('show'), 10);
     });
 });
 
 function closeLightbox() {
-    DOM.lightbox.classList.remove('show');
-    setTimeout(() => DOM.lightbox.style.display = 'none', 400);
+    const lightbox = document.getElementById('lightbox');
+    lightbox.classList.remove('show');
+    setTimeout(() => lightbox.style.display = 'none', 400);
 }
 </script>
 
