@@ -27,7 +27,6 @@
             overflow: hidden; height: 100%; position: fixed; width: 100%;
         }
 
-        /* 이미지 드래그 전역 방지 */
         img { -webkit-user-drag: none; user-drag: none; }
 
         .bg-fixed {
@@ -36,7 +35,7 @@
             transform: translateZ(0); pointer-events: none;
         }
 
-        /* Nav & Menu - 양방향 애니메이션 */
+        /* Nav & Menu */
         nav { position: fixed; top: var(--spacing); left: var(--spacing); z-index: 2000; }
         .logo { 
             font-size: 1.45rem; letter-spacing: 0.02em; text-transform: uppercase; 
@@ -44,23 +43,22 @@
         }
         
         .menu-container { 
-            max-height: 0; overflow: hidden; opacity: 0;
-            transform: translateY(-20px);
-            /* 닫힐 때: 조금 더 빠르게 올라가도록 설정 */
+            max-height: 0; 
+            overflow: hidden; 
+            opacity: 0;
             transition: 
-                max-height 0.5s cubic-bezier(0, 1, 0, 1), 
-                opacity 0.4s ease,
-                transform 0.5s ease;
+                max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.5s ease;
             pointer-events: none;
         }
+        
         .menu-container.show { 
-            max-height: 600px; opacity: 1; margin-top: 40px; 
-            transform: translateY(0);
-            /* 열릴 때: 부드럽고 우아하게 내려오도록 설정 */
+            max-height: 600px; 
+            opacity: 1; 
+            margin-top: 40px; 
             transition: 
                 max-height 0.9s var(--transition-timing), 
-                opacity 0.6s ease,
-                transform 0.7s var(--transition-timing);
+                opacity 0.7s ease;
             pointer-events: auto;
         }
         
