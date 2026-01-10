@@ -151,29 +151,39 @@
 }
         /* 모바일 및 소형 기기 가로모드 대응 */
 @media (max-height: 500px) and (orientation: landscape) {
-    .masonry-container {
-        max-height: 70vh; 
-        width: auto;
-        gap: 10px;
+    /* 1. 화살표 제거 */
+    .nav-arrow { 
+        display: none !important; 
+    }
 
-        /* ★ translateX는 오른쪽으로 이동, translateY는 위아래 이동입니다. */
-        /* -20px은 위로 20픽셀 올린다는 뜻입니다. 더 올리고 싶으면 -40px 등으로 조절하세요. */
-        transform: translate(100px, -30px); 
+    /* 2. 사진 섹터 크기 축소 및 위치 조정 */
+    .masonry-container {
+        max-height: 60vh; /* 기존 70vh에서 더 축소 */
+        width: auto;
+        gap: 8px; /* 간격도 살짝 조절 */
+        transform: translate(100px, -40px); /* 위로 조금 더 올림 */
     }
 
     .photo-item img {
-        max-height: 32vh; 
+        max-height: 25vh; /* 기존 32vh에서 25vh로 축소 */
         width: auto; 
         object-fit: contain;
     }
 
     .masonry-col {
-        gap: 10px;
+        gap: 8px;
     }
 
-    /* 가로모드에서 화살표 위치 */
+    /* 3. 인디케이터(도트) 위치를 사진 섹터 아래 오른쪽으로 이동 */
+    .dots-nav {
+        bottom: 20px; /* 바닥에서 띄움 */
+        left: calc(50% + 100px); /* 사진 위치(100px)만큼 오른쪽으로 이동 */
+        transform: translateX(-50%);
+    }
+
+    /* 가로모드 전용 변수 조절 */
     :root {
-        --arrow-distance: -50px; 
+        --spacing: 15px; 
     }
 }
     </style>
@@ -362,6 +372,7 @@
 </script>
 </body>
 </html>
+
 
 
 
