@@ -156,9 +156,9 @@
         width: auto;
         gap: 10px;
 
-        /* justify-content: center 상태에서 오른쪽으로 80px만큼 확실히 이동 */
-        /* 메뉴 너비를 고려하여 숫자를 더 키워도 됩니다 (예: 100px) */
-        transform: translateX(80px); 
+        /* ★ translateX는 오른쪽으로 이동, translateY는 위아래 이동입니다. */
+        /* -20px은 위로 20픽셀 올린다는 뜻입니다. 더 올리고 싶으면 -40px 등으로 조절하세요. */
+        transform: translate(90px, -20px); 
     }
 
     .photo-item img {
@@ -339,6 +339,7 @@
 </script>
 </body>
 </html>
+
 
 
 
