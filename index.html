@@ -26,11 +26,35 @@
             --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased;
+            /* 사이트 전체 드래그 및 선택 방지 */
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
         body, html { 
             background-color: #000; color: var(--interface-color); 
             font-family: 'Inter', sans-serif; font-weight: 200;
             overflow: hidden; height: 100%; position: fixed; width: 100%;
+        }
+
+        img { 
+            -webkit-user-drag: none; 
+            user-drag: none; 
+            -webkit-user-select: none; 
+            user-select: none; 
+        }
+
+        /* 메뉴 콘텐츠(이메일 등)는 드래그/복사가 가능하도록 예외 설정 */
+        .menu-content { 
+            user-select: text !important; 
+            -webkit-user-select: text !important; 
+            cursor: auto;
         }
 
         .bg-fixed {
@@ -266,3 +290,4 @@
 </script>
 </body>
 </html>
+
