@@ -120,29 +120,35 @@
         footer { position: fixed; bottom: var(--spacing); right: var(--spacing); font-size: 0.6rem; opacity: 0.3; }
 
         @media (max-width: 850px) and (orientation: portrait) { 
-            :root { --spacing: 15px; --photo-gap: 10px; }
-            nav { flex-direction: row; align-items: flex-start; gap: 8px; } 
-            .logo { font-size: 1.1rem; }
-            
-            /* 로고와 메뉴 박스 사이 간격 */
-            .menu-container.show { margin-top: 5px; }
-            
-            .bg-fixed { width: 100vh; height: 100vw; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); }
-            .masonry-container { width: 65vw; }
-            .nav-arrow, .lb-arrow { display: none; } 
+    :root { --spacing: 15px; --photo-gap: 10px; }
+    nav { flex-direction: row; align-items: flex-start; gap: 11px; } 
+    .logo { font-size: 1.1rem; }
+    
+    /* 로고와 메뉴 박스 사이 간격 */
+    .menu-container.show { margin-top: 5px; }
+    
+    .bg-fixed { width: 100vh; height: 100vw; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); }
+    
+    /* 사진 묶음 설정 */
+    .masonry-container { 
+        width: 65vw; 
+        margin-top: 60px; /* ★ 이 숫자를 키울수록 사진 묶음이 아래로 내려갑니다 */
+    }
+    
+    .nav-arrow, .lb-arrow { display: none; } 
 
-            /* 메뉴 내부 간격 조정 */
-            .menu-item { 
-                margin-bottom: 15px; /* 항목(About, Contact) 간의 간격 */
-            }
-            .menu-label { 
-                margin-bottom: 4px; /* 소제목과 본문 사이 간격 */
-            }
-            .menu-content { 
-                line-height: 1.4; /* 본문 줄 간격 */
-                font-size: 0.8rem; /* 본문 글자 크기 */
-            }
-        }
+    /* 메뉴 내부 간격 조정 */
+    .menu-item { 
+        margin-bottom: 15px; 
+    }
+    .menu-label { 
+        margin-bottom: 4px; 
+    }
+    .menu-content { 
+        line-height: 1.4; 
+        font-size: 0.8rem; 
+    }
+}
     </style>
 </head>
 <body>
@@ -306,6 +312,7 @@
 </script>
 </body>
 </html>
+
 
 
 
