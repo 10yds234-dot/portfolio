@@ -149,6 +149,31 @@
         font-size: 0.8rem; 
     }
 }
+        /* 모바일 및 소형 기기 가로모드 대응 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .masonry-container {
+        /* 화면 높이의 약 70% 정도로 제한하여 한눈에 들어오게 설정 */
+        max-height: 70vh; 
+        width: auto;
+        gap: 10px; /* 사진 사이 간격 축소 */
+    }
+
+    .photo-item img {
+        /* 이미지 높이를 컨테이너에 맞게 자동 조절 */
+        max-height: 32vh; 
+        width: auto; 
+        object-fit: contain;
+    }
+
+    .masonry-col {
+        gap: 10px; /* 세로 배열 간격 축소 */
+    }
+
+    /* 가로모드에서 화살표가 너무 멀지 않게 조정 */
+    :root {
+        --arrow-distance: -60px;
+    }
+}
     </style>
 </head>
 <body>
@@ -312,6 +337,7 @@
 </script>
 </body>
 </html>
+
 
 
 
