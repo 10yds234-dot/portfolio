@@ -152,14 +152,13 @@
         /* 모바일 및 소형 기기 가로모드 대응 */
 @media (max-height: 500px) and (orientation: landscape) {
     .masonry-container {
-        /* 화면 높이에 맞춰 크기 제한 */
         max-height: 70vh; 
         width: auto;
         gap: 10px;
 
-        /* ★ 왼쪽 여백을 주어 전체를 오른쪽으로 이동 (메뉴와의 겹침 방지) */
-        margin-left: 15vw; 
-        margin-right: auto;
+        /* justify-content: center 상태에서 오른쪽으로 80px만큼 확실히 이동 */
+        /* 메뉴 너비를 고려하여 숫자를 더 키워도 됩니다 (예: 100px) */
+        transform: translateX(80px); 
     }
 
     .photo-item img {
@@ -172,9 +171,8 @@
         gap: 10px;
     }
 
-    /* 가로모드에서 화살표 위치 미세 조정 */
+    /* 가로모드에서 화살표 위치 */
     :root {
-        /* 화살표가 사진 섹터 밖으로 너무 나가지 않게 조절 */
         --arrow-distance: -50px; 
     }
 }
@@ -341,6 +339,7 @@
 </script>
 </body>
 </html>
+
 
 
 
