@@ -319,11 +319,34 @@
             if (!e.target.classList.contains('lb-arrow')) closeLightbox();
         });
 
+        // 스와이프 이벤트 통합 관리
         let tsX = 0;
-        document.getElementById('swipe-zone').addEventListener('touchstart', e => tsX = e.touches[0].clientX, {passive:true});
-        document.getElementById('swipe-zone').addEventListener('touchend', e => {
-            let diff = tsX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 50) moveSlide(diff > 0 ? 1 : -1);
+        let tsY = 0; // 세로 스와이프 감지용 (선택 사항)
+
+        document.addEventListener('touchstart', e => {
+            tsX = e.touches[0].clientX;
+            tsY = e.touches[0].clientY;
+        }, {passive:true});
+
+        document.addEventListener('touchend', e => {
+            let diffX = tsX - e.changedTouches[0].clientX;
+            let diffY = tsY - e.changedTouches[0].clientY;
+            
+            // 가로 스와이프가 세로보다 클 때만 동작 (의도치 않은 스크롤 방지)
+            if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+                const isLB = DOM.lightbox.classList.contains('show');
+                
+                if (isLB) {
+                    // 라이트박스가 열려있을 때: 라이트박스 이미지 전환
+                    changeLbImg(diffX > 0 ? 1 : -1);
+                } else {
+                    // 라이트박스가 닫혀있을 때: 메인 슬라이드 전환
+                    // swipe-zone 위에서 스와이프했을 때만 작동하도록 제한 가능
+                    if (e.target.closest('#swipe-zone')) {
+                        moveSlide(diffX > 0 ? 1 : -1);
+                    }
+                }
+            }
         }, {passive:true});
         
         document.addEventListener('keydown', e => {
@@ -339,6 +362,7 @@
 </script>
 </body>
 </html>
+
 
 
 
