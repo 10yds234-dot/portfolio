@@ -418,17 +418,50 @@
         window.addEventListener('touchstart', dragStart, { passive: true });
         window.addEventListener('touchend', dragEnd, { passive: true });
 
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('arrow-prev')) moveSlide(-1);
-            else if (e.target.classList.contains('arrow-next')) moveSlide(1);
-            else if (e.target.tagName === 'IMG' && e.target.closest('.photo-item')) openLightbox(e.target);
-            
-            const dotWrapper = e.target.closest('.dot-wrapper');
-            if (dotWrapper) {
-                STATE.currentSlide = parseInt(dotWrapper.dataset.index);
-                updateSlider();
-            }
-        });
+        // 약 240번째 줄 근처 wheel 이벤트 리스너 전체 교체
+document.addEventListener('wheel', (e) => {
+    const isLB = DOM.lightbox.classList.contains('show'); // 라이트박스 오픈 여부
+    const isOverSlider = e.target.closest('.slider-viewport'); 
+
+    // 1. 라이트박스가 열려 있거나 슬라이더 위일 때 수평 스와이프(뒤로가기) 무조건 차단
+    if ((isLB || isOverSlider) && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault(); 
+    }
+
+    // 2. 라이트박스 내부 휠 로직
+    if (isLB) {
+        if (STATE.isLbMoving) {
+            wheelAccumulated = 0; 
+            return;
+        }
+
+        wheelAccumulated += e.deltaX;
+
+        if (Math.abs(wheelAccumulated) > 400) { 
+            const direction = wheelAccumulated > 0 ? 1 : -1;
+            wheelAccumulated = 0; 
+            changeLbImg(direction);
+        }
+        
+        clearTimeout(wheelTimeout);
+        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 100);
+        return; 
+    }
+
+    // 3. 메인 슬라이더 휠 로직
+    if (STATE.isMoving || !isOverSlider) return;
+
+    wheelAccumulated += e.deltaX;
+    if (Math.abs(wheelAccumulated) > 25) {
+        const direction = wheelAccumulated > 0 ? 1 : -1;
+        moveSlide(direction);
+        wheelAccumulated = 0;
+        clearTimeout(wheelTimeout);
+    } else {
+        clearTimeout(wheelTimeout);
+        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 50);
+    }
+}, { passive: false }); // passive: false가 있어야 preventDefault가 작동합니다.
 
         document.getElementById('lb-prev-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(-1); });
         document.getElementById('lb-next-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(1); });
@@ -450,6 +483,7 @@
 </script>
 </body>
 </html>
+
 
 
 
