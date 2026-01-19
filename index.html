@@ -132,10 +132,9 @@
 @media (max-device-width: 930px) and (orientation: landscape) {
     :root {
         --spacing: 12px;
-        --photo-gap: 10px;
+        --photo-gap: 15px; /* 사진 사이 간격을 살짝 넓히면 더 작고 정갈해 보입니다 */
     }
 
-    /* 슬라이드 섹션이 화면 높이에 꽉 차도록 설정 */
     .series-section {
         height: 100vh;
         width: 100vw;
@@ -146,10 +145,10 @@
 
     .masonry-container {
         width: auto;
-        height: 85vh; /* 화면 상하단 여백 확보 */
+        height: 70vh; /* 전체적인 높이 제한 */
         max-width: 90vw;
         display: flex;
-        flex-direction: row; /* 컬럼들을 가로로 나열 */
+        flex-direction: row;
         gap: var(--photo-gap);
         margin: 0 auto;
     }
@@ -160,7 +159,7 @@
         flex-direction: column;
         justify-content: center;
         flex: 0 1 auto;
-        min-width: 0;
+        gap: var(--photo-gap);
     }
 
     .photo-item {
@@ -168,28 +167,25 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 0; /* 중요: Flex 자식의 높이 제한 해제 */
+        min-height: 0;
     }
 
     .photo-item img {
         height: auto;
         width: auto;
-        max-height: calc(42.5vh - 15px); /* 화면 높이의 절반 정도 (여백 제외) */
+        /* 핵심: 이 값을 줄일수록 사진이 작아집니다 (예: 35vh) */
+        max-height: calc(35vh - 20px); 
         max-width: 100%;
         object-fit: contain;
     }
 
-    /* 인터페이스(메뉴, 로고, 점) 위치 및 크기 조정 */
     nav { top: 10px; left: var(--spacing); }
     .logo { font-size: 1rem; }
     .dots-nav { bottom: 10px; }
-    
-    /* 가로 모드에서는 화살표를 숨겨 사진 공간 확보 (스와이프 사용 권장) */
     .nav-arrow { display: none; }
 
-    /* 라이트박스 이미지 크기 조정 */
     #lightbox-img {
-        max-height: 85vh;
+        max-height: 80vh; /* 라이트박스 안의 이미지도 조금 더 작게 조절 */
         width: auto;
     }
 }
@@ -444,6 +440,7 @@
 </script>
 </body>
 </html>
+
 
 
 
