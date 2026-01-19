@@ -229,15 +229,15 @@
 
     function toggleMenu() { DOM.menu.classList.toggle('show'); }
 
-    function updateSlider() {
+    function updateSlider(withAnim = true) {
         const offset = -STATE.currentSlide * 100;
-        DOM.slider.style.transition = `transform var(--transition-speed) var(--transition-timing)`;
+        DOM.slider.style.transition = withAnim ? `transform var(--transition-speed) var(--transition-timing)` : 'none';
         DOM.slider.style.transform = `translate3d(${offset}vw, 0, 0)`;
         
         document.querySelectorAll('.series-section').forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
         preloadSlide(STATE.currentSlide + 1); preloadSlide(STATE.currentSlide - 1);
-        setTimeout(() => { STATE.isMoving = false; }, 1600);
+        setTimeout(() => { STATE.isMoving = false; }, 800); // 속도감 있게 조정
     }
 
     function moveSlide(d) {
@@ -252,16 +252,15 @@
         STATE.lbCurrentIndex = STATE.lbImages.indexOf(imgSrc.getAttribute('src'));
         DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
         DOM.lightboxImg.style.transform = 'none';
+        DOM.lightboxImg.style.transition = 'none';
         DOM.lightbox.style.display = 'flex';
         setTimeout(() => DOM.lightbox.classList.add('show'), 10);
     }
 
-    function changeLbImg(d, e) {
-        if (e) e.stopPropagation();
+    function changeLbImg(d) {
         STATE.lbCurrentIndex = (STATE.lbCurrentIndex + d + STATE.lbImages.length) % STATE.lbImages.length;
-        DOM.lightboxImg.style.transition = 'none';
+        DOM.lightboxImg.style.transition = 'none'; // 순간적으로 교체
         DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
-        setTimeout(() => { DOM.lightboxImg.style.transition = 'transform 0.2s ease-out'; }, 10);
     }
 
     function closeLightbox() {
@@ -270,7 +269,78 @@
     }
 
     function bindEvents() {
-        // 클릭 이벤트
+        const dragStart = (e) => {
+            if (STATE.isMoving) return;
+            STATE.isDragging = true;
+            STATE.startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        };
+
+        const dragMove = (e) => {
+            if (!STATE.isDragging || STATE.isMoving) return;
+            const currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const diffX = currentX - STATE.startX;
+            
+            // 1. 살짝만 따라오는 '저항' 로직 (거리의 0.3배만 이동)
+            const resistance = 0.3;
+            const moveX = diffX * resistance;
+
+            if (DOM.lightbox.classList.contains('show')) {
+                DOM.lightboxImg.style.transition = 'none';
+                DOM.lightboxImg.style.transform = `translateX(${moveX}px)`;
+            } else {
+                DOM.slider.style.transition = 'none';
+                const baseOffset = -STATE.currentSlide * window.innerWidth;
+                DOM.slider.style.transform = `translate3d(${baseOffset + moveX}px, 0, 0)`;
+            }
+        };
+
+        const dragEnd = (e) => {
+            if (!STATE.isDragging) return;
+            STATE.isDragging = false;
+            
+            const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
+            const diffX = STATE.startX - endX;
+            const threshold = 50; // 조금만 밀어도 넘어가도록 설정
+
+            if (DOM.lightbox.classList.contains('show')) {
+                DOM.lightboxImg.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                if (Math.abs(diffX) > threshold) {
+                    changeLbImg(diffX > 0 ? 1 : -1);
+                }
+                DOM.lightboxImg.style.transform = 'translateX(0)';
+            } else {
+                if (Math.abs(diffX) > threshold) {
+                    moveSlide(diffX > 0 ? 1 : -1);
+                } else {
+                    updateSlider();
+                }
+            }
+        };
+
+        // 맥 트랙패드 (가로 휠)
+        let wheelAccumulated = 0;
+        let wheelTimeout;
+        document.addEventListener('wheel', (e) => {
+            if (DOM.lightbox.classList.contains('show') || STATE.isMoving) return;
+            wheelAccumulated += e.deltaX;
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => {
+                if (Math.abs(wheelAccumulated) > 30) {
+                    moveSlide(wheelAccumulated > 0 ? 1 : -1);
+                }
+                wheelAccumulated = 0;
+            }, 50);
+        }, { passive: true });
+
+        // 마우스/터치 리스너
+        window.addEventListener('mousedown', dragStart);
+        window.addEventListener('mousemove', dragMove);
+        window.addEventListener('mouseup', dragEnd);
+        window.addEventListener('touchstart', dragStart, { passive: true });
+        window.addEventListener('touchmove', dragMove, { passive: true });
+        window.addEventListener('touchend', dragEnd, { passive: true });
+
+        // 버튼 및 키보드
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('arrow-prev')) moveSlide(-1);
             else if (e.target.classList.contains('arrow-next')) moveSlide(1);
@@ -283,78 +353,8 @@
             }
         });
 
-        // 드래그 & 스와이프 로직
-        const dragStart = (e) => {
-            STATE.isDragging = true;
-            STATE.startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            if (!DOM.lightbox.classList.contains('show')) {
-                DOM.slider.style.transition = 'none';
-            }
-        };
-
-        const dragMove = (e) => {
-            if (!STATE.isDragging) return;
-            const currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            const diffX = currentX - STATE.startX;
-
-            if (DOM.lightbox.classList.contains('show')) {
-                // 라이트박스 이미지 실시간 이동
-                DOM.lightboxImg.style.transition = 'none';
-                DOM.lightboxImg.style.transform = `translateX(${diffX}px)`;
-            } else {
-                // 메인 슬라이더 실시간 이동
-                const moveX = ((-STATE.currentSlide * window.innerWidth) + diffX);
-                DOM.slider.style.transform = `translate3d(${moveX}px, 0, 0)`;
-            }
-        };
-
-        const dragEnd = (e) => {
-            if (!STATE.isDragging) return;
-            const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
-            const diffX = STATE.startX - endX;
-            const threshold = 80;
-
-            if (DOM.lightbox.classList.contains('show')) {
-                DOM.lightboxImg.style.transition = 'transform 0.3s ease-out';
-                if (Math.abs(diffX) > threshold) {
-                    changeLbImg(diffX > 0 ? 1 : -1);
-                }
-                DOM.lightboxImg.style.transform = 'translateX(0)';
-            } else {
-                if (Math.abs(diffX) > threshold) {
-                    moveSlide(diffX > 0 ? 1 : -1);
-                } else {
-                    updateSlider();
-                }
-            }
-            STATE.isDragging = false;
-        };
-
-        // 맥 트랙패드 Wheel 대응
-        let wheelAccumulated = 0;
-        let wheelTimeout;
-        document.addEventListener('wheel', (e) => {
-            if (DOM.lightbox.classList.contains('show')) return;
-            wheelAccumulated += e.deltaX;
-            clearTimeout(wheelTimeout);
-            wheelTimeout = setTimeout(() => {
-                if (Math.abs(wheelAccumulated) > 50) {
-                    moveSlide(wheelAccumulated > 0 ? 1 : -1);
-                }
-                wheelAccumulated = 0;
-            }, 50);
-        }, { passive: true });
-
-        // 이벤트 등록
-        window.addEventListener('mousedown', dragStart);
-        window.addEventListener('mousemove', dragMove);
-        window.addEventListener('mouseup', dragEnd);
-        window.addEventListener('touchstart', dragStart, { passive: true });
-        window.addEventListener('touchmove', dragMove, { passive: true });
-        window.addEventListener('touchend', dragEnd, { passive: true });
-
-        document.getElementById('lb-prev-btn').addEventListener('click', (e) => changeLbImg(-1, e));
-        document.getElementById('lb-next-btn').addEventListener('click', (e) => changeLbImg(1, e));
+        document.getElementById('lb-prev-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(-1); });
+        document.getElementById('lb-next-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(1); });
         DOM.lightbox.addEventListener('click', (e) => {
             if (!e.target.classList.contains('lb-arrow') && e.target.id !== 'lightbox-img') closeLightbox();
         });
@@ -372,3 +372,4 @@
 </script>
 </body>
 </html>
+
