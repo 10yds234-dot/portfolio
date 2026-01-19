@@ -307,18 +307,31 @@
                 e.preventDefault(); 
             }
 
-            if (STATE.isMoving && !DOM.lightbox.classList.contains('show')) return;
-            if (!isOverSlider && !DOM.lightbox.classList.contains('show')) return;
-            if (DOM.lightbox.classList.contains('show') && STATE.isLbMoving) return;
+            // 라이트박스가 열려있을 때의 휠 제어
+            if (DOM.lightbox.classList.contains('show')) {
+                // [핵심 수정] 라이트박스가 이동 중(isLbMoving)이면 모든 휠 입력을 무시하여 중복 실행 방지
+                if (STATE.isLbMoving) return; 
+
+                wheelAccumulated += e.deltaX;
+                if (Math.abs(wheelAccumulated) > 50) { // 감도를 50으로 약간 높여 안정감 부여
+                    const direction = wheelAccumulated > 0 ? 1 : -1;
+                    changeLbImg(direction);
+                    wheelAccumulated = 0; // 한 장 넘겼으면 누적값 초기화
+                }
+                
+                clearTimeout(wheelTimeout);
+                wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 150);
+                return; // 라이트박스 로직 처리 후 종료
+            }
+
+            // 메인 슬라이더 로직 (기존 유지)
+            if (STATE.isMoving) return;
+            if (!isOverSlider) return;
 
             wheelAccumulated += e.deltaX;
             if (Math.abs(wheelAccumulated) > 25) {
                 const direction = wheelAccumulated > 0 ? 1 : -1;
-                if (DOM.lightbox.classList.contains('show')) {
-                    changeLbImg(direction);
-                } else {
-                    moveSlide(direction);
-                }
+                moveSlide(direction);
                 wheelAccumulated = 0;
                 clearTimeout(wheelTimeout);
             } else {
@@ -364,3 +377,4 @@
 </script>
 </body>
 </html>
+
