@@ -300,7 +300,7 @@
         let wheelAccumulated = 0;
         let wheelTimeout;
         document.addEventListener('wheel', (e) => {
-            const isOverPhotos = e.target.closest('.series-section') || e.target.closest('#lightbox');
+            const isOverPhotos = e.target.closest('.masonry-container') || e.target.closest('#lightbox');
             const isOverSlider = e.target.closest('.slider-viewport'); 
 
             if (isOverPhotos && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
@@ -382,4 +382,3 @@
 </script>
 </body>
 </html>
-
