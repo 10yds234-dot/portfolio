@@ -42,12 +42,13 @@
             overscroll-behavior-x: auto; /* 전체 영역은 뒤로가기 허용 */
         }
 
-        /* 사진 영역에서만 제스처 간섭 방지 */
-        .slider-viewport, #lightbox { 
-            width: 100vw; height: 100vh; overflow: hidden; 
-            touch-action: pan-y; 
+        /* [수정] slider-viewport 전체가 아닌, 사진 영역과 라이트박스만 간섭 방지 */
+        .masonry-container, #lightbox { 
             overscroll-behavior-x: none; 
+            touch-action: pan-y;
         }
+
+        .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
 
         img { -webkit-user-drag: none; user-drag: none; }
 
@@ -245,6 +246,8 @@
         DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
         DOM.lightboxImg.style.opacity = '1';
         DOM.lightbox.style.display = 'flex';
+        // [수정] 라이트박스를 열 때 즉시 isMoving을 해제하여 바로 스와이프 가능하게 함
+        STATE.isMoving = false; 
         setTimeout(() => DOM.lightbox.classList.add('show'), 10);
     }
 
@@ -276,7 +279,7 @@
             STATE.isDragging = false;
             const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
             const diffX = STATE.startX - endX;
-            const threshold = 20; // 즉각적인 반응을 위해 20px로 하향
+            const threshold = 20; 
 
             if (Math.abs(diffX) > threshold) {
                 const direction = diffX > 0 ? 1 : -1;
@@ -291,18 +294,32 @@
         let wheelAccumulated = 0;
         let wheelTimeout;
         document.addEventListener('wheel', (e) => {
-            const isOverGallery = e.target.closest('.slider-viewport') || e.target.closest('#lightbox');
-            
-            // 사진 위 가로 스크롤 시 브라우저 뒤로가기만 선택적으로 차단
-            if (isOverGallery && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            // [수정] slider-viewport가 아닌, 실제 사진 영역(masonry)과 라이트박스만 타겟팅
+            const isOverPhotos = e.target.closest('.masonry-container') || e.target.closest('#lightbox');
+            const isOverSlider = e.target.closest('.slider-viewport'); // 슬라이드 이동을 위한 체크
+
+            // 1. 뒤로가기 방지: 사진 위에서만 차단, 그 외(배경)에서는 허용
+            if (isOverPhotos && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 e.preventDefault(); 
             }
 
-            if (STATE.isMoving || !isOverGallery) return;
+            // 라이트박스가 떠있거나 슬라이드 이동중이면 패스 (단, 라이트박스 제어는 아래에서)
+            if (STATE.isMoving && !DOM.lightbox.classList.contains('show')) return;
+            
+            // 갤러리 영역 밖이면 반응 안함 (배경 스크롤 시 이동하고 싶으면 이 줄을 수정)
+            if (!isOverSlider && !DOM.lightbox.classList.contains('show')) return;
 
             wheelAccumulated += e.deltaX;
             if (Math.abs(wheelAccumulated) > 25) {
-                moveSlide(wheelAccumulated > 0 ? 1 : -1);
+                const direction = wheelAccumulated > 0 ? 1 : -1;
+                
+                // [수정] 라이트박스가 열려있으면 라이트박스 이미지를 교체
+                if (DOM.lightbox.classList.contains('show')) {
+                    changeLbImg(direction);
+                } else {
+                    moveSlide(direction);
+                }
+                
                 wheelAccumulated = 0;
                 clearTimeout(wheelTimeout);
             } else {
