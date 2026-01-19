@@ -389,7 +389,7 @@
                     STATE.isDragging = false;
                     const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
                     const diffX = STATE.startX - endX;
-                    const threshold = 20;
+                    const threshold = 10;
 
                     if (Math.abs(diffX) > threshold) {
                         const direction = diffX > 0 ? 1 : -1;
@@ -483,3 +483,4 @@
 </body>
 
 </html>
+
