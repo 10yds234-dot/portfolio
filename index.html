@@ -16,6 +16,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
     
     <style>
+        #loading-screen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+.loading-logo {
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* 로딩 완료 후 숨기기 위한 클래스 */
+#loading-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+        
         :root {
             --bg-image: url('assets/000001.webp'); 
             --interface-color: #FFFFFF; 
@@ -200,7 +229,11 @@
     </style>
 </head>
 <body>
-
+    
+<div id="loading-screen">
+    <div class="loading-logo">JUNG DAUN</div>
+</div>
+    
 <div class="bg-fixed"></div>
 
 <nav>
@@ -442,6 +475,14 @@ function bindEvents() {
 
     initGallery();
     bindEvents();
+    window.addEventListener('load', () => {
+    const loader = document.getElementById('loading-screen');
+    // 너무 빨리 사라지면 허무하니까 0.5초 정도 여유를 둡니다.
+    setTimeout(() => {
+        loader.classList.add('fade-out');
+    }, 500);
+});
 </script>
 </body>
 </html>
+
