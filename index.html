@@ -195,6 +195,7 @@
         menu: document.getElementById('dropdown-menu')
     };
 
+    // 프리로드 및 초기화 로직 유지
     function preloadSlide(idx) {
         const targetIdx = (idx + STATE.slideCount) % STATE.slideCount;
         if (STATE.preloadedIdx.has(targetIdx)) return;
@@ -229,15 +230,18 @@
 
     function toggleMenu() { DOM.menu.classList.toggle('show'); }
 
-    function updateSlider(withAnim = true) {
+    // 슬라이더 이동 업데이트 (속도 개선)
+    function updateSlider() {
         const offset = -STATE.currentSlide * 100;
-        DOM.slider.style.transition = withAnim ? `transform var(--transition-speed) var(--transition-timing)` : 'none';
+        // 기존 1.6s에서 0.6s로 속도를 대폭 높여 반응성을 개선했습니다.
+        DOM.slider.style.transition = `transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)`;
         DOM.slider.style.transform = `translate3d(${offset}vw, 0, 0)`;
         
         document.querySelectorAll('.series-section').forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
         document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
-        preloadSlide(STATE.currentSlide + 1); preloadSlide(STATE.currentSlide - 1);
-        setTimeout(() => { STATE.isMoving = false; }, 800); // 속도감 있게 조정
+        
+        preloadSlide(STATE.currentSlide + 1);
+        setTimeout(() => { STATE.isMoving = false; }, 600);
     }
 
     function moveSlide(d) {
@@ -251,16 +255,18 @@
         STATE.lbImages = GALLERY_DATA[STATE.currentSlide].images;
         STATE.lbCurrentIndex = STATE.lbImages.indexOf(imgSrc.getAttribute('src'));
         DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
-        DOM.lightboxImg.style.transform = 'none';
-        DOM.lightboxImg.style.transition = 'none';
         DOM.lightbox.style.display = 'flex';
         setTimeout(() => DOM.lightbox.classList.add('show'), 10);
     }
 
     function changeLbImg(d) {
-        STATE.lbCurrentIndex = (STATE.lbCurrentIndex + d + STATE.lbImages.length) % STATE.lbImages.length;
-        DOM.lightboxImg.style.transition = 'none'; // 순간적으로 교체
-        DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
+        // 라이트박스 전환 애니메이션 (Fade 효과)
+        DOM.lightboxImg.style.opacity = '0';
+        setTimeout(() => {
+            STATE.lbCurrentIndex = (STATE.lbCurrentIndex + d + STATE.lbImages.length) % STATE.lbImages.length;
+            DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
+            DOM.lightboxImg.style.opacity = '1';
+        }, 150);
     }
 
     function closeLightbox() {
@@ -275,24 +281,8 @@
             STATE.startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
         };
 
-        const dragMove = (e) => {
-            if (!STATE.isDragging || STATE.isMoving) return;
-            const currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            const diffX = currentX - STATE.startX;
-            
-            // 1. 살짝만 따라오는 '저항' 로직 (거리의 0.3배만 이동)
-            const resistance = 0.3;
-            const moveX = diffX * resistance;
-
-            if (DOM.lightbox.classList.contains('show')) {
-                DOM.lightboxImg.style.transition = 'none';
-                DOM.lightboxImg.style.transform = `translateX(${moveX}px)`;
-            } else {
-                DOM.slider.style.transition = 'none';
-                const baseOffset = -STATE.currentSlide * window.innerWidth;
-                DOM.slider.style.transform = `translate3d(${baseOffset + moveX}px, 0, 0)`;
-            }
-        };
+        // dragMove는 방향만 판단하기 위해 비워둡니다 (트래킹 제거)
+        const dragMove = (e) => { if (!STATE.isDragging) return; };
 
         const dragEnd = (e) => {
             if (!STATE.isDragging) return;
@@ -300,24 +290,18 @@
             
             const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
             const diffX = STATE.startX - endX;
-            const threshold = 50; // 조금만 밀어도 넘어가도록 설정
+            const threshold = 30; // 살짝만 튕겨도 넘어가도록 설정
 
-            if (DOM.lightbox.classList.contains('show')) {
-                DOM.lightboxImg.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                if (Math.abs(diffX) > threshold) {
+            if (Math.abs(diffX) > threshold) {
+                if (DOM.lightbox.classList.contains('show')) {
                     changeLbImg(diffX > 0 ? 1 : -1);
-                }
-                DOM.lightboxImg.style.transform = 'translateX(0)';
-            } else {
-                if (Math.abs(diffX) > threshold) {
-                    moveSlide(diffX > 0 ? 1 : -1);
                 } else {
-                    updateSlider();
+                    moveSlide(diffX > 0 ? 1 : -1);
                 }
             }
         };
 
-        // 맥 트랙패드 (가로 휠)
+        // 맥 트랙패드 (휠) - 빠른 반응을 위해 누적값 하향
         let wheelAccumulated = 0;
         let wheelTimeout;
         document.addEventListener('wheel', (e) => {
@@ -325,22 +309,20 @@
             wheelAccumulated += e.deltaX;
             clearTimeout(wheelTimeout);
             wheelTimeout = setTimeout(() => {
-                if (Math.abs(wheelAccumulated) > 30) {
+                if (Math.abs(wheelAccumulated) > 20) {
                     moveSlide(wheelAccumulated > 0 ? 1 : -1);
                 }
                 wheelAccumulated = 0;
-            }, 50);
+            }, 30);
         }, { passive: true });
 
         // 마우스/터치 리스너
         window.addEventListener('mousedown', dragStart);
-        window.addEventListener('mousemove', dragMove);
         window.addEventListener('mouseup', dragEnd);
         window.addEventListener('touchstart', dragStart, { passive: true });
-        window.addEventListener('touchmove', dragMove, { passive: true });
         window.addEventListener('touchend', dragEnd, { passive: true });
 
-        // 버튼 및 키보드
+        // 기존 클릭 및 키보드 이벤트 유지
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('arrow-prev')) moveSlide(-1);
             else if (e.target.classList.contains('arrow-next')) moveSlide(1);
@@ -372,4 +354,5 @@
 </script>
 </body>
 </html>
+
 
