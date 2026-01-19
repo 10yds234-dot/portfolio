@@ -128,37 +128,39 @@
             .menu-content { line-height: 1.4; font-size: 0.8rem; }
         }
 
-        /* 2. 모바일 가로 모드 최적화 */
+        /* 2. 모바일 가로 모드 최적화 (가로 길이가 짧은 기기 대응) */
 @media (max-device-width: 930px) and (orientation: landscape) {
     :root {
-        --spacing: 10px;
-        --photo-gap: 15px;
+        --spacing: 12px;
+        --photo-gap: 10px;
     }
 
-    /* 화면 전체를 사용하도록 높이 설정 */
+    /* 슬라이드 섹션이 화면 높이에 꽉 차도록 설정 */
     .series-section {
         height: 100vh;
+        width: 100vw;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
     .masonry-container {
-        width: 90vw; /* 가로로 더 넓게 사용 */
-        height: 80vh; /* 위아래 여백 확보 */
-        max-width: none; /* 제한 해제 */
-        margin-top: 0;
+        width: auto;
+        height: 85vh; /* 화면 상하단 여백 확보 */
+        max-width: 90vw;
         display: flex;
-        flex-direction: row; /* 컬럼들을 가로로 배치 */
-        align-items: center;
+        flex-direction: row; /* 컬럼들을 가로로 나열 */
+        gap: var(--photo-gap);
+        margin: 0 auto;
     }
 
     .masonry-col {
         height: 100%;
         display: flex;
         flex-direction: column;
-        gap: var(--photo-gap);
         justify-content: center;
+        flex: 0 1 auto;
+        min-width: 0;
     }
 
     .photo-item {
@@ -166,24 +168,28 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 0; /* flex 자식 요소의 최소 높이 버그 방지 */
+        min-height: 0; /* 중요: Flex 자식의 높이 제한 해제 */
     }
 
     .photo-item img {
-        max-height: calc(40vh - 20px); /* 두 줄일 때 한 사진의 최대 높이 */
+        height: auto;
         width: auto;
+        max-height: calc(42.5vh - 15px); /* 화면 높이의 절반 정도 (여백 제외) */
         max-width: 100%;
         object-fit: contain;
     }
 
-    /* 네비게이션 및 UI 조정 */
-    nav { top: 10px; left: 15px; }
+    /* 인터페이스(메뉴, 로고, 점) 위치 및 크기 조정 */
+    nav { top: 10px; left: var(--spacing); }
     .logo { font-size: 1rem; }
     .dots-nav { bottom: 10px; }
     
-    /* 가로 모드에서 라이트박스 이미지 크기 최적화 */
+    /* 가로 모드에서는 화살표를 숨겨 사진 공간 확보 (스와이프 사용 권장) */
+    .nav-arrow { display: none; }
+
+    /* 라이트박스 이미지 크기 조정 */
     #lightbox-img {
-        max-height: 80vh;
+        max-height: 85vh;
         width: auto;
     }
 }
@@ -438,5 +444,6 @@
 </script>
 </body>
 </html>
+
 
 
