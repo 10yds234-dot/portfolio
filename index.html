@@ -309,19 +309,26 @@
 
             // 라이트박스가 열려있을 때의 휠 제어
             if (DOM.lightbox.classList.contains('show')) {
-                // [핵심 수정] 라이트박스가 이동 중(isLbMoving)이면 모든 휠 입력을 무시하여 중복 실행 방지
+                // 이동 중이거나, 이동 직후 쿨타임(500ms) 동안은 모든 휠 입력을 무시
                 if (STATE.isLbMoving) return; 
 
                 wheelAccumulated += e.deltaX;
-                if (Math.abs(wheelAccumulated) > 50) { // 감도를 50으로 약간 높여 안정감 부여
+                
+                if (Math.abs(wheelAccumulated) > 60) { // 감도를 60으로 높여 의도치 않은 이동 방지
                     const direction = wheelAccumulated > 0 ? 1 : -1;
                     changeLbImg(direction);
-                    wheelAccumulated = 0; // 한 장 넘겼으면 누적값 초기화
+                    
+                    wheelAccumulated = 0;
+                    
+                    // [핵심] 사진이 넘어가는 애니메이션(350ms)보다 긴 락(500ms)을 걸어 
+                    // 손가락을 뗄 때 발생하는 '관성 신호'가 무시되도록 함
+                    STATE.isLbMoving = true; 
+                    setTimeout(() => { STATE.isLbMoving = false; }, 500); 
                 }
                 
                 clearTimeout(wheelTimeout);
-                wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 150);
-                return; // 라이트박스 로직 처리 후 종료
+                wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 100);
+                return;
             }
 
             // 메인 슬라이더 로직 (기존 유지)
@@ -377,4 +384,5 @@
 </script>
 </body>
 </html>
+
 
