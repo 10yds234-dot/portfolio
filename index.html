@@ -39,14 +39,14 @@
             background-color: #000; color: var(--interface-color); 
             font-family: 'Inter', sans-serif; font-weight: 200;
             overflow: hidden; height: 100%; position: fixed; width: 100%;
-            /* 맥 트랙패드 및 모바일 브라우저 뒤로가기 제스처 방지 */
-            overscroll-behavior-x: none;
+            overscroll-behavior-x: auto; /* 전체 영역은 뒤로가기 허용 */
         }
 
-        .slider-viewport { 
+        /* 사진 영역에서만 제스처 간섭 방지 */
+        .slider-viewport, #lightbox { 
             width: 100vw; height: 100vh; overflow: hidden; 
             touch-action: pan-y; 
-            overscroll-behavior-x: none;
+            overscroll-behavior-x: none; 
         }
 
         img { -webkit-user-drag: none; user-drag: none; }
@@ -95,7 +95,7 @@
         .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid #fff; opacity: 0.2; transition: 0.4s; pointer-events: none; }
         .dot.active { background-color: #fff; opacity: 0.9; transform: scale(1.2); }
 
-        #lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: none; justify-content: center; align-items: center; z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer; overscroll-behavior: none; }
+        #lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: none; justify-content: center; align-items: center; z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer; }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox-img { max-width: 90%; max-height: 90vh; object-fit: contain; z-index: 3050; transition: opacity 0.4s ease; }
         
@@ -222,7 +222,7 @@
 
     function updateSlider() {
         const offset = -STATE.currentSlide * 100;
-        DOM.slider.style.transition = `transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1)`;
+        DOM.slider.style.transition = `transform var(--transition-speed) var(--transition-timing)`;
         DOM.slider.style.transform = `translate3d(${offset}vw, 0, 0)`;
         
         document.querySelectorAll('.series-section').forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
@@ -261,12 +261,10 @@
         DOM.lightbox.classList.remove('show');
         setTimeout(() => {
             DOM.lightbox.style.display = 'none';
-            DOM.lightboxImg.style.opacity = '1';
         }, 500);
     }
 
     function bindEvents() {
-        // 드래그/스와이프 감지
         const dragStart = (e) => {
             if (STATE.isMoving) return;
             STATE.isDragging = true;
@@ -278,37 +276,40 @@
             STATE.isDragging = false;
             const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
             const diffX = STATE.startX - endX;
-            const threshold = 40; 
+            const threshold = 20; // 즉각적인 반응을 위해 20px로 하향
 
             if (Math.abs(diffX) > threshold) {
+                const direction = diffX > 0 ? 1 : -1;
                 if (DOM.lightbox.classList.contains('show')) {
-                    changeLbImg(diffX > 0 ? 1 : -1);
+                    changeLbImg(direction);
                 } else {
-                    moveSlide(diffX > 0 ? 1 : -1);
+                    moveSlide(direction);
                 }
             }
         };
 
-        // 맥 트랙패드 휠 (뒤로가기 방지 로직 포함)
         let wheelAccumulated = 0;
         let wheelTimeout;
         document.addEventListener('wheel', (e) => {
-            // 가로 스크롤 발생 시 브라우저 기본 동작(뒤로가기) 차단
-            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            const isOverGallery = e.target.closest('.slider-viewport') || e.target.closest('#lightbox');
+            
+            // 사진 위 가로 스크롤 시 브라우저 뒤로가기만 선택적으로 차단
+            if (isOverGallery && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 e.preventDefault(); 
             }
 
-            if (DOM.lightbox.classList.contains('show') || STATE.isMoving) return;
-            
+            if (STATE.isMoving || !isOverGallery) return;
+
             wheelAccumulated += e.deltaX;
-            clearTimeout(wheelTimeout);
-            wheelTimeout = setTimeout(() => {
-                if (Math.abs(wheelAccumulated) > 30) {
-                    moveSlide(wheelAccumulated > 0 ? 1 : -1);
-                }
+            if (Math.abs(wheelAccumulated) > 25) {
+                moveSlide(wheelAccumulated > 0 ? 1 : -1);
                 wheelAccumulated = 0;
-            }, 50);
-        }, { passive: false }); // preventDefault 사용을 위해 passive: false
+                clearTimeout(wheelTimeout);
+            } else {
+                clearTimeout(wheelTimeout);
+                wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 50);
+            }
+        }, { passive: false });
 
         window.addEventListener('mousedown', dragStart);
         window.addEventListener('mouseup', dragEnd);
