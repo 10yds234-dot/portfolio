@@ -47,7 +47,14 @@
             touch-action: pan-y;
         }
 
-        .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
+        .slider-viewport { 
+    width: 100vw; 
+    height: 100vh; 
+    overflow: hidden; 
+    
+    /* 맥 브라우저 제스처 뒤로가기 방지 영역을 화면 전체로 확장 */
+    overscroll-behavior-x: none; 
+}
         img { -webkit-user-drag: none; user-drag: none; }
         .menu-content { user-select: text !important; -webkit-user-select: text !important; cursor: auto; }
 
@@ -441,6 +448,7 @@
 </script>
 </body>
 </html>
+
 
 
 
