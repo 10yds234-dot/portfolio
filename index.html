@@ -370,10 +370,12 @@
         let wheelAccumulated = 0;
         let wheelTimeout;
         document.addEventListener('wheel', (e) => {
-            const isOverPhotos = e.target.closest('.masonry-container') || e.target.closest('#lightbox');
+            // 이 부분이 수정되었습니다: 슬라이더 전체 영역에서 수평 스와이프 방지
             const isOverSlider = e.target.closest('.slider-viewport'); 
+            const isOverPhotos = e.target.closest('.masonry-container') || e.target.closest('#lightbox');
 
-            if (isOverPhotos && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            // 맥 브라우저 뒤로가기 제스처 방지를 위한 핵심 로직
+            if (isOverSlider && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 e.preventDefault(); 
             }
 
@@ -448,6 +450,7 @@
 </script>
 </body>
 </html>
+
 
 
 
