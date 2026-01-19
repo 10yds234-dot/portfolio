@@ -128,48 +128,65 @@
             .menu-content { line-height: 1.4; font-size: 0.8rem; }
         }
 
-        /* 2. 모바일 가로 모드 (중첩 해제하여 별도로 작성) */
-        @media (max-device-width: 930px) and (orientation: landscape) {
-            :root {
-                --spacing: 15px;
-                --photo-gap: 10px;
-                --container-max-width: 500px;
-            }
+        /* 2. 모바일 가로 모드 최적화 */
+@media (max-device-width: 930px) and (orientation: landscape) {
+    :root {
+        --spacing: 10px;
+        --photo-gap: 15px;
+    }
 
-            .masonry-container {
-                width: auto; 
-                height: 75vh; /* 화면 높이에 맞춰 조절 */
-                margin-top: 30px;
-            }
+    /* 화면 전체를 사용하도록 높이 설정 */
+    .series-section {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-            .masonry-col {
-                height: 100%;
-                justify-content: center;
-            }
+    .masonry-container {
+        width: 90vw; /* 가로로 더 넓게 사용 */
+        height: 80vh; /* 위아래 여백 확보 */
+        max-width: none; /* 제한 해제 */
+        margin-top: 0;
+        display: flex;
+        flex-direction: row; /* 컬럼들을 가로로 배치 */
+        align-items: center;
+    }
 
-            .photo-item {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
-            }
+    .masonry-col {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--photo-gap);
+        justify-content: center;
+    }
 
-            .photo-item img {
-                max-height: 100%; /* 사진이 화면 높이를 벗어나지 않게 제한 */
-                width: auto;      
-                object-fit: contain;
-            }
+    .photo-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0; /* flex 자식 요소의 최소 높이 버그 방지 */
+    }
 
-            /* 가로 모드에서 인터페이스 최적화 */
-            nav { top: 10px; left: 15px; }
-            .dots-nav { bottom: 10px; }
-            .nav-arrow { display: none; } /* 가로 모드에선 스와이프 권장 */
-            
-            #lightbox-img {
-                max-height: 85vh;
-            }
-        }
+    .photo-item img {
+        max-height: calc(40vh - 20px); /* 두 줄일 때 한 사진의 최대 높이 */
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    /* 네비게이션 및 UI 조정 */
+    nav { top: 10px; left: 15px; }
+    .logo { font-size: 1rem; }
+    .dots-nav { bottom: 10px; }
+    
+    /* 가로 모드에서 라이트박스 이미지 크기 최적화 */
+    #lightbox-img {
+        max-height: 80vh;
+        width: auto;
+    }
+}
     </style>
 </head>
 <body>
@@ -421,4 +438,5 @@
 </script>
 </body>
 </html>
+
 
