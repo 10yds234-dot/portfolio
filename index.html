@@ -21,15 +21,20 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-drag: none; }
 
+        /* 뒤로가기를 기본적으로 허용합니다. */
         body, html { 
             background-color: #000; color: var(--interface-color); 
             font-family: 'Inter', sans-serif; font-weight: 200;
             overflow: hidden; height: 100%; position: fixed; width: 100%;
-            /* body의 뒤로가기 방지를 완전히 제거하여 다른 영역에선 뒤로가기가 되게 합니다 */
-            overscroll-behavior-x: auto; 
         }
 
-        .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; touch-action: pan-y; }
+        /* 사진 영역에서만 제스처 충돌을 방지합니다. */
+        .slider-viewport, #lightbox { 
+            overscroll-behavior-x: none; 
+            touch-action: pan-y;
+        }
+
+        .slider-viewport { width: 100vw; height: 100vh; overflow: hidden; }
         .horizontal-wrapper { display: flex; height: 100vh; transition: transform var(--transition-speed) var(--transition-timing); }
         .series-section { flex: 0 0 100vw; width: 100vw; display: flex; justify-content: center; align-items: center; opacity: 0.15; transition: opacity 1.3s ease; }
         .series-section.active { opacity: 1; }
@@ -38,20 +43,29 @@
         .masonry-col { display: flex; flex-direction: column; gap: var(--photo-gap); flex: 1; }
         .photo-item img { width: 100%; height: auto; display: block; cursor: pointer; }
 
-        #lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: none; justify-content: center; align-items: center; z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer; touch-action: none; }
+        #lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: none; justify-content: center; align-items: center; z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer; }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox-img { max-width: 90%; max-height: 90vh; object-fit: contain; z-index: 3050; transition: opacity 0.4s ease; }
 
-        /* 네비게이션 및 기타 스타일 유지 */
         nav { position: fixed; top: var(--spacing); left: var(--spacing); z-index: 2000; display: flex; flex-direction: column; }
         .logo { font-size: 1.45rem; text-transform: uppercase; cursor: pointer; z-index: 2010; }
-        .menu-container { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.7s ease; }
+        .menu-container { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.7s ease; pointer-events: none; }
         .menu-container.show { max-height: 500px; opacity: 1; margin-top: 30px; pointer-events: auto; }
+        .menu-item { margin-bottom: 25px; }
+        .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
+
         .dots-nav { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); display: flex; z-index: 1000; }
         .dot-wrapper { padding: 15px 10px; cursor: pointer; }
-        .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid #fff; opacity: 0.2; transition: 0.4s; }
+        .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid #fff; opacity: 0.2; transition: 0.4s; pointer-events: none; }
         .dot.active { background-color: #fff; opacity: 0.9; transform: scale(1.2); }
         .bg-fixed { position: fixed; inset: 0; background-image: var(--bg-image); background-size: cover; background-position: center; z-index: -2; }
+
+        @media (max-width: 850px) and (orientation: portrait) { 
+            :root { --spacing: 15px; --photo-gap: 10px; }
+            .logo { font-size: 1.1rem; }
+            .masonry-container { width: 65vw; }
+        }
     </style>
 </head>
 <body>
@@ -60,14 +74,12 @@
 <nav>
     <div class="logo" onclick="toggleMenu()">JUNG DAUN</div>
     <div id="dropdown-menu" class="menu-container">
-        <div class="menu-item"><span class="menu-label">About</span><div class="menu-content">Shooting and editing photos,<br>Seoul.</div></div>
-        <div class="menu-item"><span class="menu-label">Contact</span><div class="menu-content">10yds730@gmail.com</div></div>
+        <div class="menu-item"><span class="menu-label">About</span><div class="menu-content">Shooting and editing photos,<br>based in Seoul.</div></div>
+        <div class="menu-item"><span class="menu-label">Contact</span><div class="menu-content">10yds730@gmail.com<br>@down01234</div></div>
     </div>
 </nav>
 
-<div id="lightbox">
-    <img id="lightbox-img" alt="Enlarged View">
-</div>
+<div id="lightbox"><img id="lightbox-img" alt="Enlarged View"></div>
 
 <div class="slider-viewport" id="swipe-zone">
     <div class="horizontal-wrapper" id="slider"></div>
@@ -153,7 +165,7 @@
 
     function closeLightbox() {
         DOM.lightbox.classList.remove('show');
-        setTimeout(() => DOM.lightbox.style.display = 'none', 500);
+        setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 500);
     }
 
     function bindEvents() {
@@ -165,39 +177,40 @@
         const dragEnd = (e) => {
             if (!STATE.isDragging) return;
             STATE.isDragging = false;
-            const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
+            const endX = e.type.includes('touch') ? (e.changedTouches ? e.changedTouches[0].clientX : e.clientX) : e.clientX;
             const diffX = STATE.startX - endX;
-            if (Math.abs(diffX) > 25) {
+            if (Math.abs(diffX) > 20) {
                 const direction = diffX > 0 ? 1 : -1;
-                // 라이트박스가 열려있으면 라이트박스 이미지 교체, 아니면 슬라이드 이동
                 if (DOM.lightbox.classList.contains('show')) changeLbImg(direction);
                 else moveSlide(direction);
             }
         };
 
-        // 맥 뒤로가기 방지 및 휠 제어
+        // 휠 제어 및 특정 영역 뒤로가기 차단
         let wheelAccumulated = 0;
         let wheelTimeout;
         document.addEventListener('wheel', (e) => {
-            // "사진 영역" 또는 "라이트박스" 위에서만 뒤로가기 차단
             const isOverGallery = e.target.closest('.slider-viewport') || e.target.closest('#lightbox');
             
-            if (isOverGallery) {
-                if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-                    e.preventDefault(); // 사진 위에서만 뒤로가기 차단
-                }
-                
-                if (STATE.isMoving || DOM.lightbox.classList.contains('show')) return;
-                wheelAccumulated += e.deltaX;
+            // 사진 영역 위에서 가로 스크롤 시에만 뒤로가기 차단
+            if (isOverGallery && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                e.preventDefault(); 
+            }
+
+            if (STATE.isMoving || !isOverGallery || DOM.lightbox.classList.contains('show')) return;
+
+            wheelAccumulated += e.deltaX;
+            if (Math.abs(wheelAccumulated) > 25) {
+                moveSlide(wheelAccumulated > 0 ? 1 : -1);
+                wheelAccumulated = 0;
                 clearTimeout(wheelTimeout);
-                wheelTimeout = setTimeout(() => {
-                    if (Math.abs(wheelAccumulated) > 30) moveSlide(wheelAccumulated > 0 ? 1 : -1);
-                    wheelAccumulated = 0;
-                }, 50);
+            } else {
+                clearTimeout(wheelTimeout);
+                wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 50);
             }
         }, { passive: false });
 
-        // 모든 이벤트 리스너를 window/lightbox에 적절히 배분
+        // 마우스 및 터치 이벤트 연결
         window.addEventListener('mousedown', dragStart);
         window.addEventListener('mouseup', dragEnd);
         window.addEventListener('touchstart', dragStart, { passive: true });
@@ -214,11 +227,10 @@
         });
 
         document.addEventListener('keydown', e => {
-            if (DOM.lightbox.classList.contains('show')) {
-                if (e.key === 'ArrowRight') changeLbImg(1);
-                if (e.key === 'ArrowLeft') changeLbImg(-1);
-                if (e.key === 'Escape') closeLightbox();
-            }
+            if (!DOM.lightbox.classList.contains('show')) return;
+            if (e.key === 'ArrowRight') changeLbImg(1);
+            if (e.key === 'ArrowLeft') changeLbImg(-1);
+            if (e.key === 'Escape') closeLightbox();
         });
     }
 
