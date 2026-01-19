@@ -318,7 +318,7 @@
                 wheelAccumulated += e.deltaX;
 
                 // 2. 임계값을 80으로 높여 관성 스크롤의 '끝자락' 신호에 반응하지 않게 함
-                if (Math.abs(wheelAccumulated) > 200) { 
+                if (Math.abs(wheelAccumulated) > 400) { 
                     const direction = wheelAccumulated > 0 ? 1 : -1;
                     
                     // 3. 이동 함수 호출 전 즉시 누적값 0으로 초기화 (중요)
@@ -384,6 +384,7 @@
 </script>
 </body>
 </html>
+
 
 
 
