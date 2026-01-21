@@ -88,9 +88,19 @@
         .menu-content { user-select: text !important; -webkit-user-select: text !important; cursor: auto; }
 
         .bg-fixed {
-            position: fixed; inset: 0; background-image: var(--bg-image);
-            background-size: cover; background-position: center; z-index: -2;
-            transform: translateZ(0); pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100lvh;
+            
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            transform: translateZ(0);
+            pointer-events: none;
         }
 
         nav { 
@@ -483,6 +493,7 @@
 </body>
 
 </html>
+
 
 
 
