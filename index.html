@@ -23,9 +23,10 @@
 
     <title>JUNG DAUN - Photography Portfolio</title>
 
+    <!-- Google Fonts: Manrope -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400&display=swap" rel="stylesheet">
 
     <!-- SEO 개선: JSON-LD 구조화 데이터 -->
     <script type="application/ld+json">
@@ -109,7 +110,8 @@
 
         body, html { 
             background-color: #000; color: var(--interface-color); 
-            font-family: 'Futura', 'Futura PT', 'Century Gothic', 'AppleGothic', sans-serif;
+            /* Manrope 폰트 적용 */
+            font-family: 'Manrope', sans-serif;
             font-weight: 300;
             overflow: hidden; height: 100%; position: fixed; width: 100%;
             overscroll-behavior-x: auto; 
@@ -150,7 +152,15 @@
             position: fixed; top: var(--spacing); left: var(--spacing); 
             z-index: 2000; display: flex; flex-direction: column; gap: 0;
         }
-        .logo { font-size: 1.45rem; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: opacity 0.3s; z-index: 2010; font-weight: 300; }
+        .logo { 
+            font-size: 1.45rem; 
+            letter-spacing: 0.02em; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            transition: opacity 0.3s; 
+            z-index: 2010;
+            font-weight: 200;
+        }
         .logo:active { opacity: 0.5; }
         .menu-container { 
             max-height: 0; overflow: hidden; opacity: 0;
@@ -602,7 +612,3 @@
 </body>
 
 </html>
-
-
-
-
