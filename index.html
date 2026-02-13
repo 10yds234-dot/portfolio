@@ -5,16 +5,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
+    <!-- SEO 개선: 메타 태그 추가 -->
+    <meta name="description" content="정다운 사진작가의 포트폴리오. 서울을 기반으로 활동하는 사진 작가의 작품을 만나보세요.">
+    <meta name="keywords" content="정다운, 사진작가, 포트폴리오, 서울, photography, Jung Daun">
+    <meta name="author" content="Jung Daun">
+    
+    <!-- Open Graph (소셜 미디어 공유) -->
+    <meta property="og:title" content="JUNG DAUN - Photography Portfolio">
+    <meta property="og:description" content="정다운 사진작가의 포트폴리오">
+    <meta property="og:image" content="assets/A1.webp">
+    <meta property="og:type" content="website">
+    
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="assets/icon-180.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/icon-180.png">
     <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#000000">
 
-    <title>JUNG DAUN</title>
+    <title>JUNG DAUN - Photography Portfolio</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
+
+    <!-- SEO 개선: JSON-LD 구조화 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Jung Daun",
+        "jobTitle": "Photographer",
+        "description": "Shooting and editing photos, based in Seoul",
+        "email": "10yds730@gmail.com",
+        "sameAs": ["https://instagram.com/down01234"],
+        "url": "https://yourwebsite.com",
+        "workLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Seoul",
+                "addressCountry": "KR"
+            }
+        }
+    }
+    </script>
 
     <style>
         html, body {
@@ -169,6 +202,19 @@
 
         footer { position: fixed; bottom: calc(var(--spacing) + env(safe-area-inset-bottom)); right: var(--spacing); font-size: 0.6rem; opacity: 0.3; }
 
+        /* SEO 개선: 스크린 리더용 숨김 텍스트 */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
         @media (max-width: 850px) and (orientation: portrait) { 
             :root { --spacing: 15px; --photo-gap: 10px; }
             nav { flex-direction: row; align-items: flex-start; gap: 11px; } 
@@ -254,7 +300,7 @@
     <div class="bg-fixed"></div>
 
     <nav>
-        <div class="logo" onclick="toggleMenu()">JUNG DAUN</div>
+        <h1 class="logo" onclick="toggleMenu()">JUNG DAUN</h1>
         <div id="dropdown-menu" class="menu-container">
             <div class="menu-inner">
                 <div class="menu-item">
@@ -276,7 +322,24 @@
     </div>
 
     <div class="slider-viewport" id="swipe-zone">
-        <div class="horizontal-wrapper" id="slider"></div>
+        <div class="horizontal-wrapper" id="slider">
+            <!-- SEO 개선: JavaScript 없이도 보이는 기본 콘텐츠 -->
+            <article class="series-section active">
+                <h2 class="visually-hidden">Photography Series A</h2>
+                <div class="masonry-container">
+                    <div class="nav-arrow arrow-prev"></div>
+                    <div class="masonry-col">
+                        <div class="photo-item"><img src="assets/A1.webp" alt="Photography work - Series A, Image 1"></div>
+                        <div class="photo-item"><img src="assets/A2.webp" alt="Photography work - Series A, Image 2"></div>
+                    </div>
+                    <div class="masonry-col">
+                        <div class="photo-item"><img src="assets/A4.webp" alt="Photography work - Series A, Image 3"></div>
+                        <div class="photo-item"><img src="assets/A3.webp" alt="Photography work - Series A, Image 4"></div>
+                    </div>
+                    <div class="nav-arrow arrow-next"></div>
+                </div>
+            </article>
+        </div>
     </div>
 
     <div class="dots-nav"></div>
@@ -287,6 +350,36 @@
 
     <script>
         (function () {
+            // 매직 넘버 개선: 모든 설정값을 상수로 정의
+            const CONFIG = {
+                // 휠 스크롤 감도 (픽셀)
+                WHEEL_THRESHOLD: {
+                    LIGHTBOX: 400,  // 라이트박스에서 이미지 전환에 필요한 휠 이동량
+                    SLIDER: 25      // 슬라이더에서 슬라이드 전환에 필요한 휠 이동량
+                },
+                
+                // 스와이프 감도 (픽셀)
+                SWIPE_THRESHOLD: 10,  // 최소 이동 거리 (이 값 이상 움직여야 스와이프로 인식)
+                
+                // 애니메이션 타이밍 (밀리초)
+                TIMING: {
+                    SLIDE_TRANSITION: 1200,    // 슬라이드 전환 애니메이션 시간
+                    LIGHTBOX_FADE_OUT: 300,    // 라이트박스 이미지 페이드아웃 시간
+                    LIGHTBOX_FADE_IN: 350,     // 라이트박스 이미지 페이드인 후 잠금 해제 시간
+                    LIGHTBOX_CLOSE: 500,       // 라이트박스 닫기 애니메이션 시간
+                    WHEEL_RESET: 100,          // 휠 누적값 리셋 대기 시간
+                    WHEEL_RESET_SLIDER: 50,    // 슬라이더 휠 누적값 리셋 대기 시간
+                    LOADING_DELAY: 500,        // 로딩 화면 표시 최소 시간
+                    LIGHTBOX_SHOW: 10          // 라이트박스 표시 지연 시간
+                },
+                
+                // 프리로드 설정
+                PRELOAD: {
+                    NEXT_SLIDE: 1,      // 다음 슬라이드 (현재 + 1)
+                    PREV_SLIDE: -1      // 이전 슬라이드 (현재 - 1)
+                }
+            };
+
             const GALLERY_DATA = [
                 { id: 'A', images: ['assets/A1.webp', 'assets/A2.webp', 'assets/A4.webp', 'assets/A3.webp'] },
                 { id: 'B', images: ['assets/B1.webp', 'assets/B2.webp', 'assets/B4.webp', 'assets/B3.webp'] },
@@ -319,17 +412,19 @@
             function initGallery() {
                 let sliderHTML = ''; let dotsHTML = '';
                 GALLERY_DATA.forEach((series, idx) => {
+                    // SEO 개선: alt 태그 추가
                     sliderHTML += `
                         <article class="series-section ${idx === 0 ? 'active' : ''}">
+                            <h2 class="visually-hidden">Photography Series ${series.id}</h2>
                             <div class="masonry-container">
                                 <div class="nav-arrow arrow-prev"></div>
                                 <div class="masonry-col">
-                                    <div class="photo-item"><img src="${series.images[0]}"></div>
-                                    <div class="photo-item"><img src="${series.images[1]}"></div>
+                                    <div class="photo-item"><img src="${series.images[0]}" alt="Photography work - Series ${series.id}, Image 1"></div>
+                                    <div class="photo-item"><img src="${series.images[1]}" alt="Photography work - Series ${series.id}, Image 2"></div>
                                 </div>
                                 <div class="masonry-col">
-                                    <div class="photo-item"><img src="${series.images[2]}"></div>
-                                    <div class="photo-item"><img src="${series.images[3]}"></div>
+                                    <div class="photo-item"><img src="${series.images[2]}" alt="Photography work - Series ${series.id}, Image 3"></div>
+                                    <div class="photo-item"><img src="${series.images[3]}" alt="Photography work - Series ${series.id}, Image 4"></div>
                                 </div>
                                 <div class="nav-arrow arrow-next"></div>
                             </div>
@@ -338,7 +433,8 @@
                 });
                 DOM.slider.innerHTML = sliderHTML;
                 DOM.dotsContainer.innerHTML = dotsHTML;
-                preloadSlide(0); preloadSlide(1);
+                preloadSlide(0); 
+                preloadSlide(CONFIG.PRELOAD.NEXT_SLIDE);
             }
 
             function toggleMenu() { DOM.menu.classList.toggle('show'); }
@@ -352,8 +448,8 @@
                 document.querySelectorAll('.series-section').forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
                 document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
 
-                preloadSlide(STATE.currentSlide + 1);
-                setTimeout(() => { STATE.isMoving = false; }, 1200);
+                preloadSlide(STATE.currentSlide + CONFIG.PRELOAD.NEXT_SLIDE);
+                setTimeout(() => { STATE.isMoving = false; }, CONFIG.TIMING.SLIDE_TRANSITION);
             }
 
             function moveSlide(d) {
@@ -368,10 +464,12 @@
                 STATE.lbCurrentIndex = STATE.lbImages.indexOf(imgSrc.getAttribute('src'));
                 DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
                 DOM.lightboxImg.style.opacity = '1';
+                // SEO 개선: 라이트박스 이미지에도 alt 추가
+                DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbCurrentIndex + 1}`;
                 DOM.lightbox.style.display = 'flex';
                 STATE.isMoving = false;
                 STATE.isLbMoving = false;
-                setTimeout(() => DOM.lightbox.classList.add('show'), 10);
+                setTimeout(() => DOM.lightbox.classList.add('show'), CONFIG.TIMING.LIGHTBOX_SHOW);
             }
 
             function changeLbImg(d) {
@@ -382,16 +480,18 @@
                 setTimeout(() => {
                     STATE.lbCurrentIndex = (STATE.lbCurrentIndex + d + STATE.lbImages.length) % STATE.lbImages.length;
                     DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
+                    // SEO 개선: alt 업데이트
+                    DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbCurrentIndex + 1}`;
                     DOM.lightboxImg.style.opacity = '1';
-                    setTimeout(() => { STATE.isLbMoving = false; }, 350);
-                }, 300);
+                    setTimeout(() => { STATE.isLbMoving = false; }, CONFIG.TIMING.LIGHTBOX_FADE_IN);
+                }, CONFIG.TIMING.LIGHTBOX_FADE_OUT);
             }
 
             function closeLightbox() {
                 DOM.lightbox.classList.remove('show');
                 setTimeout(() => {
                     DOM.lightbox.style.display = 'none';
-                }, 500);
+                }, CONFIG.TIMING.LIGHTBOX_CLOSE);
             }
 
             function bindEvents() {
@@ -408,9 +508,8 @@
                     STATE.isDragging = false;
                     const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
                     const diffX = STATE.startX - endX;
-                    const threshold = 10;
 
-                    if (Math.abs(diffX) > threshold) {
+                    if (Math.abs(diffX) > CONFIG.SWIPE_THRESHOLD) {
                         const direction = diffX > 0 ? 1 : -1;
                         if (DOM.lightbox.classList.contains('show')) {
                             changeLbImg(direction);
@@ -434,26 +533,26 @@
                     if (isLB) {
                         if (STATE.isLbMoving) { wheelAccumulated = 0; return; }
                         wheelAccumulated += e.deltaX;
-                        if (Math.abs(wheelAccumulated) > 400) {
+                        if (Math.abs(wheelAccumulated) > CONFIG.WHEEL_THRESHOLD.LIGHTBOX) {
                             const direction = wheelAccumulated > 0 ? 1 : -1;
                             wheelAccumulated = 0;
                             changeLbImg(direction);
                         }
                         clearTimeout(wheelTimeout);
-                        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 100);
+                        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, CONFIG.TIMING.WHEEL_RESET);
                         return;
                     }
 
                     if (STATE.isMoving || !isOverSlider) return;
                     wheelAccumulated += e.deltaX;
-                    if (Math.abs(wheelAccumulated) > 25) {
+                    if (Math.abs(wheelAccumulated) > CONFIG.WHEEL_THRESHOLD.SLIDER) {
                         const direction = wheelAccumulated > 0 ? 1 : -1;
                         moveSlide(direction);
                         wheelAccumulated = 0;
                         clearTimeout(wheelTimeout);
                     } else {
                         clearTimeout(wheelTimeout);
-                        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, 50);
+                        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, CONFIG.TIMING.WHEEL_RESET_SLIDER);
                     }
                 }, { passive: false });
 
@@ -495,7 +594,7 @@
                 const loader = document.getElementById('loading-screen');
                 setTimeout(() => {
                     loader.classList.add('fade-out');
-                }, 500);
+                }, CONFIG.TIMING.LOADING_DELAY);
             });
         })();
     </script>
