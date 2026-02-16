@@ -289,7 +289,7 @@
                 object-fit: contain;
             }
 
-            nav { top: 10px; left: var(--spacing); }
+            nav { top: 10px; left: calc(var(--spacing) + env(safe-area-inset-left)); }
             .logo { font-size: 1rem; }
             .dots-nav { bottom: 10px; }
             .nav-arrow { display: none; }
@@ -612,6 +612,7 @@
 </body>
 
 </html>
+
 
 
 
