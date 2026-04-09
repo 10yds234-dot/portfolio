@@ -144,8 +144,26 @@
             overflow: hidden;
             overscroll-behavior-x: none;
         }
-        img { -webkit-user-drag: none; user-drag: none; }
+        img {
+            -webkit-user-drag: none; user-drag: none;
+            /* ✅ [보안 11] iOS 길게 누르기 → 이미지 저장 메뉴 차단 */
+            -webkit-touch-callout: none;
+            pointer-events: none; /* JS에서 클릭은 오버레이가 처리 */
+        }
         .menu-content { user-select: text !important; -webkit-user-select: text !important; cursor: auto; }
+
+        /* ✅ [보안 11] photo-item 오버레이: 이미지 위를 투명 레이어로 덮어 우클릭/드래그 원천 차단 */
+        .photo-item {
+            position: relative;
+            cursor: pointer;
+        }
+        .photo-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 1; /* 이미지 위를 덮음 */
+            background: transparent;
+        }
 
         .bg-fixed {
             position: fixed;
@@ -535,6 +553,12 @@
                         openLightbox(e.target);
                         return;
                     }
+                    // ✅ [보안 11] 오버레이(::after)가 클릭을 가로채므로 photo-item 클릭도 처리
+                    const photoItem = e.target.closest('.photo-item');
+                    if (photoItem) {
+                        const img = photoItem.querySelector('img');
+                        if (img) { openLightbox(img); return; }
+                    }
                     const dotWrapper = e.target.closest('.dot-wrapper');
                     if (dotWrapper) {
                         // ✅ [보안 10] 정수 검증: 범위 밖 인덱스 차단
@@ -621,6 +645,24 @@
                     if (e.key === 'ArrowRight') isLB ? changeLbImg(1) : moveSlide(1);
                     if (e.key === 'ArrowLeft') isLB ? changeLbImg(-1) : moveSlide(-1);
                     if (e.key === 'Escape' && isLB) closeLightbox();
+
+                    // ✅ [보안 11] 다운로드 관련 단축키 차단
+                    const ctrl = e.ctrlKey || e.metaKey;
+                    if (ctrl && (e.key === 's' || e.key === 'S')) { e.preventDefault(); } // Ctrl+S 저장
+                    if (ctrl && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); } // Ctrl+U 소스보기
+                    if (ctrl && e.shiftKey && (e.key === 'i' || e.key === 'I')) { e.preventDefault(); } // Ctrl+Shift+I 개발자도구
+                });
+
+                // ✅ [보안 11] 우클릭 컨텍스트 메뉴 차단 (이미지 위 → "다른 이름으로 저장" 방어)
+                document.addEventListener('contextmenu', (e) => {
+                    if (e.target.tagName === 'IMG' || e.target.closest('.photo-item') || e.target.closest('#lightbox')) {
+                        e.preventDefault();
+                    }
+                });
+
+                // ✅ [보안 11] 이미지 드래그 앤 드롭으로 꺼내기 차단
+                document.addEventListener('dragstart', (e) => {
+                    if (e.target.tagName === 'IMG') e.preventDefault();
                 });
             }
 
