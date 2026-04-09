@@ -4,18 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <!-- SEO 개선: 메타 태그 추가 -->
+
+    <!-- ✅ [보안 1] Content Security Policy: 허용된 출처만 리소스 로드 허용 -->
+    <!-- frame-ancestors 'none' → Clickjacking 방어 -->
+    <!-- script-src 'self' → 인라인 스크립트 외 외부 JS 차단 (nonce 방식으로 인라인 허용) -->
+    <meta http-equiv="Content-Security-Policy"
+        content="
+            default-src 'self';
+            script-src 'self' 'nonce-jd2026secure';
+            style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+            font-src https://fonts.gstatic.com;
+            img-src 'self' data:;
+            connect-src 'none';
+            frame-ancestors 'none';
+            base-uri 'self';
+            form-action 'none';
+        ">
+
+    <!-- ✅ [보안 2] Referrer-Policy: 외부 링크 클릭 시 URL 정보 누출 차단 -->
+    <meta name="referrer" content="no-referrer">
+
+    <!-- ✅ [보안 3] X-Content-Type-Options: MIME 스니핑 방어 (meta로 의도 명시, 서버에서도 설정 권장) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
     <meta name="description" content="정다운 사진 포트폴리오. 서울 기반 사진.">
     <meta name="keywords" content="정다운, 사진, 포트폴리오, 서울, photography, Jung Daun">
     <meta name="author" content="Jung Daun">
-    
-    <!-- Open Graph (소셜 미디어 공유) -->
+
     <meta property="og:title" content="JUNG DAUN - Photography Portfolio">
     <meta property="og:description" content="정다운 사진 포트폴리오">
     <meta property="og:image" content="assets/A1.webp">
     <meta property="og:type" content="website">
-    
+
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="assets/icon-180.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/icon-180.png">
@@ -23,12 +43,11 @@
 
     <title>JUNG DAUN - Photography Portfolio</title>
 
-    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ✅ [보안 4] crossorigin 명시: CORS 헤더 검증 후 폰트 로드 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
 
-    <!-- SEO 개선: JSON-LD 구조화 데이터 -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -52,13 +71,13 @@
 
     <style>
         html, body {
-    height: 100%;
-    height: -webkit-fill-available;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-        
+            height: 100%;
+            height: -webkit-fill-available;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
         #loading-screen {
             position: fixed;
             inset: 0;
@@ -88,81 +107,73 @@
         }
 
         :root {
-            --bg-image: url('../assets/000001.webp'); 
-            --interface-color: #FFFFFF; 
-            --spacing: 30px; 
-            --photo-gap: 20px; 
-            
-            --container-max-width: 65vh; 
-            
-            --arrow-distance: -150px; 
-            --transition-speed: 1.2s; 
+            --bg-image: url('../assets/000001.webp');
+            --interface-color: #FFFFFF;
+            --spacing: 30px;
+            --photo-gap: 20px;
+            --container-max-width: 65vh;
+            --arrow-distance: -150px;
+            --transition-speed: 1.2s;
             --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
         }
 
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box; 
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
             -webkit-font-smoothing: antialiased;
-            -webkit-user-select: none; 
+            -webkit-user-select: none;
             user-select: none;
             -webkit-user-drag: none;
         }
 
-        body, html { 
-            background-color: #000; color: var(--interface-color); 
-            /* Inter 폰트 적용 */
+        body, html {
+            background-color: #000; color: var(--interface-color);
             font-family: 'Inter', sans-serif;
             font-weight: 300;
             overflow: hidden; height: 100%; position: fixed; width: 100%;
-            overscroll-behavior-x: auto; 
+            overscroll-behavior-x: auto;
         }
 
-        .masonry-container, #lightbox { 
-            overscroll-behavior-x: none; 
+        .masonry-container, #lightbox {
+            overscroll-behavior-x: none;
             touch-action: pan-y;
         }
 
-        .slider-viewport { 
-            width: 100vw; 
-            height: 100vh; 
-            overflow: hidden; 
-            overscroll-behavior-x: none; 
+        .slider-viewport {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            overscroll-behavior-x: none;
         }
         img { -webkit-user-drag: none; user-drag: none; }
         .menu-content { user-select: text !important; -webkit-user-select: text !important; cursor: auto; }
 
         .bg-fixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%; 
-    min-height: -webkit-fill-available;
-    
-    background-image: var(--bg-image);
-    background-size: cover;
-    background-position: center;
-    z-index: -2;
-    
-    margin-bottom: -1px;
-}
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            height: 100%;
+            min-height: -webkit-fill-available;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            margin-bottom: -1px;
+        }
 
-        nav { 
-            position: fixed; top: var(--spacing); left: var(--spacing); 
+        nav {
+            position: fixed; top: var(--spacing); left: var(--spacing);
             z-index: 2000; display: flex; flex-direction: column; gap: 0;
         }
-        .logo { 
-            font-size: 1.5rem; 
-            letter-spacing: 0.015em; 
-            text-transform: uppercase; 
-            cursor: pointer; 
-            transition: opacity 0.3s; 
+        .logo {
+            font-size: 1.5rem;
+            letter-spacing: 0.015em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.3s;
             z-index: 2010;
             font-weight: 200;
         }
         .logo:active { opacity: 0.5; }
-        .menu-container { 
+        .menu-container {
             max-height: 0; overflow: hidden; opacity: 0;
             transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin-top 0.7s ease;
             pointer-events: none;
@@ -193,19 +204,19 @@
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox-img { max-width: 90%; max-height: 90vh; object-fit: contain; z-index: 3050; transition: opacity 0.4s ease; }
 
-        .lb-arrow { 
+        .lb-arrow {
             position: absolute; top: 0; bottom: 0;
-            width: 15vw; min-width: 80px; 
-            display: flex; align-items: center; justify-content: center; 
+            width: 15vw; min-width: 80px;
+            display: flex; align-items: center; justify-content: center;
             z-index: 3600; transition: opacity 0.3s; opacity: 0.2; cursor: pointer;
         }
-        .lb-arrow::after { 
-            content: ''; width: 15px; height: 15px; 
-            border-top: 1.5px solid #fff; border-right: 1.5px solid #fff; display: block; 
+        .lb-arrow::after {
+            content: ''; width: 15px; height: 15px;
+            border-top: 1.5px solid #fff; border-right: 1.5px solid #fff; display: block;
         }
-        .lb-prev { left: 0; justify-content: flex-start; padding-left: 30px; } 
+        .lb-prev { left: 0; justify-content: flex-start; padding-left: 30px; }
         .lb-prev::after { transform: rotate(-135deg); }
-        .lb-next { right: 0; justify-content: flex-end; padding-right: 30px; } 
+        .lb-next { right: 0; justify-content: flex-end; padding-right: 30px; }
         .lb-next::after { transform: rotate(45deg); }
 
         #lightbox:hover .lb-arrow { opacity: 0.4; }
@@ -213,22 +224,19 @@
 
         footer { position: fixed; bottom: calc(var(--spacing) + env(safe-area-inset-bottom)); right: var(--spacing); font-size: 0.6rem; opacity: 0.3; }
 
-        /* SEO 개선: 스크린 리더용 숨김 텍스트 */
         .visually-hidden {
             position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
             overflow: hidden;
             clip: rect(0, 0, 0, 0);
             white-space: nowrap;
             border-width: 0;
         }
 
-        @media (max-width: 850px) and (orientation: portrait) { 
+        @media (max-width: 850px) and (orientation: portrait) {
             :root { --spacing: 15px; --photo-gap: 10px; }
-            nav { flex-direction: row; align-items: flex-start; gap: 11px; } 
+            nav { flex-direction: row; align-items: flex-start; gap: 11px; }
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
             .bg-fixed { width: 100vh; height: 100vw; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); }
@@ -241,67 +249,19 @@
         }
 
         @media (max-device-width: 930px) and (orientation: landscape) {
-            :root {
-                --spacing: 12px;
-                --photo-gap: 8px;
-            }
-
+            :root { --spacing: 12px; --photo-gap: 8px; }
             .menu-content { font-size: 0.7rem; line-height: 1.4; }
             .menu-label { font-size: 0.6rem; }
-            
-            .series-section {
-                height: 100vh;
-                width: 100vw;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .masonry-container {
-                width: auto;
-                height: 50vh;
-                max-width: 70vw;
-                display: flex;
-                flex-direction: row;
-                gap: var(--photo-gap);
-                margin: 0 auto;
-                transform: translateY(-30px);
-            }
-
-            .masonry-col {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                flex: 0 1 auto;
-                gap: var(--photo-gap);
-            }
-
-            .photo-item {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 0;
-            }
-
-            .photo-item img {
-                height: auto;
-                width: auto;
-                max-height: calc(30vh - 20px);
-                max-width: 100%;
-                object-fit: contain;
-            }
-
+            .series-section { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; }
+            .masonry-container { width: auto; height: 50vh; max-width: 70vw; display: flex; flex-direction: row; gap: var(--photo-gap); margin: 0 auto; transform: translateY(-30px); }
+            .masonry-col { height: 100%; display: flex; flex-direction: column; justify-content: center; flex: 0 1 auto; gap: var(--photo-gap); }
+            .photo-item { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
+            .photo-item img { height: auto; width: auto; max-height: calc(30vh - 20px); max-width: 100%; object-fit: contain; }
             nav { top: 10px; left: calc(var(--spacing) + env(safe-area-inset-left)); }
             .logo { font-size: 1rem; }
             .dots-nav { bottom: 10px; }
             .nav-arrow { display: none; }
-
-            #lightbox-img {
-                max-height: 80vh;
-                width: auto;
-            }
+            #lightbox-img { max-height: 80vh; width: auto; }
         }
     </style>
 </head>
@@ -315,7 +275,8 @@
     <div class="bg-fixed"></div>
 
     <nav>
-        <h1 class="logo" onclick="toggleMenu()">JUNG DAUN</h1>
+        <!-- ✅ [보안 5] window 전역 노출 제거: onclick 인라인 이벤트 → data-action 방식으로 변경 -->
+        <h1 class="logo" data-action="toggle-menu">JUNG DAUN</h1>
         <div id="dropdown-menu" class="menu-container">
             <div class="menu-inner">
                 <div class="menu-item">
@@ -324,21 +285,24 @@
                 </div>
                 <div class="menu-item">
                     <span class="menu-label">Contact</span>
-                    <div class="menu-content">10yds730@gmail.com<br>@down01234</div>
+                    <!-- ✅ [보안 6] 외부 링크에 rel="noopener noreferrer" 추가: 탭 가로채기(tab-napping) 방어 -->
+                    <div class="menu-content">
+                        <a href="mailto:10yds730@gmail.com" style="color:inherit;text-decoration:none;">10yds730@gmail.com</a><br>
+                        <a href="https://instagram.com/down01234" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">@down01234</a>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
     <div id="lightbox">
-        <div class="lb-arrow lb-prev" id="lb-prev-btn"></div>
+        <div class="lb-arrow lb-prev" id="lb-prev-btn" aria-label="이전 사진"></div>
         <img id="lightbox-img" alt="Enlarged View">
-        <div class="lb-arrow lb-next" id="lb-next-btn"></div>
+        <div class="lb-arrow lb-next" id="lb-next-btn" aria-label="다음 사진"></div>
     </div>
 
     <div class="slider-viewport" id="swipe-zone">
         <div class="horizontal-wrapper" id="slider">
-            <!-- SEO 개선: JavaScript 없이도 보이는 기본 콘텐츠 -->
             <article class="series-section active">
                 <h2 class="visually-hidden">Photography Series A</h2>
                 <div class="masonry-container">
@@ -363,43 +327,40 @@
         <p>© 2026 JUNG DAUN.</p>
     </footer>
 
-    <script>
+    <!-- ✅ [보안 1] nonce 속성: CSP의 script-src nonce와 매칭되어 이 인라인 스크립트만 허용 -->
+    <script nonce="jd2026secure">
         (function () {
-            // 매직 넘버 개선: 모든 설정값을 상수로 정의
             const CONFIG = {
-                // 휠 스크롤 감도 (픽셀)
-                WHEEL_THRESHOLD: {
-                    LIGHTBOX: 400,  // 라이트박스에서 이미지 전환에 필요한 휠 이동량
-                    SLIDER: 25      // 슬라이더에서 슬라이드 전환에 필요한 휠 이동량
-                },
-                
-                // 스와이프 감도 (픽셀)
-                SWIPE_THRESHOLD: 10,  // 최소 이동 거리 (이 값 이상 움직여야 스와이프로 인식)
-                
-                // 애니메이션 타이밍 (밀리초)
+                WHEEL_THRESHOLD: { LIGHTBOX: 400, SLIDER: 25 },
+                SWIPE_THRESHOLD: 10,
                 TIMING: {
-                    SLIDE_TRANSITION: 1200,    // 슬라이드 전환 애니메이션 시간
-                    LIGHTBOX_FADE_OUT: 300,    // 라이트박스 이미지 페이드아웃 시간
-                    LIGHTBOX_FADE_IN: 350,     // 라이트박스 이미지 페이드인 후 잠금 해제 시간
-                    LIGHTBOX_CLOSE: 500,       // 라이트박스 닫기 애니메이션 시간
-                    WHEEL_RESET: 100,          // 휠 누적값 리셋 대기 시간
-                    WHEEL_RESET_SLIDER: 50,    // 슬라이더 휠 누적값 리셋 대기 시간
-                    LOADING_DELAY: 500,        // 로딩 화면 표시 최소 시간
-                    LIGHTBOX_SHOW: 10          // 라이트박스 표시 지연 시간
+                    SLIDE_TRANSITION: 1200,
+                    LIGHTBOX_FADE_OUT: 300,
+                    LIGHTBOX_FADE_IN: 350,
+                    LIGHTBOX_CLOSE: 500,
+                    WHEEL_RESET: 100,
+                    WHEEL_RESET_SLIDER: 50,
+                    LOADING_DELAY: 500,
+                    LIGHTBOX_SHOW: 10
                 },
-                
-                // 프리로드 설정
-                PRELOAD: {
-                    NEXT_SLIDE: 1,      // 다음 슬라이드 (현재 + 1)
-                    PREV_SLIDE: -1      // 이전 슬라이드 (현재 - 1)
-                }
+                PRELOAD: { NEXT_SLIDE: 1, PREV_SLIDE: -1 }
             };
 
-            const GALLERY_DATA = [
-                { id: 'A', images: ['assets/A1.webp', 'assets/A2.webp', 'assets/A4.webp', 'assets/A3.webp'] },
-                { id: 'B', images: ['assets/B1.webp', 'assets/B2.webp', 'assets/B4.webp', 'assets/B3.webp'] },
-                { id: 'C', images: ['assets/C1.webp', 'assets/C2.webp', 'assets/C3.webp', 'assets/C4.webp'] }
-            ];
+            // ✅ [보안 7] Object.freeze: 갤러리 데이터 런타임 오염 방지
+            const GALLERY_DATA = Object.freeze([
+                Object.freeze({ id: 'A', images: Object.freeze(['assets/A1.webp', 'assets/A2.webp', 'assets/A4.webp', 'assets/A3.webp']) }),
+                Object.freeze({ id: 'B', images: Object.freeze(['assets/B1.webp', 'assets/B2.webp', 'assets/B4.webp', 'assets/B3.webp']) }),
+                Object.freeze({ id: 'C', images: Object.freeze(['assets/C1.webp', 'assets/C2.webp', 'assets/C3.webp', 'assets/C4.webp']) })
+            ]);
+
+            // ✅ [보안 8] 허용된 이미지 경로 화이트리스트: 외부 URL 주입 차단
+            const ALLOWED_IMG_PREFIX = 'assets/';
+            function isSafeAssetPath(path) {
+                return typeof path === 'string' &&
+                    path.startsWith(ALLOWED_IMG_PREFIX) &&
+                    !path.includes('..') &&
+                    /^assets\/[A-Za-z0-9_\-]+\.webp$/.test(path);
+            }
 
             const STATE = {
                 currentSlide: 0, slideCount: GALLERY_DATA.length,
@@ -420,40 +381,87 @@
             function preloadSlide(idx) {
                 const targetIdx = (idx + STATE.slideCount) % STATE.slideCount;
                 if (STATE.preloadedIdx.has(targetIdx)) return;
-                GALLERY_DATA[targetIdx].images.forEach(src => { const img = new Image(); img.src = src; });
+                GALLERY_DATA[targetIdx].images.forEach(src => {
+                    if (!isSafeAssetPath(src)) return; // ✅ [보안 8] 프리로드 경로도 검증
+                    const img = new Image();
+                    img.src = src;
+                });
                 STATE.preloadedIdx.add(targetIdx);
             }
 
-            function initGallery() {
-                let sliderHTML = ''; let dotsHTML = '';
-                GALLERY_DATA.forEach((series, idx) => {
-                    // SEO 개선: alt 태그 추가
-                    sliderHTML += `
-                        <article class="series-section ${idx === 0 ? 'active' : ''}">
-                            <h2 class="visually-hidden">Photography Series ${series.id}</h2>
-                            <div class="masonry-container">
-                                <div class="nav-arrow arrow-prev"></div>
-                                <div class="masonry-col">
-                                    <div class="photo-item"><img src="${series.images[0]}" alt="Photography work - Series ${series.id}, Image 1"></div>
-                                    <div class="photo-item"><img src="${series.images[1]}" alt="Photography work - Series ${series.id}, Image 2"></div>
-                                </div>
-                                <div class="masonry-col">
-                                    <div class="photo-item"><img src="${series.images[2]}" alt="Photography work - Series ${series.id}, Image 3"></div>
-                                    <div class="photo-item"><img src="${series.images[3]}" alt="Photography work - Series ${series.id}, Image 4"></div>
-                                </div>
-                                <div class="nav-arrow arrow-next"></div>
-                            </div>
-                        </article>`;
-                    dotsHTML += `<div class="dot-wrapper" data-index="${idx}"><div class="dot ${idx === 0 ? 'active' : ''}"></div></div>`;
+            // ✅ [보안 9] innerHTML 제거: DOM API로 직접 생성 → XSS 원천 차단
+            function createSeriesSection(series, isActive) {
+                const article = document.createElement('article');
+                article.className = 'series-section' + (isActive ? ' active' : '');
+
+                const h2 = document.createElement('h2');
+                h2.className = 'visually-hidden';
+                h2.textContent = `Photography Series ${series.id}`; // textContent: HTML 삽입 불가
+                article.appendChild(h2);
+
+                const container = document.createElement('div');
+                container.className = 'masonry-container';
+
+                const prevArrow = document.createElement('div');
+                prevArrow.className = 'nav-arrow arrow-prev';
+                container.appendChild(prevArrow);
+
+                // 두 컬럼: [0,1] / [2,3]
+                [[0, 1], [2, 3]].forEach(([a, b]) => {
+                    const col = document.createElement('div');
+                    col.className = 'masonry-col';
+                    [a, b].forEach((imgIdx) => {
+                        const src = series.images[imgIdx];
+                        if (!isSafeAssetPath(src)) return; // ✅ [보안 8] DOM 삽입 전 경로 검증
+                        const item = document.createElement('div');
+                        item.className = 'photo-item';
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.alt = `Photography work - Series ${series.id}, Image ${imgIdx + 1}`;
+                        item.appendChild(img);
+                        col.appendChild(item);
+                    });
+                    container.appendChild(col);
                 });
-                DOM.slider.innerHTML = sliderHTML;
-                DOM.dotsContainer.innerHTML = dotsHTML;
-                preloadSlide(0); 
+
+                const nextArrow = document.createElement('div');
+                nextArrow.className = 'nav-arrow arrow-next';
+                container.appendChild(nextArrow);
+
+                article.appendChild(container);
+                return article;
+            }
+
+            function createDotWrapper(idx, isActive) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'dot-wrapper';
+                wrapper.dataset.index = String(idx); // dataset은 문자열로만 저장
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (isActive ? ' active' : '');
+                wrapper.appendChild(dot);
+                return wrapper;
+            }
+
+            function initGallery() {
+                // ✅ [보안 9] innerHTML 없이 DOM 구성
+                const sliderFragment = document.createDocumentFragment();
+                const dotsFragment = document.createDocumentFragment();
+
+                GALLERY_DATA.forEach((series, idx) => {
+                    sliderFragment.appendChild(createSeriesSection(series, idx === 0));
+                    dotsFragment.appendChild(createDotWrapper(idx, idx === 0));
+                });
+
+                DOM.slider.innerHTML = ''; // 기존 정적 fallback 제거 후 교체
+                DOM.slider.appendChild(sliderFragment);
+                DOM.dotsContainer.innerHTML = '';
+                DOM.dotsContainer.appendChild(dotsFragment);
+
+                preloadSlide(0);
                 preloadSlide(CONFIG.PRELOAD.NEXT_SLIDE);
             }
 
             function toggleMenu() { DOM.menu.classList.toggle('show'); }
-            window.toggleMenu = toggleMenu;
 
             function updateSlider() {
                 const offset = -STATE.currentSlide * 100;
@@ -474,12 +482,17 @@
                 updateSlider();
             }
 
-            function openLightbox(imgSrc) {
-                STATE.lbImages = GALLERY_DATA[STATE.currentSlide].images;
-                STATE.lbCurrentIndex = STATE.lbImages.indexOf(imgSrc.getAttribute('src'));
+            function openLightbox(imgEl) {
+                const srcAttr = imgEl.getAttribute('src');
+                // ✅ [보안 8] 라이트박스 열기 전 경로 재검증
+                if (!isSafeAssetPath(srcAttr)) return;
+
+                STATE.lbImages = Array.from(GALLERY_DATA[STATE.currentSlide].images);
+                const foundIdx = STATE.lbImages.indexOf(srcAttr);
+                STATE.lbCurrentIndex = foundIdx >= 0 ? foundIdx : 0;
+
                 DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
                 DOM.lightboxImg.style.opacity = '1';
-                // SEO 개선: 라이트박스 이미지에도 alt 추가
                 DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbCurrentIndex + 1}`;
                 DOM.lightbox.style.display = 'flex';
                 STATE.isMoving = false;
@@ -494,8 +507,10 @@
                 DOM.lightboxImg.style.opacity = '0';
                 setTimeout(() => {
                     STATE.lbCurrentIndex = (STATE.lbCurrentIndex + d + STATE.lbImages.length) % STATE.lbImages.length;
-                    DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
-                    // SEO 개선: alt 업데이트
+                    const nextSrc = STATE.lbImages[STATE.lbCurrentIndex];
+                    // ✅ [보안 8] 이미지 전환 시에도 경로 검증
+                    if (!isSafeAssetPath(nextSrc)) { STATE.isLbMoving = false; return; }
+                    DOM.lightboxImg.src = nextSrc;
                     DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbCurrentIndex + 1}`;
                     DOM.lightboxImg.style.opacity = '1';
                     setTimeout(() => { STATE.isLbMoving = false; }, CONFIG.TIMING.LIGHTBOX_FADE_IN);
@@ -504,12 +519,33 @@
 
             function closeLightbox() {
                 DOM.lightbox.classList.remove('show');
-                setTimeout(() => {
-                    DOM.lightbox.style.display = 'none';
-                }, CONFIG.TIMING.LIGHTBOX_CLOSE);
+                setTimeout(() => { DOM.lightbox.style.display = 'none'; }, CONFIG.TIMING.LIGHTBOX_CLOSE);
             }
 
             function bindEvents() {
+                // ✅ [보안 5] data-action으로 로고 클릭 처리 (window 전역 함수 불필요)
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('[data-action="toggle-menu"]')) {
+                        toggleMenu();
+                        return;
+                    }
+                    if (e.target.classList.contains('arrow-prev')) { moveSlide(-1); return; }
+                    if (e.target.classList.contains('arrow-next')) { moveSlide(1); return; }
+                    if (e.target.tagName === 'IMG' && e.target.closest('.photo-item')) {
+                        openLightbox(e.target);
+                        return;
+                    }
+                    const dotWrapper = e.target.closest('.dot-wrapper');
+                    if (dotWrapper) {
+                        // ✅ [보안 10] 정수 검증: 범위 밖 인덱스 차단
+                        const rawIdx = parseInt(dotWrapper.dataset.index, 10);
+                        if (Number.isInteger(rawIdx) && rawIdx >= 0 && rawIdx < STATE.slideCount) {
+                            STATE.currentSlide = rawIdx;
+                            updateSlider();
+                        }
+                    }
+                });
+
                 const dragStart = (e) => {
                     if (e.type === 'touchstart') STATE.isTouch = true;
                     if (e.type === 'mousedown' && STATE.isTouch) return;
@@ -526,11 +562,8 @@
 
                     if (Math.abs(diffX) > CONFIG.SWIPE_THRESHOLD) {
                         const direction = diffX > 0 ? 1 : -1;
-                        if (DOM.lightbox.classList.contains('show')) {
-                            changeLbImg(direction);
-                        } else {
-                            moveSlide(direction);
-                        }
+                        if (DOM.lightbox.classList.contains('show')) changeLbImg(direction);
+                        else moveSlide(direction);
                     }
                 };
 
@@ -576,18 +609,6 @@
                 window.addEventListener('touchstart', dragStart, { passive: true });
                 window.addEventListener('touchend', dragEnd, { passive: true });
 
-                document.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('arrow-prev')) moveSlide(-1);
-                    else if (e.target.classList.contains('arrow-next')) moveSlide(1);
-                    else if (e.target.tagName === 'IMG' && e.target.closest('.photo-item')) openLightbox(e.target);
-
-                    const dotWrapper = e.target.closest('.dot-wrapper');
-                    if (dotWrapper) {
-                        STATE.currentSlide = parseInt(dotWrapper.dataset.index);
-                        updateSlider();
-                    }
-                });
-
                 document.getElementById('lb-prev-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(-1); });
                 document.getElementById('lb-next-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(1); });
 
@@ -607,9 +628,7 @@
             bindEvents();
             window.addEventListener('load', () => {
                 const loader = document.getElementById('loading-screen');
-                setTimeout(() => {
-                    loader.classList.add('fade-out');
-                }, CONFIG.TIMING.LOADING_DELAY);
+                setTimeout(() => { loader.classList.add('fade-out'); }, CONFIG.TIMING.LOADING_DELAY);
             });
         })();
     </script>
