@@ -5,9 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <!-- ✅ [보안 1] Content Security Policy: 허용된 출처만 리소스 로드 허용 -->
-    <!-- frame-ancestors 'none' → Clickjacking 방어 -->
-    <!-- script-src 'self' → 인라인 스크립트 외 외부 JS 차단 (nonce 방식으로 인라인 허용) -->
     <meta http-equiv="Content-Security-Policy"
         content="
             default-src 'self';
@@ -21,10 +18,7 @@
             form-action 'none';
         ">
 
-    <!-- ✅ [보안 2] Referrer-Policy: 외부 링크 클릭 시 URL 정보 누출 차단 -->
     <meta name="referrer" content="no-referrer">
-
-    <!-- ✅ [보안 3] X-Content-Type-Options: MIME 스니핑 방어 (meta로 의도 명시, 서버에서도 설정 권장) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
 
     <meta name="description" content="정다운 사진 포트폴리오. 서울 기반 사진.">
@@ -44,7 +38,6 @@
     <title>JUNG DAUN - Photography Portfolio</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <!-- ✅ [보안 4] crossorigin 명시: CORS 헤더 검증 후 폰트 로드 -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
 
@@ -107,7 +100,6 @@
         }
 
         :root {
-            --bg-image: url('../assets/000001.webp');
             --interface-color: #FFFFFF;
             --spacing: 30px;
             --photo-gap: 20px;
@@ -144,15 +136,15 @@
             overflow: hidden;
             overscroll-behavior-x: none;
         }
+
         img {
             -webkit-user-drag: none; user-drag: none;
-            /* ✅ [보안 11] iOS 길게 누르기 → 이미지 저장 메뉴 차단 */
             -webkit-touch-callout: none;
-            pointer-events: none; /* JS에서 클릭은 오버레이가 처리 */
+            pointer-events: none;
         }
+
         .menu-content { user-select: text !important; -webkit-user-select: text !important; cursor: auto; }
 
-        /* ✅ [보안 11] photo-item 오버레이: 이미지 위를 투명 레이어로 덮어 우클릭/드래그 원천 차단 */
         .photo-item {
             position: relative;
             cursor: pointer;
@@ -161,7 +153,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            z-index: 1; /* 이미지 위를 덮음 */
+            z-index: 1;
             background: transparent;
         }
 
@@ -293,7 +285,6 @@
     <div class="bg-fixed"></div>
 
     <nav>
-        <!-- ✅ [보안 5] window 전역 노출 제거: onclick 인라인 이벤트 → data-action 방식으로 변경 -->
         <h1 class="logo" data-action="toggle-menu">JUNG DAUN</h1>
         <div id="dropdown-menu" class="menu-container">
             <div class="menu-inner">
@@ -303,7 +294,6 @@
                 </div>
                 <div class="menu-item">
                     <span class="menu-label">Contact</span>
-                    <!-- ✅ [보안 6] 외부 링크에 rel="noopener noreferrer" 추가: 탭 가로채기(tab-napping) 방어 -->
                     <div class="menu-content">
                         <a href="mailto:10yds730@gmail.com" style="color:inherit;text-decoration:none;">10yds730@gmail.com</a><br>
                         <a href="https://instagram.com/down01234" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">@down01234</a>
@@ -345,7 +335,6 @@
         <p>© 2026 JUNG DAUN.</p>
     </footer>
 
-    <!-- ✅ [보안 1] nonce 속성: CSP의 script-src nonce와 매칭되어 이 인라인 스크립트만 허용 -->
     <script nonce="jd2026secure">
         (function () {
             const CONFIG = {
@@ -364,14 +353,12 @@
                 PRELOAD: { NEXT_SLIDE: 1, PREV_SLIDE: -1 }
             };
 
-            // ✅ [보안 7] Object.freeze: 갤러리 데이터 런타임 오염 방지
             const GALLERY_DATA = Object.freeze([
                 Object.freeze({ id: 'A', images: Object.freeze(['assets/A1.webp', 'assets/A2.webp', 'assets/A4.webp', 'assets/A3.webp']) }),
                 Object.freeze({ id: 'B', images: Object.freeze(['assets/B1.webp', 'assets/B2.webp', 'assets/B4.webp', 'assets/B3.webp']) }),
                 Object.freeze({ id: 'C', images: Object.freeze(['assets/C1.webp', 'assets/C2.webp', 'assets/C3.webp', 'assets/C4.webp']) })
             ]);
 
-            // ✅ [보안 8] 허용된 이미지 경로 화이트리스트: 외부 URL 주입 차단
             const ALLOWED_IMG_PREFIX = 'assets/';
             function isSafeAssetPath(path) {
                 return typeof path === 'string' &&
@@ -400,21 +387,20 @@
                 const targetIdx = (idx + STATE.slideCount) % STATE.slideCount;
                 if (STATE.preloadedIdx.has(targetIdx)) return;
                 GALLERY_DATA[targetIdx].images.forEach(src => {
-                    if (!isSafeAssetPath(src)) return; // ✅ [보안 8] 프리로드 경로도 검증
+                    if (!isSafeAssetPath(src)) return;
                     const img = new Image();
                     img.src = src;
                 });
                 STATE.preloadedIdx.add(targetIdx);
             }
 
-            // ✅ [보안 9] innerHTML 제거: DOM API로 직접 생성 → XSS 원천 차단
             function createSeriesSection(series, isActive) {
                 const article = document.createElement('article');
                 article.className = 'series-section' + (isActive ? ' active' : '');
 
                 const h2 = document.createElement('h2');
                 h2.className = 'visually-hidden';
-                h2.textContent = `Photography Series ${series.id}`; // textContent: HTML 삽입 불가
+                h2.textContent = `Photography Series ${series.id}`;
                 article.appendChild(h2);
 
                 const container = document.createElement('div');
@@ -424,13 +410,12 @@
                 prevArrow.className = 'nav-arrow arrow-prev';
                 container.appendChild(prevArrow);
 
-                // 두 컬럼: [0,1] / [2,3]
                 [[0, 1], [2, 3]].forEach(([a, b]) => {
                     const col = document.createElement('div');
                     col.className = 'masonry-col';
                     [a, b].forEach((imgIdx) => {
                         const src = series.images[imgIdx];
-                        if (!isSafeAssetPath(src)) return; // ✅ [보안 8] DOM 삽입 전 경로 검증
+                        if (!isSafeAssetPath(src)) return;
                         const item = document.createElement('div');
                         item.className = 'photo-item';
                         const img = document.createElement('img');
@@ -453,7 +438,7 @@
             function createDotWrapper(idx, isActive) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'dot-wrapper';
-                wrapper.dataset.index = String(idx); // dataset은 문자열로만 저장
+                wrapper.dataset.index = String(idx);
                 const dot = document.createElement('div');
                 dot.className = 'dot' + (isActive ? ' active' : '');
                 wrapper.appendChild(dot);
@@ -461,7 +446,6 @@
             }
 
             function initGallery() {
-                // ✅ [보안 9] innerHTML 없이 DOM 구성
                 const sliderFragment = document.createDocumentFragment();
                 const dotsFragment = document.createDocumentFragment();
 
@@ -470,7 +454,7 @@
                     dotsFragment.appendChild(createDotWrapper(idx, idx === 0));
                 });
 
-                DOM.slider.innerHTML = ''; // 기존 정적 fallback 제거 후 교체
+                DOM.slider.innerHTML = '';
                 DOM.slider.appendChild(sliderFragment);
                 DOM.dotsContainer.innerHTML = '';
                 DOM.dotsContainer.appendChild(dotsFragment);
@@ -502,7 +486,6 @@
 
             function openLightbox(imgEl) {
                 const srcAttr = imgEl.getAttribute('src');
-                // ✅ [보안 8] 라이트박스 열기 전 경로 재검증
                 if (!isSafeAssetPath(srcAttr)) return;
 
                 STATE.lbImages = Array.from(GALLERY_DATA[STATE.currentSlide].images);
@@ -526,7 +509,6 @@
                 setTimeout(() => {
                     STATE.lbCurrentIndex = (STATE.lbCurrentIndex + d + STATE.lbImages.length) % STATE.lbImages.length;
                     const nextSrc = STATE.lbImages[STATE.lbCurrentIndex];
-                    // ✅ [보안 8] 이미지 전환 시에도 경로 검증
                     if (!isSafeAssetPath(nextSrc)) { STATE.isLbMoving = false; return; }
                     DOM.lightboxImg.src = nextSrc;
                     DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbCurrentIndex + 1}`;
@@ -541,7 +523,6 @@
             }
 
             function bindEvents() {
-                // ✅ [보안 5] data-action으로 로고 클릭 처리 (window 전역 함수 불필요)
                 document.addEventListener('click', (e) => {
                     if (e.target.closest('[data-action="toggle-menu"]')) {
                         toggleMenu();
@@ -553,7 +534,6 @@
                         openLightbox(e.target);
                         return;
                     }
-                    // ✅ [보안 11] 오버레이(::after)가 클릭을 가로채므로 photo-item 클릭도 처리
                     const photoItem = e.target.closest('.photo-item');
                     if (photoItem) {
                         const img = photoItem.querySelector('img');
@@ -561,7 +541,6 @@
                     }
                     const dotWrapper = e.target.closest('.dot-wrapper');
                     if (dotWrapper) {
-                        // ✅ [보안 10] 정수 검증: 범위 밖 인덱스 차단
                         const rawIdx = parseInt(dotWrapper.dataset.index, 10);
                         if (Number.isInteger(rawIdx) && rawIdx >= 0 && rawIdx < STATE.slideCount) {
                             STATE.currentSlide = rawIdx;
@@ -646,28 +625,28 @@
                     if (e.key === 'ArrowLeft') isLB ? changeLbImg(-1) : moveSlide(-1);
                     if (e.key === 'Escape' && isLB) closeLightbox();
 
-                    // ✅ [보안 11] 다운로드 관련 단축키 차단
                     const ctrl = e.ctrlKey || e.metaKey;
-                    if (ctrl && (e.key === 's' || e.key === 'S')) { e.preventDefault(); } // Ctrl+S 저장
-                    if (ctrl && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); } // Ctrl+U 소스보기
-                    if (ctrl && e.shiftKey && (e.key === 'i' || e.key === 'I')) { e.preventDefault(); } // Ctrl+Shift+I 개발자도구
+                    if (ctrl && (e.key === 's' || e.key === 'S')) { e.preventDefault(); }
+                    if (ctrl && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); }
+                    if (ctrl && e.shiftKey && (e.key === 'i' || e.key === 'I')) { e.preventDefault(); }
                 });
 
-                // ✅ [보안 11] 우클릭 컨텍스트 메뉴 차단 (이미지 위 → "다른 이름으로 저장" 방어)
-                document.addEventListener('contextmenu', (e) => {
-                    if (e.target.tagName === 'IMG' || e.target.closest('.photo-item') || e.target.closest('#lightbox')) {
-                        e.preventDefault();
-                    }
-                });
+                document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-                // ✅ [보안 11] 이미지 드래그 앤 드롭으로 꺼내기 차단
                 document.addEventListener('dragstart', (e) => {
                     if (e.target.tagName === 'IMG') e.preventDefault();
                 });
             }
 
+            (function setBg() {
+                const src = 'assets/000001.webp';
+                if (!isSafeAssetPath(src)) return;
+                document.documentElement.style.setProperty('--bg-image', `url('${src}')`);
+            })();
+
             initGallery();
             bindEvents();
+
             window.addEventListener('load', () => {
                 const loader = document.getElementById('loading-screen');
                 setTimeout(() => { loader.classList.add('fade-out'); }, CONFIG.TIMING.LOADING_DELAY);
