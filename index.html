@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
@@ -82,24 +82,20 @@
             -webkit-user-drag: none;
         }
 
-        /* 사파리가 노치 및 하단 바 뒤까지 캔버스를 100% 채우도록 지정 */
+        /* 1. html: overflow: hidden을 제거하여 사파리가 Safe Area 밖으로 캔버스를 확장하도록 허용 */
         html {
             width: 100%;
             height: 100%;
-            height: -webkit-fill-available;
-            margin: 0; padding: 0;
-            overflow: hidden;
             background-color: #000;
         }
 
+        /* 2. body: bottom: 0을 쓰지 않고 100lvh로 지정하여 하단 검색창 뒤 끝까지 밀어넣음 */
         body {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
-            min-height: -webkit-fill-available;
-            margin: 0; padding: 0;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100lvh;
             overflow: hidden;
             background-color: #000;
             color: var(--interface-color);
@@ -111,10 +107,10 @@
 
         #loading-screen {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100lvh;
             background: #000;
             z-index: 9999;
             display: flex; justify-content: center; align-items: center;
@@ -138,13 +134,13 @@
             visibility: hidden;
         }
 
-        /* 데스크톱 배경 */
+        /* 3. 배경 레이어: 화면 전체를 100lvh로 관통 */
         .bg-fixed {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100lvh;
             background: var(--bg-image) center/cover no-repeat;
             z-index: 0;
             pointer-events: none;
@@ -178,12 +174,13 @@
         .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; font-weight: 100; }
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; font-weight: 100; user-select: text; -webkit-user-select: text; cursor: auto; }
 
+        /* 4. 슬라이더 뷰포트 역시 100lvh로 전체 관통 */
         .slider-viewport {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100lvh;
             overflow: hidden;
             overscroll-behavior-x: none;
             z-index: 1;
@@ -237,10 +234,10 @@
 
         #lightbox {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100lvh;
             background: rgba(0, 0, 0, 0.96);
             display: none; justify-content: center; align-items: center;
             z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer;
@@ -273,7 +270,7 @@
             clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
         }
 
-        /* 모바일 세로 모드 */
+        /* 5. 모바일 세로 모드 */
         @media (max-width: 850px) and (orientation: portrait) {
             :root { --spacing: 15px; --photo-gap: 10px; }
             nav {
@@ -284,11 +281,11 @@
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
 
-            /* 90도 회전 시 vmax 단위를 사용하여 노치 및 검색창 뒤까지 완전 밀착 */
+            /* 회전된 가로 사진이 세로 전체 화면을 완전히 덮도록 lvh/vw 기준으로 정밀 배치 */
             .bg-fixed {
                 top: 50%; left: 50%;
-                width: 125vmax;
-                height: 125vmin;
+                width: 105lvh;
+                height: 105vw;
                 transform: translate(-50%, -50%) rotate(90deg);
                 background: var(--bg-image) center/cover no-repeat;
             }
@@ -301,7 +298,6 @@
             .dots-nav { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
         }
 
-        /* 모바일 가로 모드 */
         @media (max-device-width: 930px) and (orientation: landscape) {
             :root { --spacing: 12px; --photo-gap: 8px; }
             nav { top: 10px; left: calc(var(--spacing) + env(safe-area-inset-left, 0px)); }
@@ -366,6 +362,11 @@
     <script nonce="jd2026secure">
         (function () {
             'use strict';
+
+            // 사파리의 기본 수직 바운스/스크롤을 원천 차단하여 html의 overflow 제한 해제 상태 유지
+            window.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
 
             const CONFIG = {
                 WHEEL_THRESHOLD: { LIGHTBOX: 400, SLIDER: 25 },
