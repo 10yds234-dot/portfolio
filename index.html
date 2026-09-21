@@ -35,8 +35,8 @@
     <style>
         :root {
             --interface-color: #FFFFFF;
-            --spacing: 20px;
-            --photo-gap: 10px;
+            --spacing: 30px;
+            --photo-gap: 8px;
             --bg-image: url('assets/000001.webp');
         }
 
@@ -55,7 +55,7 @@
             color: var(--interface-color);
             font-family: 'Inter', sans-serif;
             font-weight: 300;
-            overflow: hidden; /* 한 화면에 맞추기 위해 전체 스크롤 차단 */
+            overflow: hidden;
             overscroll-behavior: none;
         }
 
@@ -115,28 +115,28 @@
         .menu-label { font-size: 0.68rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; display: block; font-weight: 100; }
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 1; font-weight: 300; user-select: text; -webkit-user-select: text; cursor: auto; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
 
-        /* --- 한 화면에 딱 맞추는 갤러리 레이아웃 --- */
+        /* --- 갤러리 레이아웃: 데스크탑에서 왼쪽 치우침 & 넓은 가로 길이 --- */
         #gallery-container {
             position: fixed;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            left: calc(var(--spacing) + env(safe-area-inset-left, 0px)); /* 화면 왼쪽 기준 정렬 (배경 우측 여백 확보) */
+            transform: translateY(-50%);
             z-index: 1;
             display: flex;
             flex-wrap: wrap;
             gap: var(--photo-gap);
-            width: 90%;
-            max-width: 1400px;
+            width: 75vw; /* 가로 길이를 넓게 확장 */
+            max-width: 1300px;
             box-sizing: border-box;
-            justify-content: center;
+            justify-content: flex-start;
             align-content: center;
             align-items: center;
         }
 
-        /* 사진 높이를 화면 안에 다 들어가도록 대폭 축소 */
+        /* 1. 모든 사진의 높이를 동일하게 고정 (더 얇게 조정: 110px) */
+        /* 2. 각 사진의 가로 길이는 고정 높이에 맞춰 비율대로 자동 조절됨 */
         .gallery-item {
-            flex: 1 1 auto;
-            height: 140px; /* 화면 한 페이지에 맞게 컴팩트하게 조정된 높이 */
+            height: 110px; /* 모든 사진의 높이를 동일하게 맞춤 */
             position: relative;
             cursor: pointer;
             overflow: hidden;
@@ -149,22 +149,15 @@
         }
 
         .gallery-item img {
-            width: 100%;
             height: 100%;
-            object-fit: cover;
-            vertical-align: middle;
+            width: auto; /* 높이를 맞추고 너비는 비율대로 자동 조절 */
+            display: block;
+            object-fit: contain;
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .gallery-item:hover img {
             transform: scale(1.03);
-        }
-
-        #gallery-container::after {
-            content: '';
-            flex-grow: 999999999;
-            min-width: 150px;
-            height: 0;
         }
 
         /* --- 라이트박스 --- */
@@ -206,10 +199,13 @@
                 --photo-gap: 6px;
             }
             #gallery-container { 
-                width: 94%; 
+                width: 94vw; 
+                left: 50%;
+                transform: translate(-50%, -50%); /* 모바일은 다시 가운데 정렬 */
+                justify-content: center;
             }
             .gallery-item {
-                height: 85px; /* 모바일 화면에서도 스크롤 없이 한눈에 들어오도록 조정 */
+                height: 80px; /* 모바일용 통일된 얇은 높이 */
             }
             nav {
                 top: calc(14px + env(safe-area-inset-top, 0px));
@@ -310,6 +306,7 @@
                 if (index === -1) return;
                 
                 STATE.lbIndex = index;
+                DOM.lightboxImg.size = ALL_IMAGES[STATE.lbIndex];
                 DOM.lightboxImg.src = ALL_IMAGES[STATE.lbIndex];
                 DOM.lightboxImg.style.opacity = '1';
                 DOM.lightbox.style.display = 'flex';
