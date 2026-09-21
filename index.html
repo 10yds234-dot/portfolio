@@ -82,7 +82,6 @@
             -webkit-user-drag: none;
         }
 
-        /* 1. 도화지: fixed를 절대 쓰지 않고 사파리가 바닥 끝까지 캔버스를 열도록 지정 */
         html {
             width: 100%;
             height: 100%;
@@ -135,7 +134,7 @@
             visibility: hidden;
         }
 
-        /* 2. 데스크톱 배경 */
+        /* 데스크톱 배경 */
         .bg-fixed {
             position: absolute;
             top: 0; left: 0;
@@ -174,7 +173,6 @@
         .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; font-weight: 100; }
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; font-weight: 100; user-select: text; -webkit-user-select: text; cursor: auto; }
 
-        /* 3. 뷰포트 레이어 */
         .slider-viewport {
             position: absolute;
             top: 0; left: 0;
@@ -273,7 +271,7 @@
             clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
         }
 
-        /* 4. 모바일 세로 모드 핵심 보정 */
+        /* 모바일 세로 모드: 비율 차이를 극복하기 위해 배경 160% 확대 */
         @media (max-width: 850px) and (orientation: portrait) {
             :root {
                 --spacing: 16px;
@@ -287,27 +285,28 @@
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
 
-            /* A. 배경 여유분을 125lvh로 대폭 주어 하단 검색창 밑바닥 끝까지 완전히 관통 */
+            /* 가로 사진을 90도 돌려도 긴 화면을 다 덮을 수 있도록 160% 대폭 확대 */
             .bg-fixed {
                 position: absolute;
                 top: 50%; left: 50%;
-                width: 125lvh;
-                height: 125vw;
+                width: 160lvh;
+                height: 160vw;
                 transform: translate(-50%, -50%) rotate(90deg);
-                background: var(--bg-image) center/cover no-repeat;
+                background-image: var(--bg-image);
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
             }
 
-            /* B. 상단 노치와 하단 검색창(약 90px) 사이 '실제 눈에 보이는 가시 영역' 정중앙에 사진을 배치 */
             .series-section {
                 padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
                 padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 85px);
                 box-sizing: border-box;
             }
 
-            /* C. 70vw의 좁은 미니어처 느낌을 없애고 폰 화면에 꽉 차도록 84vw로 확장 */
             .masonry-container {
-                width: 84vw;
-                max-width: 400px;
+                width: 86vw;
+                max-width: 420px;
                 margin: 0;
             }
 
@@ -316,7 +315,6 @@
             .menu-label { margin-bottom: 4px; }
             .menu-content { line-height: 1.4; font-size: 0.8rem; }
 
-            /* D. 인디케이터 점이 검색창 캡슐에 걸치지 않고 캡슐 바로 위에 깔끔하게 안착 */
             .dots-nav {
                 bottom: calc(75px + env(safe-area-inset-bottom, 0px));
             }
