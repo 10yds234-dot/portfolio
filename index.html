@@ -10,7 +10,7 @@
 
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'nonce-jd2026secure';
+        script-src 'self' 'unsafe-inline';
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src https://fonts.gstatic.com;
         img-src 'self' data:;
@@ -26,52 +26,17 @@
     <meta name="keywords" content="정다운, 사진, 포트폴리오, 서울, photography, Jung Daun">
     <meta name="author" content="Jung Daun">
 
-    <meta property="og:title" content="JUNG DAUN - Photography Portfolio">
-    <meta property="og:description" content="정다운 사진 포트폴리오">
-    <meta property="og:image" content="assets/A1.webp">
-    <meta property="og:type" content="website">
-
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="assets/icon-180.png" type="image/png">
-    <link rel="apple-touch-icon" href="assets/icon-180.png">
-    <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#000000">
-
     <title>JUNG DAUN</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
 
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Jung Daun",
-        "jobTitle": "Photographer",
-        "description": "Shooting and editing photos, based in Seoul",
-        "email": "10yds730@gmail.com",
-        "sameAs": ["https://instagram.com/down01234"],
-        "url": "https://yourwebsite.com",
-        "workLocation": {
-            "@type": "Place",
-            "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Seoul",
-                "addressCountry": "KR"
-            }
-        }
-    }
-    </script>
-
     <style>
         :root {
             --interface-color: #FFFFFF;
             --spacing: 30px;
-            --photo-gap: 20px;
-            --container-max-width: 65vh;
-            --arrow-distance: -150px;
-            --transition-speed: 1.2s;
-            --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+            --photo-gap: 15px;
             --bg-image: url('assets/000001.webp');
         }
 
@@ -82,44 +47,28 @@
             -webkit-user-drag: none;
         }
 
-        html {
+        html, body {
             width: 100%;
-            height: 100%;
             min-height: 100lvh;
-            margin: 0; padding: 0;
-            overflow: hidden;
-            background-color: #000;
-        }
-
-        body {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            min-height: 100lvh;
-            margin: 0; padding: 0;
-            overflow: hidden;
             background-color: #000;
             color: var(--interface-color);
             font-family: 'Inter', sans-serif;
             font-weight: 300;
+            /* 스크롤 허용 */
             overscroll-behavior: none;
-            touch-action: none;
         }
 
         #loading-screen {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0;
-            width: 100%;
-            height: 100lvh;
-            background: #000;
-            z-index: 9999;
+            width: 100%; height: 100lvh;
+            background: #000; z-index: 9999;
             display: flex; justify-content: center; align-items: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
 
         .loading-logo {
-            font-size: 0.8rem;
-            letter-spacing: 0.3em;
+            font-size: 0.8rem; letter-spacing: 0.3em;
             text-transform: uppercase;
             animation: pulse 1s infinite ease-in-out;
         }
@@ -130,36 +79,29 @@
         }
 
         #loading-screen.fade-out {
-            opacity: 0;
-            visibility: hidden;
+            opacity: 0; visibility: hidden;
         }
 
         /* 데스크톱 배경 */
         .bg-fixed {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0;
-            width: 100%;
-            height: 100lvh;
+            width: 100%; height: 100lvh;
             background: var(--bg-image) center/cover no-repeat;
-            z-index: 0;
-            pointer-events: none;
+            z-index: 0; pointer-events: none; opacity: 0.3; /* 배경이 갤러리를 방해하지 않게 투명도 조절 */
         }
 
         nav {
-            position: absolute;
+            position: fixed;
             top: calc(var(--spacing) + env(safe-area-inset-top, 0px));
             left: calc(var(--spacing) + env(safe-area-inset-left, 0px));
             z-index: 2000; display: flex; flex-direction: column;
         }
 
         .logo {
-            font-size: 1.5rem;
-            letter-spacing: 0.015em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: opacity 0.3s;
-            z-index: 2010;
-            font-weight: 200;
+            font-size: 1.5rem; letter-spacing: 0.015em; text-transform: uppercase;
+            cursor: pointer; transition: opacity 0.3s; z-index: 2010; font-weight: 200;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* 가독성 향상 */
         }
         .logo:active { opacity: 0.5; }
 
@@ -170,170 +112,105 @@
         }
         .menu-container.show { max-height: 500px; opacity: 1; pointer-events: auto; margin-top: 30px; }
         .menu-item { margin-bottom: 25px; }
-        .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; font-weight: 100; }
-        .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; font-weight: 100; user-select: text; -webkit-user-select: text; cursor: auto; }
+        .menu-label { font-size: 0.68rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; font-weight: 100; }
+        .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 1; font-weight: 300; user-select: text; -webkit-user-select: text; cursor: auto; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
 
-        .slider-viewport {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100vw;
-            height: 100lvh;
-            overflow: hidden;
-            overscroll-behavior-x: none;
+        /* --- 새로운 갤러리 레이아웃 --- */
+        #gallery-container {
+            position: relative;
             z-index: 1;
-        }
-
-        .horizontal-wrapper {
             display: flex;
-            height: 100lvh;
-            transition: transform var(--transition-speed) var(--transition-timing);
+            flex-wrap: wrap;
+            gap: var(--photo-gap);
+            padding: calc(var(--spacing) * 4 + env(safe-area-inset-top, 0px)) var(--spacing) calc(var(--spacing) * 3);
+            width: 100%;
+            box-sizing: border-box;
+            align-content: flex-start;
         }
 
-        .series-section {
-            flex: 0 0 100vw;
-            width: 100vw;
-            height: 100lvh;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0.15; transition: opacity 1.3s ease;
+        /* Flex를 이용한 Justified Grid (사각형 맞물림) */
+        .gallery-item {
+            flex: 1 1 auto;
+            height: 350px; /* 기본 높이 지정 (비율에 맞춰 너비가 자동 조절됨) */
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
         }
-        .series-section.active { opacity: 1; }
 
-        .masonry-container {
-            display: flex; justify-content: center; align-items: center;
-            gap: var(--photo-gap); width: 70vw; max-width: var(--container-max-width);
-            position: relative; touch-action: pan-y; overscroll-behavior-x: none;
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
-        .masonry-col { display: flex; flex-direction: column; gap: var(--photo-gap); flex: 1; }
 
-        .photo-item { position: relative; cursor: pointer; }
-        .photo-item img { width: 100%; height: auto; display: block; }
-        .photo-item::after { content: ''; position: absolute; inset: 0; z-index: 1; }
-
-        .nav-arrow {
-            position: absolute; top: 50%; width: 50px; height: 50px;
-            cursor: pointer; z-index: 1000; opacity: 0.45;
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.3s ease;
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 영역을 꽉 채우되 비율 유지 */
+            vertical-align: middle;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .nav-arrow:hover { opacity: 0.85; }
-        .nav-arrow::before {
-            content: ''; width: 10px; height: 10px;
-            border-top: 1px solid #fff; border-right: 1px solid #fff;
-        }
-        .arrow-prev { left: var(--arrow-distance); transform: translateY(-50%) rotate(-135deg); }
-        .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); }
 
-        .dots-nav {
-            position: absolute;
-            bottom: calc(45px + env(safe-area-inset-bottom, 0px));
-            left: 50%; transform: translateX(-50%);
-            display: flex; z-index: 1000;
+        .gallery-item:hover img {
+            transform: scale(1.03); /* 마우스 오버 시 살짝 확대 효과 */
         }
-        .dot-wrapper { padding: 15px 10px; cursor: pointer; }
-        .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid #fff; opacity: 0.2; transition: 0.4s; pointer-events: none; }
-        .dot.active { background-color: #fff; opacity: 0.9; transform: scale(1.2); }
 
+        /* 마지막 줄이 너무 늘어나지 않도록 방지 */
+        #gallery-container::after {
+            content: '';
+            flex-grow: 999999999;
+            min-width: 200px;
+            height: 0;
+        }
+
+        /* --- 라이트박스 (확대 관람) --- */
         #lightbox {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0;
-            width: 100vw;
-            height: 100lvh;
-            background: rgba(0, 0, 0, 0.96);
+            width: 100vw; height: 100lvh;
+            background: rgba(0, 0, 0, 0.98);
             display: none; justify-content: center; align-items: center;
-            z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer;
+            z-index: 3000; opacity: 0; transition: opacity 0.4s ease; cursor: pointer;
             touch-action: pan-y; overscroll-behavior-x: none;
         }
         #lightbox.show { display: flex; opacity: 1; }
-        #lightbox-img { max-width: 90%; max-height: 90vh; object-fit: contain; z-index: 3050; transition: opacity 0.4s ease; }
+        #lightbox-img { max-width: 90vw; max-height: 90vh; object-fit: contain; z-index: 3050; transition: opacity 0.3s ease; }
 
         .lb-arrow {
-            position: absolute; top: 0; bottom: 0; width: 15vw; min-width: 110px;
+            position: absolute; top: 0; bottom: 0; width: 15vw; min-width: 80px;
             display: flex; align-items: center; justify-content: center;
-            z-index: 3600; opacity: 0.45; cursor: pointer; transition: opacity 0.3s ease;
+            z-index: 3600; opacity: 0.3; cursor: pointer; transition: opacity 0.3s ease;
         }
         .lb-arrow::after { content: ''; width: 15px; height: 15px; border-top: 1.5px solid #fff; border-right: 1.5px solid #fff; }
-        .lb-prev { left: 0; justify-content: flex-start; padding-left: calc(55px + env(safe-area-inset-left, 0px)); }
+        .lb-prev { left: 0; justify-content: flex-start; padding-left: calc(30px + env(safe-area-inset-left, 0px)); }
         .lb-prev::after { transform: rotate(-135deg); }
-        .lb-next { right: 0; justify-content: flex-end; padding-right: calc(55px + env(safe-area-inset-right, 0px)); }
+        .lb-next { right: 0; justify-content: flex-end; padding-right: calc(30px + env(safe-area-inset-right, 0px)); }
         .lb-next::after { transform: rotate(45deg); }
         #lightbox:hover .lb-arrow { opacity: 0.65; }
         .lb-arrow:hover { opacity: 1 !important; }
 
         footer {
-            position: absolute;
+            position: fixed;
             bottom: calc(var(--spacing) + env(safe-area-inset-bottom, 0px));
-            right: var(--spacing); font-size: 0.6rem; opacity: 0.3; z-index: 1000;
+            right: var(--spacing); font-size: 0.6rem; opacity: 0.5; z-index: 1000;
         }
 
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px;
-            padding: 0; margin: -1px; overflow: hidden;
-            clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
-        }
-
-        /* 모바일 세로 모드: 비율 차이를 극복하기 위해 배경 160% 확대 */
-        @media (max-width: 850px) and (orientation: portrait) {
+        /* --- 반응형 (모바일) --- */
+        @media (max-width: 850px) {
             :root {
                 --spacing: 16px;
-                --photo-gap: 12px;
+                --photo-gap: 8px;
+            }
+            .gallery-item {
+                height: 180px; /* 모바일에서는 사진 높이를 낮춰 한 화면에 더 많이 보이게 */
             }
             nav {
                 top: calc(18px + env(safe-area-inset-top, 0px));
-                left: calc(var(--spacing) + env(safe-area-inset-left, 0px));
                 flex-direction: row; align-items: flex-start; gap: 11px;
             }
-            .logo { font-size: 1.3rem; }
-            .menu-container.show { margin-top: 5px; }
-
-            /* 가로 사진을 90도 돌려도 긴 화면을 다 덮을 수 있도록 160% 대폭 확대 */
-            .bg-fixed {
-                position: absolute;
-                top: 50%; left: 50%;
-                width: 160lvh;
-                height: 160vw;
-                transform: translate(-50%, -50%) rotate(90deg);
-                background-image: var(--bg-image);
-                background-position: center center;
-                background-repeat: no-repeat;
-                background-size: cover;
-            }
-
-            .series-section {
-                padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
-                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 85px);
-                box-sizing: border-box;
-            }
-
-            .masonry-container {
-                width: 86vw;
-                max-width: 420px;
-                margin: 0;
-            }
-
-            .nav-arrow, .lb-arrow { display: none; }
-            .menu-item { margin-bottom: 15px; }
-            .menu-label { margin-bottom: 4px; }
-            .menu-content { line-height: 1.4; font-size: 0.8rem; }
-
-            .dots-nav {
-                bottom: calc(75px + env(safe-area-inset-bottom, 0px));
-            }
-        }
-
-        @media (max-device-width: 930px) and (orientation: landscape) {
-            :root { --spacing: 12px; --photo-gap: 8px; }
-            nav { top: 10px; left: calc(var(--spacing) + env(safe-area-inset-left, 0px)); }
-            .logo { font-size: 1rem; }
-            .menu-content { font-size: 0.7rem; line-height: 1.4; }
-            .menu-label { font-size: 0.6rem; }
-            .series-section { height: 100lvh; width: 100vw; }
-            .masonry-container { width: auto; height: 50vh; max-width: 70vw; margin: 0 auto; transform: translateY(-30px); }
-            .masonry-col { height: 100%; justify-content: center; flex: 0 1 auto; }
-            .photo-item { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
-            .photo-item img { width: auto; max-height: calc(30vh - 20px); max-width: 100%; object-fit: contain; }
-            .dots-nav { bottom: 10px; }
-            .nav-arrow { display: none; }
-            #lightbox-img { max-height: 80vh; width: auto; }
+            .logo { font-size: 1.3rem; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
+            #gallery-container { padding-top: calc(80px + env(safe-area-inset-top, 0px)); }
+            .lb-arrow { display: none; /* 모바일은 스와이프로 넘김 */ }
         }
     </style>
 </head>
@@ -365,246 +242,144 @@
         </div>
     </nav>
 
+    <!-- 사진 전체 갤러리 영역 -->
+    <main id="gallery-container"></main>
+
     <div id="lightbox">
         <div class="lb-arrow lb-prev" id="lb-prev-btn" aria-label="이전 사진"></div>
         <img id="lightbox-img" alt="Enlarged View">
         <div class="lb-arrow lb-next" id="lb-next-btn" aria-label="다음 사진"></div>
     </div>
 
-    <div class="slider-viewport">
-        <div class="horizontal-wrapper" id="slider"></div>
-    </div>
-
-    <div class="dots-nav"></div>
-
     <footer>
         <p>© 2026 JUNG DAUN.</p>
     </footer>
 
-    <script nonce="jd2026secure">
+    <script>
         (function () {
             'use strict';
 
-            window.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-            }, { passive: false });
-
-            const CONFIG = {
-                WHEEL_THRESHOLD: { LIGHTBOX: 400, SLIDER: 25 },
-                SWIPE_THRESHOLD: 10,
-                TIMING: {
-                    SLIDE_TRANSITION: 1200,
-                    LIGHTBOX_FADE_OUT: 300,
-                    LIGHTBOX_FADE_IN: 350,
-                    LIGHTBOX_CLOSE: 500,
-                    WHEEL_RESET: 100,
-                    WHEEL_RESET_SLIDER: 50,
-                    LOADING_DELAY: 500,
-                    LIGHTBOX_SHOW: 10
-                }
-            };
-
-            const GALLERY_DATA = Object.freeze([
-                Object.freeze({ id: 'A', images: Object.freeze(['assets/A1.webp', 'assets/A2.webp', 'assets/A4.webp', 'assets/A3.webp']) }),
-                Object.freeze({ id: 'B', images: Object.freeze(['assets/B1.webp', 'assets/B2.webp', 'assets/B4.webp', 'assets/B3.webp']) }),
-                Object.freeze({ id: 'C', images: Object.freeze(['assets/C1.webp', 'assets/C2.webp', 'assets/C3.webp', 'assets/C4.webp']) })
-            ]);
-
-            const isSafeAssetPath = (path) => typeof path === 'string' && /^assets\/[A-Za-z0-9_\-]+\.webp$/.test(path);
+            // 모든 사진 데이터를 하나의 배열로 통합
+            const ALL_IMAGES = [
+                'assets/A1.webp', 'assets/A2.webp', 'assets/A4.webp', 'assets/A3.webp',
+                'assets/B1.webp', 'assets/B2.webp', 'assets/B4.webp', 'assets/B3.webp',
+                'assets/C1.webp', 'assets/C2.webp', 'assets/C3.webp', 'assets/C4.webp'
+            ];
 
             const STATE = {
-                currentSlide: 0,
-                slideCount: GALLERY_DATA.length,
-                isMoving: false,
                 lbIndex: 0,
                 isLbMoving: false,
-                preloadedIdx: new Set(),
                 startX: 0,
-                isDragging: false,
-                isTouch: false
+                isDragging: false
             };
 
             const DOM = {
-                slider: document.getElementById('slider'),
-                dotsContainer: document.querySelector('.dots-nav'),
+                gallery: document.getElementById('gallery-container'),
                 lightbox: document.getElementById('lightbox'),
                 lightboxImg: document.getElementById('lightbox-img'),
                 menu: document.getElementById('dropdown-menu'),
                 loader: document.getElementById('loading-screen')
             };
 
-            function preloadSlide(idx) {
-                const target = (idx + STATE.slideCount) % STATE.slideCount;
-                if (STATE.preloadedIdx.has(target)) return;
-                GALLERY_DATA[target].images.forEach(src => {
-                    if (isSafeAssetPath(src)) {
-                        const img = new Image();
-                        img.src = src;
-                    }
-                });
-                STATE.preloadedIdx.add(target);
-            }
-
-            function createSeriesSection(series, isActive) {
-                const article = document.createElement('article');
-                article.className = `series-section${isActive ? ' active' : ''}`;
-
-                const h2 = document.createElement('h2');
-                h2.className = 'visually-hidden';
-                h2.textContent = `Photography Series ${series.id}`;
-                article.appendChild(h2);
-
-                const container = document.createElement('div');
-                container.className = 'masonry-container';
-
-                const prevArrow = document.createElement('div');
-                prevArrow.className = 'nav-arrow arrow-prev';
-                container.appendChild(prevArrow);
-
-                [[0, 1], [2, 3]].forEach(pair => {
-                    const col = document.createElement('div');
-                    col.className = 'masonry-col';
-                    pair.forEach(imgIdx => {
-                        const src = series.images[imgIdx];
-                        if (!isSafeAssetPath(src)) return;
-                        const item = document.createElement('div');
-                        item.className = 'photo-item';
-                        const img = document.createElement('img');
-                        img.src = src;
-                        img.alt = `Photography work - Series ${series.id}, Image ${imgIdx + 1}`;
-                        item.appendChild(img);
-                        col.appendChild(item);
-                    });
-                    container.appendChild(col);
-                });
-
-                const nextArrow = document.createElement('div');
-                nextArrow.className = 'nav-arrow arrow-next';
-                container.appendChild(nextArrow);
-
-                article.appendChild(container);
-                return article;
-            }
-
+            // 1. 갤러리 렌더링 (Justified Grid)
             function initGallery() {
-                const sliderFrag = document.createDocumentFragment();
-                const dotsFrag = document.createDocumentFragment();
+                const fragment = document.createDocumentFragment();
 
-                GALLERY_DATA.forEach((series, idx) => {
-                    sliderFrag.appendChild(createSeriesSection(series, idx === 0));
+                ALL_IMAGES.forEach((src, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.style.animationDelay = `${idx * 0.05}s`; // 순차적으로 나타나는 애니메이션
 
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'dot-wrapper';
-                    wrapper.dataset.index = String(idx);
-                    const dot = document.createElement('div');
-                    dot.className = `dot${idx === 0 ? ' active' : ''}`;
-                    wrapper.appendChild(dot);
-                    dotsFrag.appendChild(wrapper);
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = `Portfolio Image ${idx + 1}`;
+                    img.loading = "lazy"; // 성능 최적화
+                    
+                    item.appendChild(img);
+                    fragment.appendChild(item);
                 });
 
-                DOM.slider.appendChild(sliderFrag);
-                DOM.dotsContainer.appendChild(dotsFrag);
-
-                preloadSlide(0);
-                preloadSlide(1);
+                DOM.gallery.appendChild(fragment);
             }
 
-            function updateSlider() {
-                DOM.slider.style.transform = `translate3d(${-STATE.currentSlide * 100}vw, 0, 0)`;
-
-                document.querySelectorAll('.series-section').forEach((el, i) =>
-                    el.classList.toggle('active', i === STATE.currentSlide)
-                );
-                document.querySelectorAll('.dot').forEach((el, i) =>
-                    el.classList.toggle('active', i === STATE.currentSlide)
-                );
-
-                preloadSlide(STATE.currentSlide + 1);
-                setTimeout(() => { STATE.isMoving = false; }, CONFIG.TIMING.SLIDE_TRANSITION);
-            }
-
-            function moveSlide(direction) {
-                if (STATE.isMoving || DOM.lightbox.classList.contains('show')) return;
-                STATE.isMoving = true;
-                STATE.currentSlide = (STATE.currentSlide + direction + STATE.slideCount) % STATE.slideCount;
-                updateSlider();
-            }
-
-            function openLightbox(imgEl) {
-                const src = imgEl.getAttribute('src');
-                if (!isSafeAssetPath(src)) return;
-
-                const currentImages = GALLERY_DATA[STATE.currentSlide].images;
-                const found = currentImages.indexOf(src);
-                STATE.lbIndex = found >= 0 ? found : 0;
-
-                DOM.lightboxImg.src = currentImages[STATE.lbIndex];
+            // 2. 라이트박스 (확대 관람) 열기
+            function openLightbox(src) {
+                const index = ALL_IMAGES.indexOf(src);
+                if (index === -1) return;
+                
+                STATE.lbIndex = index;
+                DOM.lightboxImg.src = ALL_IMAGES[STATE.lbIndex];
                 DOM.lightboxImg.style.opacity = '1';
-                DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbIndex + 1}`;
                 DOM.lightbox.style.display = 'flex';
-                STATE.isMoving = false;
-                STATE.isLbMoving = false;
-
-                setTimeout(() => DOM.lightbox.classList.add('show'), CONFIG.TIMING.LIGHTBOX_SHOW);
+                
+                // 디스플레이 속성 적용 후 opacity 전환을 위해 약간의 딜레이
+                requestAnimationFrame(() => {
+                    setTimeout(() => DOM.lightbox.classList.add('show'), 10);
+                });
             }
 
+            // 3. 라이트박스 사진 변경 (이전/다음)
             function changeLbImg(direction) {
                 if (STATE.isLbMoving) return;
                 STATE.isLbMoving = true;
 
                 DOM.lightboxImg.style.opacity = '0';
                 setTimeout(() => {
-                    const currentImages = GALLERY_DATA[STATE.currentSlide].images;
-                    STATE.lbIndex = (STATE.lbIndex + direction + currentImages.length) % currentImages.length;
-                    const nextSrc = currentImages[STATE.lbIndex];
-
-                    if (!isSafeAssetPath(nextSrc)) {
-                        STATE.isLbMoving = false;
-                        return;
-                    }
-
-                    DOM.lightboxImg.src = nextSrc;
-                    DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbIndex + 1}`;
+                    STATE.lbIndex = (STATE.lbIndex + direction + ALL_IMAGES.length) % ALL_IMAGES.length;
+                    DOM.lightboxImg.src = ALL_IMAGES[STATE.lbIndex];
                     DOM.lightboxImg.style.opacity = '1';
-                    setTimeout(() => { STATE.isLbMoving = false; }, CONFIG.TIMING.LIGHTBOX_FADE_IN);
-                }, CONFIG.TIMING.LIGHTBOX_FADE_OUT);
+                    
+                    setTimeout(() => { STATE.isLbMoving = false; }, 300); // fade-in 완료
+                }, 300); // fade-out 시간
             }
 
+            // 4. 라이트박스 닫기
             function closeLightbox() {
                 DOM.lightbox.classList.remove('show');
-                setTimeout(() => { DOM.lightbox.style.display = 'none'; }, CONFIG.TIMING.LIGHTBOX_CLOSE);
+                setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 400);
             }
 
+            // 이벤트 바인딩
             function bindEvents() {
+                // 클릭 이벤트 위임
                 document.addEventListener('click', (e) => {
+                    // 메뉴 토글
                     if (e.target.closest('[data-action="toggle-menu"]')) {
                         DOM.menu.classList.toggle('show');
                         return;
                     }
-                    if (e.target.classList.contains('arrow-prev')) { moveSlide(-1); return; }
-                    if (e.target.classList.contains('arrow-next')) { moveSlide(1); return; }
 
-                    const photo = e.target.closest('.photo-item');
-                    if (photo) {
-                        const img = photo.querySelector('img');
-                        if (img) openLightbox(img);
+                    // 갤러리 사진 클릭 시 확대
+                    const galleryItem = e.target.closest('.gallery-item');
+                    if (galleryItem) {
+                        const img = galleryItem.querySelector('img');
+                        if (img) openLightbox(img.getAttribute('src'));
                         return;
-                    }
-
-                    const dot = e.target.closest('.dot-wrapper');
-                    if (dot) {
-                        const idx = parseInt(dot.dataset.index, 10);
-                        if (!isNaN(idx) && idx >= 0 && idx < STATE.slideCount) {
-                            STATE.currentSlide = idx;
-                            updateSlider();
-                        }
                     }
                 });
 
+                // 라이트박스 내부 컨트롤
+                document.getElementById('lb-prev-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(-1); });
+                document.getElementById('lb-next-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(1); });
+                
+                // 라이트박스 배경 클릭 시 닫기
+                DOM.lightbox.addEventListener('click', (e) => {
+                    if (e.target.id === 'lightbox' || e.target.id === 'lightbox-img') closeLightbox();
+                });
+
+                // 키보드 네비게이션
+                document.addEventListener('keydown', (e) => {
+                    const isLB = DOM.lightbox.classList.contains('show');
+                    if (!isLB) return;
+
+                    if (e.key === 'ArrowRight') changeLbImg(1);
+                    if (e.key === 'ArrowLeft') changeLbImg(-1);
+                    if (e.key === 'Escape') closeLightbox();
+                });
+
+                // 터치 스와이프 (라이트박스 내부용)
                 const dragStart = (e) => {
-                    if (e.type === 'touchstart') STATE.isTouch = true;
-                    if (e.type === 'mousedown' && STATE.isTouch) return;
-                    if (STATE.isMoving) return;
+                    if (!DOM.lightbox.classList.contains('show')) return;
                     STATE.isDragging = true;
                     STATE.startX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
                 };
@@ -615,83 +390,32 @@
                     const endX = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
                     const diffX = STATE.startX - endX;
 
-                    if (Math.abs(diffX) > CONFIG.SWIPE_THRESHOLD) {
-                        const dir = diffX > 0 ? 1 : -1;
-                        DOM.lightbox.classList.contains('show') ? changeLbImg(dir) : moveSlide(dir);
+                    if (Math.abs(diffX) > 40) { // 40px 이상 스와이프 시 넘김
+                        changeLbImg(diffX > 0 ? 1 : -1);
                     }
                 };
 
-                let wheelAccum = 0;
-                let wheelTimer;
+                DOM.lightbox.addEventListener('mousedown', dragStart);
+                DOM.lightbox.addEventListener('mouseup', dragEnd);
+                DOM.lightbox.addEventListener('touchstart', dragStart, { passive: true });
+                DOM.lightbox.addEventListener('touchend', dragEnd, { passive: true });
 
-                document.addEventListener('wheel', (e) => {
-                    const isLB = DOM.lightbox.classList.contains('show');
-                    const isSlider = e.target.closest('.slider-viewport');
-
-                    if ((isLB || isSlider) && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-                        e.preventDefault();
-                    }
-
-                    if (isLB) {
-                        if (STATE.isLbMoving) { wheelAccum = 0; return; }
-                        wheelAccum += e.deltaX;
-                        if (Math.abs(wheelAccum) > CONFIG.WHEEL_THRESHOLD.LIGHTBOX) {
-                            changeLbImg(wheelAccum > 0 ? 1 : -1);
-                            wheelAccum = 0;
-                        }
-                        clearTimeout(wheelTimer);
-                        wheelTimer = setTimeout(() => { wheelAccum = 0; }, CONFIG.TIMING.WHEEL_RESET);
-                        return;
-                    }
-
-                    if (STATE.isMoving || !isSlider) return;
-                    wheelAccum += e.deltaX;
-                    if (Math.abs(wheelAccum) > CONFIG.WHEEL_THRESHOLD.SLIDER) {
-                        moveSlide(wheelAccum > 0 ? 1 : -1);
-                        wheelAccum = 0;
-                        clearTimeout(wheelTimer);
-                    } else {
-                        clearTimeout(wheelTimer);
-                        wheelTimer = setTimeout(() => { wheelAccum = 0; }, CONFIG.TIMING.WHEEL_RESET_SLIDER);
-                    }
-                }, { passive: false });
-
-                window.addEventListener('mousedown', dragStart);
-                window.addEventListener('mouseup', dragEnd);
-                window.addEventListener('touchstart', dragStart, { passive: true });
-                window.addEventListener('touchend', dragEnd, { passive: true });
-
-                document.getElementById('lb-prev-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(-1); });
-                document.getElementById('lb-next-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(1); });
-                DOM.lightbox.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('lb-arrow')) closeLightbox();
-                });
-
-                document.addEventListener('keydown', (e) => {
-                    const isLB = DOM.lightbox.classList.contains('show');
-                    if (e.key === 'ArrowRight') isLB ? changeLbImg(1) : moveSlide(1);
-                    if (e.key === 'ArrowLeft') isLB ? changeLbImg(-1) : moveSlide(-1);
-                    if (e.key === 'Escape' && isLB) closeLightbox();
-
-                    const isCtrl = e.ctrlKey || e.metaKey;
-                    if (isCtrl && ['s', 'S', 'u', 'U'].includes(e.key)) e.preventDefault();
-                    if (isCtrl && e.shiftKey && ['i', 'I'].includes(e.key)) e.preventDefault();
-                });
-
+                // 우클릭 및 이미지 드래그 방지
                 document.addEventListener('contextmenu', (e) => e.preventDefault());
                 document.addEventListener('dragstart', (e) => {
                     if (e.target.tagName === 'IMG') e.preventDefault();
                 });
             }
 
+            // 초기화
             initGallery();
             bindEvents();
 
+            // 로딩 스크린 제거
             window.addEventListener('load', () => {
-                setTimeout(() => { DOM.loader.classList.add('fade-out'); }, CONFIG.TIMING.LOADING_DELAY);
+                setTimeout(() => { DOM.loader.classList.add('fade-out'); }, 500);
             });
         })();
     </script>
 </body>
-
 </html>
