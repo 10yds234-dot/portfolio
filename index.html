@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
 
     <meta http-equiv="Content-Security-Policy"
         content="
@@ -63,12 +64,39 @@
     </script>
 
     <style>
+        :root {
+            --interface-color: #FFFFFF;
+            --spacing: 30px;
+            --photo-gap: 20px;
+            --container-max-width: 65vh;
+            --arrow-distance: -150px;
+            --transition-speed: 1.2s;
+            --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
         html, body {
-            height: 100%;
-            height: -webkit-fill-available;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            min-height: 100lvh;
+            background-color: #000;
+            color: var(--interface-color);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            overflow: hidden;
+            position: fixed;
+            inset: 0;
+            overscroll-behavior-x: auto;
         }
 
         #loading-screen {
@@ -97,32 +125,6 @@
         #loading-screen.fade-out {
             opacity: 0;
             visibility: hidden;
-        }
-
-        :root {
-            --interface-color: #FFFFFF;
-            --spacing: 30px;
-            --photo-gap: 20px;
-            --container-max-width: 65vh;
-            --arrow-distance: -150px;
-            --transition-speed: 1.2s;
-            --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
-        }
-
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        body, html {
-            background-color: #000; color: var(--interface-color);
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            overflow: hidden; height: 100%; position: fixed; width: 100%;
-            overscroll-behavior-x: auto;
         }
 
         .masonry-container, #lightbox {
@@ -159,14 +161,14 @@
 
         .bg-fixed {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            height: 100%;
-            min-height: -webkit-fill-available;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100lvh;
             background-image: var(--bg-image);
             background-size: cover;
             background-position: center;
             z-index: -2;
-            margin-bottom: -1px;
         }
 
         nav {
@@ -249,7 +251,18 @@
             nav { flex-direction: row; align-items: flex-start; gap: 11px; }
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
-            .bg-fixed { width: 100vh; height: 100vw; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); }
+
+            .bg-fixed {
+                top: 50%;
+                left: 50%;
+                bottom: auto;
+                right: auto;
+                width: calc(100lvh + env(safe-area-inset-bottom, 0px) + 80px);
+                height: calc(100vw + 40px);
+                min-height: 0;
+                transform: translate(-50%, -50%) rotate(90deg);
+            }
+
             .masonry-container { width: 70vw; margin-top: 45px; }
             .nav-arrow, .lb-arrow { display: none; }
             .menu-item { margin-bottom: 15px; }
