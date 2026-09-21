@@ -72,6 +72,7 @@
             --arrow-distance: -150px;
             --transition-speed: 1.2s;
             --transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+            --bg-image: url('assets/000001.webp');
         }
 
         * {
@@ -82,13 +83,20 @@
             -webkit-user-drag: none;
         }
 
-        html, body {
+        html {
+            background-color: #000;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #000;
+            background-color: transparent;
             color: var(--interface-color);
             font-family: 'Inter', sans-serif;
             font-weight: 300;
@@ -129,6 +137,8 @@
         }
 
         .slider-viewport {
+            position: relative;
+            z-index: 1;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
@@ -164,7 +174,7 @@
             background-image: var(--bg-image);
             background-size: cover;
             background-position: center;
-            z-index: -2;
+            z-index: 0;
             pointer-events: none;
         }
 
@@ -259,7 +269,14 @@
         #lightbox:hover .lb-arrow { opacity: 0.65; }
         .lb-arrow:hover { opacity: 1 !important; }
 
-        footer { position: fixed; bottom: calc(var(--spacing) + env(safe-area-inset-bottom)); right: var(--spacing); font-size: 0.6rem; opacity: 0.3; }
+        footer {
+            position: fixed;
+            bottom: calc(var(--spacing) + env(safe-area-inset-bottom));
+            right: var(--spacing);
+            font-size: 0.6rem;
+            opacity: 0.3;
+            z-index: 1000;
+        }
 
         .visually-hidden {
             position: absolute;
