@@ -54,7 +54,6 @@
             color: var(--interface-color);
             font-family: 'Inter', sans-serif;
             font-weight: 300;
-            /* 스크롤 허용 */
             overscroll-behavior: none;
         }
 
@@ -82,13 +81,12 @@
             opacity: 0; visibility: hidden;
         }
 
-        /* 데스크톱 배경 */
         .bg-fixed {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100lvh;
             background: var(--bg-image) center/cover no-repeat;
-            z-index: 0; pointer-events: none; opacity: 0.3; /* 배경이 갤러리를 방해하지 않게 투명도 조절 */
+            z-index: 0; pointer-events: none; opacity: 0.3;
         }
 
         nav {
@@ -101,7 +99,7 @@
         .logo {
             font-size: 1.5rem; letter-spacing: 0.015em; text-transform: uppercase;
             cursor: pointer; transition: opacity 0.3s; z-index: 2010; font-weight: 200;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* 가독성 향상 */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         .logo:active { opacity: 0.5; }
 
@@ -115,7 +113,7 @@
         .menu-label { font-size: 0.68rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; font-weight: 100; }
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 1; font-weight: 300; user-select: text; -webkit-user-select: text; cursor: auto; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
 
-        /* --- 새로운 갤러리 레이아웃 --- */
+        /* --- 갤러리 레이아웃 (너비 10% 축소 및 중앙 정렬) --- */
         #gallery-container {
             position: relative;
             z-index: 1;
@@ -123,15 +121,16 @@
             flex-wrap: wrap;
             gap: var(--photo-gap);
             padding: calc(var(--spacing) * 4 + env(safe-area-inset-top, 0px)) var(--spacing) calc(var(--spacing) * 3);
-            width: 100%;
+            width: 90%;
+            margin: 0 auto;
             box-sizing: border-box;
             align-content: flex-start;
         }
 
-        /* Flex를 이용한 Justified Grid (사각형 맞물림) */
+        /* --- 각 사진 아이템 (높이 2/3로 축소) --- */
         .gallery-item {
             flex: 1 1 auto;
-            height: 350px; /* 기본 높이 지정 (비율에 맞춰 너비가 자동 조절됨) */
+            height: 230px;
             position: relative;
             cursor: pointer;
             overflow: hidden;
@@ -146,16 +145,15 @@
         .gallery-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 영역을 꽉 채우되 비율 유지 */
+            object-fit: cover;
             vertical-align: middle;
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .gallery-item:hover img {
-            transform: scale(1.03); /* 마우스 오버 시 살짝 확대 효과 */
+            transform: scale(1.03);
         }
 
-        /* 마지막 줄이 너무 늘어나지 않도록 방지 */
         #gallery-container::after {
             content: '';
             flex-grow: 999999999;
@@ -163,7 +161,7 @@
             height: 0;
         }
 
-        /* --- 라이트박스 (확대 관람) --- */
+        /* --- 라이트박스 --- */
         #lightbox {
             position: fixed;
             top: 0; left: 0;
@@ -201,16 +199,19 @@
                 --spacing: 16px;
                 --photo-gap: 8px;
             }
+            #gallery-container { 
+                width: 95%; 
+                padding-top: calc(80px + env(safe-area-inset-top, 0px)); 
+            }
             .gallery-item {
-                height: 180px; /* 모바일에서는 사진 높이를 낮춰 한 화면에 더 많이 보이게 */
+                height: 120px;
             }
             nav {
                 top: calc(18px + env(safe-area-inset-top, 0px));
                 flex-direction: row; align-items: flex-start; gap: 11px;
             }
             .logo { font-size: 1.3rem; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
-            #gallery-container { padding-top: calc(80px + env(safe-area-inset-top, 0px)); }
-            .lb-arrow { display: none; /* 모바일은 스와이프로 넘김 */ }
+            .lb-arrow { display: none; }
         }
     </style>
 </head>
@@ -242,7 +243,6 @@
         </div>
     </nav>
 
-    <!-- 사진 전체 갤러리 영역 -->
     <main id="gallery-container"></main>
 
     <div id="lightbox">
@@ -259,7 +259,6 @@
         (function () {
             'use strict';
 
-            // 모든 사진 데이터를 하나의 배열로 통합
             const ALL_IMAGES = [
                 'assets/A1.webp', 'assets/A2.webp', 'assets/A4.webp', 'assets/A3.webp',
                 'assets/B1.webp', 'assets/B2.webp', 'assets/B4.webp', 'assets/B3.webp',
@@ -281,19 +280,18 @@
                 loader: document.getElementById('loading-screen')
             };
 
-            // 1. 갤러리 렌더링 (Justified Grid)
             function initGallery() {
                 const fragment = document.createDocumentFragment();
 
                 ALL_IMAGES.forEach((src, idx) => {
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
-                    item.style.animationDelay = `${idx * 0.05}s`; // 순차적으로 나타나는 애니메이션
+                    item.style.animationDelay = `${idx * 0.05}s`;
 
                     const img = document.createElement('img');
                     img.src = src;
                     img.alt = `Portfolio Image ${idx + 1}`;
-                    img.loading = "lazy"; // 성능 최적화
+                    img.loading = "lazy";
                     
                     item.appendChild(img);
                     fragment.appendChild(item);
@@ -302,7 +300,6 @@
                 DOM.gallery.appendChild(fragment);
             }
 
-            // 2. 라이트박스 (확대 관람) 열기
             function openLightbox(src) {
                 const index = ALL_IMAGES.indexOf(src);
                 if (index === -1) return;
@@ -312,13 +309,11 @@
                 DOM.lightboxImg.style.opacity = '1';
                 DOM.lightbox.style.display = 'flex';
                 
-                // 디스플레이 속성 적용 후 opacity 전환을 위해 약간의 딜레이
                 requestAnimationFrame(() => {
                     setTimeout(() => DOM.lightbox.classList.add('show'), 10);
                 });
             }
 
-            // 3. 라이트박스 사진 변경 (이전/다음)
             function changeLbImg(direction) {
                 if (STATE.isLbMoving) return;
                 STATE.isLbMoving = true;
@@ -329,27 +324,22 @@
                     DOM.lightboxImg.src = ALL_IMAGES[STATE.lbIndex];
                     DOM.lightboxImg.style.opacity = '1';
                     
-                    setTimeout(() => { STATE.isLbMoving = false; }, 300); // fade-in 완료
-                }, 300); // fade-out 시간
+                    setTimeout(() => { STATE.isLbMoving = false; }, 300);
+                }, 300);
             }
 
-            // 4. 라이트박스 닫기
             function closeLightbox() {
                 DOM.lightbox.classList.remove('show');
                 setTimeout(() => { DOM.lightbox.style.display = 'none'; }, 400);
             }
 
-            // 이벤트 바인딩
             function bindEvents() {
-                // 클릭 이벤트 위임
                 document.addEventListener('click', (e) => {
-                    // 메뉴 토글
                     if (e.target.closest('[data-action="toggle-menu"]')) {
                         DOM.menu.classList.toggle('show');
                         return;
                     }
 
-                    // 갤러리 사진 클릭 시 확대
                     const galleryItem = e.target.closest('.gallery-item');
                     if (galleryItem) {
                         const img = galleryItem.querySelector('img');
@@ -358,16 +348,13 @@
                     }
                 });
 
-                // 라이트박스 내부 컨트롤
                 document.getElementById('lb-prev-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(-1); });
                 document.getElementById('lb-next-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(1); });
                 
-                // 라이트박스 배경 클릭 시 닫기
                 DOM.lightbox.addEventListener('click', (e) => {
                     if (e.target.id === 'lightbox' || e.target.id === 'lightbox-img') closeLightbox();
                 });
 
-                // 키보드 네비게이션
                 document.addEventListener('keydown', (e) => {
                     const isLB = DOM.lightbox.classList.contains('show');
                     if (!isLB) return;
@@ -377,7 +364,6 @@
                     if (e.key === 'Escape') closeLightbox();
                 });
 
-                // 터치 스와이프 (라이트박스 내부용)
                 const dragStart = (e) => {
                     if (!DOM.lightbox.classList.contains('show')) return;
                     STATE.isDragging = true;
@@ -390,7 +376,7 @@
                     const endX = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
                     const diffX = STATE.startX - endX;
 
-                    if (Math.abs(diffX) > 40) { // 40px 이상 스와이프 시 넘김
+                    if (Math.abs(diffX) > 40) {
                         changeLbImg(diffX > 0 ? 1 : -1);
                     }
                 };
@@ -400,18 +386,15 @@
                 DOM.lightbox.addEventListener('touchstart', dragStart, { passive: true });
                 DOM.lightbox.addEventListener('touchend', dragEnd, { passive: true });
 
-                // 우클릭 및 이미지 드래그 방지
                 document.addEventListener('contextmenu', (e) => e.preventDefault());
                 document.addEventListener('dragstart', (e) => {
                     if (e.target.tagName === 'IMG') e.preventDefault();
                 });
             }
 
-            // 초기화
             initGallery();
             bindEvents();
 
-            // 로딩 스크린 제거
             window.addEventListener('load', () => {
                 setTimeout(() => { DOM.loader.classList.add('fade-out'); }, 500);
             });
