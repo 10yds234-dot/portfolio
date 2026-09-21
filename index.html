@@ -6,22 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
 
-    <meta http-equiv="Content-Security-Policy"
-        content="
-            default-src 'self';
-            script-src 'self' 'nonce-jd2026secure';
-            style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-            font-src https://fonts.gstatic.com;
-            img-src 'self' data:;
-            connect-src 'none';
-            frame-ancestors 'none';
-            base-uri 'self';
-            form-action 'none';
-        ">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'nonce-jd2026secure';
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src https://fonts.gstatic.com;
+        img-src 'self' data:;
+        connect-src 'none';
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'none';
+    ">
 
     <meta name="referrer" content="no-referrer">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-
     <meta name="description" content="정다운 사진 포트폴리오. 서울 기반 사진.">
     <meta name="keywords" content="정다운, 사진, 포트폴리오, 서울, photography, Jung Daun">
     <meta name="author" content="Jung Daun">
@@ -36,7 +34,7 @@
     <link rel="apple-touch-icon" href="assets/icon-180.png">
     <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#000000">
 
-    <title>JUNG DAUN </title>
+    <title>JUNG DAUN</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
@@ -78,21 +76,14 @@
         * {
             margin: 0; padding: 0; box-sizing: border-box;
             -webkit-font-smoothing: antialiased;
-            -webkit-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; user-select: none;
             -webkit-user-drag: none;
         }
 
-        /* 1. 사파리의 오프셋 스크롤을 막기 위해 뷰포트를 (0, 0)에 고정 */
         html, body {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            height: 100lvh;
-            margin: 0;
-            padding: 0;
+            top: 0; left: 0;
+            width: 100%; height: 100lvh;
             overflow: hidden;
             background-color: #000;
             color: var(--interface-color);
@@ -102,18 +93,12 @@
             touch-action: pan-x pan-y;
         }
 
-        /* 2. 로딩 화면: 노치부터 검색창 뒤까지 100lvh로 완전 커버 */
         #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100lvh;
+            position: fixed; inset: 0;
+            width: 100vw; height: 100lvh;
             background: #000;
             z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
 
@@ -134,66 +119,20 @@
             visibility: hidden;
         }
 
-        .masonry-container, #lightbox {
-            overscroll-behavior-x: none;
-            touch-action: pan-y;
-        }
-
-        /* 3. 슬라이더 뷰포트도 전체 물리적 화면(100lvh)으로 확장 */
-        .slider-viewport {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100lvh;
-            overflow: hidden;
-            overscroll-behavior-x: none;
-            z-index: 1;
-        }
-
-        img {
-            -webkit-user-drag: none; user-drag: none;
-            -webkit-touch-callout: none;
-            pointer-events: none;
-        }
-
-        .menu-content { user-select: text !important; -webkit-user-select: text !important; cursor: auto; }
-
-        .photo-item {
-            position: relative;
-            cursor: pointer;
-        }
-        .photo-item::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            background: transparent;
-        }
-
-        /* 4. 데스크톱 배경 */
         .bg-fixed {
             position: fixed;
-            top: -10vh;
-            left: -10vw;
-            width: 120vw;
-            height: 120lvh;
-            background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center;
+            top: -10vh; left: -10vw;
+            width: 120vw; height: 120lvh;
+            background: var(--bg-image) center/cover no-repeat;
             z-index: 0;
             pointer-events: none;
         }
 
         nav {
-            position: fixed;
-            top: var(--spacing);
-            left: var(--spacing);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 0;
+            position: fixed; top: var(--spacing); left: var(--spacing);
+            z-index: 2000; display: flex; flex-direction: column;
         }
+
         .logo {
             font-size: 1.5rem;
             letter-spacing: 0.015em;
@@ -204,6 +143,7 @@
             font-weight: 200;
         }
         .logo:active { opacity: 0.5; }
+
         .menu-container {
             max-height: 0; overflow: hidden; opacity: 0;
             transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin-top 0.7s ease;
@@ -212,158 +152,113 @@
         .menu-container.show { max-height: 500px; opacity: 1; pointer-events: auto; margin-top: 30px; }
         .menu-item { margin-bottom: 25px; }
         .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; font-weight: 100; }
-        .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; font-weight: 100; }
+        .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; font-weight: 100; user-select: text; -webkit-user-select: text; cursor: auto; }
+
+        .slider-viewport {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100lvh;
+            overflow: hidden;
+            overscroll-behavior-x: none;
+            z-index: 1;
+        }
 
         .horizontal-wrapper {
-            display: flex;
-            height: 100lvh;
+            display: flex; height: 100lvh;
             transition: transform var(--transition-speed) var(--transition-timing);
         }
+
         .series-section {
-            flex: 0 0 100vw;
-            width: 100vw;
-            height: 100lvh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0.15;
-            transition: opacity 1.3s ease;
+            flex: 0 0 100vw; width: 100vw; height: 100lvh;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0.15; transition: opacity 1.3s ease;
         }
         .series-section.active { opacity: 1; }
-        .masonry-container { display: flex; justify-content: center; align-items: center; gap: var(--photo-gap); width: 70vw; max-width: var(--container-max-width); position: relative; }
+
+        .masonry-container {
+            display: flex; justify-content: center; align-items: center;
+            gap: var(--photo-gap); width: 70vw; max-width: var(--container-max-width);
+            position: relative; touch-action: pan-y; overscroll-behavior-x: none;
+        }
         .masonry-col { display: flex; flex-direction: column; gap: var(--photo-gap); flex: 1; }
-        .photo-item img { width: 100%; height: auto; display: block; cursor: pointer; }
+
+        .photo-item { position: relative; cursor: pointer; }
+        .photo-item img { width: 100%; height: auto; display: block; }
+        .photo-item::after { content: ''; position: absolute; inset: 0; z-index: 1; }
 
         .nav-arrow {
-            position: absolute;
-            top: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            z-index: 1000;
-            opacity: 0.45;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 50%; width: 50px; height: 50px;
+            cursor: pointer; z-index: 1000; opacity: 0.45;
+            display: flex; align-items: center; justify-content: center;
             transition: opacity 0.3s ease;
         }
         .nav-arrow:hover { opacity: 0.85; }
         .nav-arrow::before {
-            content: '';
-            width: 10px;
-            height: 10px;
-            border-top: 1px solid #fff;
-            border-right: 1px solid #fff;
+            content: ''; width: 10px; height: 10px;
+            border-top: 1px solid #fff; border-right: 1px solid #fff;
         }
         .arrow-prev { left: var(--arrow-distance); transform: translateY(-50%) rotate(-135deg); }
         .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); }
 
         .dots-nav {
-            position: fixed;
-            bottom: calc(45px + env(safe-area-inset-bottom));
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            z-index: 1000;
+            position: fixed; bottom: calc(45px + env(safe-area-inset-bottom));
+            left: 50%; transform: translateX(-50%);
+            display: flex; z-index: 1000;
         }
         .dot-wrapper { padding: 15px 10px; cursor: pointer; }
         .dot { width: 4px; height: 4px; border-radius: 50%; border: 1px solid #fff; opacity: 0.2; transition: 0.4s; pointer-events: none; }
         .dot.active { background-color: #fff; opacity: 0.9; transform: scale(1.2); }
 
         #lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100lvh;
+            position: fixed; inset: 0; width: 100vw; height: 100lvh;
             background: rgba(0, 0, 0, 0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            opacity: 0;
-            transition: opacity 0.5s;
-            cursor: pointer;
+            display: none; justify-content: center; align-items: center;
+            z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer;
+            touch-action: pan-y; overscroll-behavior-x: none;
         }
         #lightbox.show { display: flex; opacity: 1; }
         #lightbox-img { max-width: 90%; max-height: 90vh; object-fit: contain; z-index: 3050; transition: opacity 0.4s ease; }
 
         .lb-arrow {
-            position: absolute; top: 0; bottom: 0;
-            width: 15vw; min-width: 110px;
+            position: absolute; top: 0; bottom: 0; width: 15vw; min-width: 110px;
             display: flex; align-items: center; justify-content: center;
-            z-index: 3600; transition: opacity 0.3s ease;
-            opacity: 0.45; cursor: pointer;
+            z-index: 3600; opacity: 0.45; cursor: pointer; transition: opacity 0.3s ease;
         }
-        .lb-arrow::after {
-            content: ''; width: 15px; height: 15px;
-            border-top: 1.5px solid #fff; border-right: 1.5px solid #fff; display: block;
-        }
-        .lb-prev {
-            left: 0;
-            justify-content: flex-start;
-            padding-left: calc(55px + env(safe-area-inset-left, 0px));
-        }
+        .lb-arrow::after { content: ''; width: 15px; height: 15px; border-top: 1.5px solid #fff; border-right: 1.5px solid #fff; }
+        .lb-prev { left: 0; justify-content: flex-start; padding-left: calc(55px + env(safe-area-inset-left, 0px)); }
         .lb-prev::after { transform: rotate(-135deg); }
-        .lb-next {
-            right: 0;
-            justify-content: flex-end;
-            padding-right: calc(55px + env(safe-area-inset-right, 0px));
-        }
+        .lb-next { right: 0; justify-content: flex-end; padding-right: calc(55px + env(safe-area-inset-right, 0px)); }
         .lb-next::after { transform: rotate(45deg); }
-
         #lightbox:hover .lb-arrow { opacity: 0.65; }
         .lb-arrow:hover { opacity: 1 !important; }
 
         footer {
-            position: fixed;
-            bottom: calc(var(--spacing) + env(safe-area-inset-bottom));
-            right: var(--spacing);
-            font-size: 0.6rem;
-            opacity: 0.3;
-            z-index: 1000;
+            position: fixed; bottom: calc(var(--spacing) + env(safe-area-inset-bottom));
+            right: var(--spacing); font-size: 0.6rem; opacity: 0.3; z-index: 1000;
         }
 
         .visually-hidden {
-            position: absolute;
-            width: 1px; height: 1px;
-            padding: 0; margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
+            position: absolute; width: 1px; height: 1px;
+            padding: 0; margin: -1px; overflow: hidden;
+            clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
         }
 
-        /* 5. 모바일 세로 모드: 노치부터 검색창 끝까지 전 영역 덮기 */
         @media (max-width: 850px) and (orientation: portrait) {
             :root { --spacing: 15px; --photo-gap: 10px; }
-            
             nav {
                 top: calc(18px + env(safe-area-inset-top, 0px));
                 left: calc(var(--spacing) + env(safe-area-inset-left, 0px));
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 11px;
+                flex-direction: row; align-items: flex-start; gap: 11px;
             }
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
 
-            /* 사파리 가시 뷰포트 왜곡을 피하기 위해 50lvh, 50vw로 물리 중심을 잡음 */
             .bg-fixed {
-                top: 50lvh;
-                left: 50vw;
-                width: calc(100lvh + 120px);
-                height: calc(100vw + 80px);
+                top: 50lvh; left: 50vw;
+                width: calc(100lvh + 120px); height: calc(100vw + 80px);
                 transform: translate(-50%, -50%) rotate(90deg);
-                background-size: cover;
-                background-position: center;
             }
 
-            .masonry-container {
-                width: 70vw;
-                margin-top: calc(20px + env(safe-area-inset-top, 0px));
-            }
-
+            .masonry-container { width: 70vw; margin-top: calc(20px + env(safe-area-inset-top, 0px)); }
             .nav-arrow, .lb-arrow { display: none; }
             .menu-item { margin-bottom: 15px; }
             .menu-label { margin-bottom: 4px; }
@@ -373,15 +268,15 @@
 
         @media (max-device-width: 930px) and (orientation: landscape) {
             :root { --spacing: 12px; --photo-gap: 8px; }
-            .menu-content { font-size: 0.7rem; line-height: 1.4; }
-            .menu-label { font-size: 0.6rem; }
-            .series-section { height: 100lvh; width: 100vw; display: flex; align-items: center; justify-content: center; }
-            .masonry-container { width: auto; height: 50vh; max-width: 70vw; display: flex; flex-direction: row; gap: var(--photo-gap); margin: 0 auto; transform: translateY(-30px); }
-            .masonry-col { height: 100%; display: flex; flex-direction: column; justify-content: center; flex: 0 1 auto; gap: var(--photo-gap); }
-            .photo-item { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
-            .photo-item img { height: auto; width: auto; max-height: calc(30vh - 20px); max-width: 100%; object-fit: contain; }
             nav { top: 10px; left: calc(var(--spacing) + env(safe-area-inset-left)); }
             .logo { font-size: 1rem; }
+            .menu-content { font-size: 0.7rem; line-height: 1.4; }
+            .menu-label { font-size: 0.6rem; }
+            .series-section { height: 100lvh; width: 100vw; }
+            .masonry-container { width: auto; height: 50vh; max-width: 70vw; margin: 0 auto; transform: translateY(-30px); }
+            .masonry-col { height: 100%; justify-content: center; flex: 0 1 auto; }
+            .photo-item { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
+            .photo-item img { width: auto; max-height: calc(30vh - 20px); max-width: 100%; object-fit: contain; }
             .dots-nav { bottom: 10px; }
             .nav-arrow { display: none; }
             #lightbox-img { max-height: 80vh; width: auto; }
@@ -400,7 +295,7 @@
     <nav>
         <h1 class="logo" data-action="toggle-menu">JUNG DAUN</h1>
         <div id="dropdown-menu" class="menu-container">
-            <div class="menu-inner">
+            <div>
                 <div class="menu-item">
                     <span class="menu-label">About</span>
                     <div class="menu-content">Shooting and editing photos,<br>based in Seoul.</div>
@@ -422,24 +317,8 @@
         <div class="lb-arrow lb-next" id="lb-next-btn" aria-label="다음 사진"></div>
     </div>
 
-    <div class="slider-viewport" id="swipe-zone">
-        <div class="horizontal-wrapper" id="slider">
-            <article class="series-section active">
-                <h2 class="visually-hidden">Photography Series A</h2>
-                <div class="masonry-container">
-                    <div class="nav-arrow arrow-prev"></div>
-                    <div class="masonry-col">
-                        <div class="photo-item"><img src="assets/A1.webp" alt="Photography work - Series A, Image 1"></div>
-                        <div class="photo-item"><img src="assets/A2.webp" alt="Photography work - Series A, Image 2"></div>
-                    </div>
-                    <div class="masonry-col">
-                        <div class="photo-item"><img src="assets/A4.webp" alt="Photography work - Series A, Image 3"></div>
-                        <div class="photo-item"><img src="assets/A3.webp" alt="Photography work - Series A, Image 4"></div>
-                    </div>
-                    <div class="nav-arrow arrow-next"></div>
-                </div>
-            </article>
-        </div>
+    <div class="slider-viewport">
+        <div class="horizontal-wrapper" id="slider"></div>
     </div>
 
     <div class="dots-nav"></div>
@@ -450,6 +329,8 @@
 
     <script nonce="jd2026secure">
         (function () {
+            'use strict';
+
             const CONFIG = {
                 WHEEL_THRESHOLD: { LIGHTBOX: 400, SLIDER: 25 },
                 SWIPE_THRESHOLD: 10,
@@ -462,8 +343,7 @@
                     WHEEL_RESET_SLIDER: 50,
                     LOADING_DELAY: 500,
                     LIGHTBOX_SHOW: 10
-                },
-                PRELOAD: { NEXT_SLIDE: 1, PREV_SLIDE: -1 }
+                }
             };
 
             const GALLERY_DATA = Object.freeze([
@@ -472,20 +352,18 @@
                 Object.freeze({ id: 'C', images: Object.freeze(['assets/C1.webp', 'assets/C2.webp', 'assets/C3.webp', 'assets/C4.webp']) })
             ]);
 
-            const ALLOWED_IMG_PREFIX = 'assets/';
-            function isSafeAssetPath(path) {
-                return typeof path === 'string' &&
-                    path.startsWith(ALLOWED_IMG_PREFIX) &&
-                    !path.includes('..') &&
-                    /^assets\/[A-Za-z0-9_\-]+\.webp$/.test(path);
-            }
+            const isSafeAssetPath = (path) => typeof path === 'string' && /^assets\/[A-Za-z0-9_\-]+\.webp$/.test(path);
 
             const STATE = {
-                currentSlide: 0, slideCount: GALLERY_DATA.length,
+                currentSlide: 0,
+                slideCount: GALLERY_DATA.length,
                 isMoving: false,
-                lbCurrentIndex: 0, lbImages: [], isLbMoving: false,
+                lbIndex: 0,
+                isLbMoving: false,
                 preloadedIdx: new Set(),
-                startX: 0, isDragging: false, isTouch: false
+                startX: 0,
+                isDragging: false,
+                isTouch: false
             };
 
             const DOM = {
@@ -493,23 +371,25 @@
                 dotsContainer: document.querySelector('.dots-nav'),
                 lightbox: document.getElementById('lightbox'),
                 lightboxImg: document.getElementById('lightbox-img'),
-                menu: document.getElementById('dropdown-menu')
+                menu: document.getElementById('dropdown-menu'),
+                loader: document.getElementById('loading-screen')
             };
 
             function preloadSlide(idx) {
-                const targetIdx = (idx + STATE.slideCount) % STATE.slideCount;
-                if (STATE.preloadedIdx.has(targetIdx)) return;
-                GALLERY_DATA[targetIdx].images.forEach(src => {
-                    if (!isSafeAssetPath(src)) return;
-                    const img = new Image();
-                    img.src = src;
+                const target = (idx + STATE.slideCount) % STATE.slideCount;
+                if (STATE.preloadedIdx.has(target)) return;
+                GALLERY_DATA[target].images.forEach(src => {
+                    if (isSafeAssetPath(src)) {
+                        const img = new Image();
+                        img.src = src;
+                    }
                 });
-                STATE.preloadedIdx.add(targetIdx);
+                STATE.preloadedIdx.add(target);
             }
 
             function createSeriesSection(series, isActive) {
                 const article = document.createElement('article');
-                article.className = 'series-section' + (isActive ? ' active' : '');
+                article.className = `series-section${isActive ? ' active' : ''}`;
 
                 const h2 = document.createElement('h2');
                 h2.className = 'visually-hidden';
@@ -523,10 +403,10 @@
                 prevArrow.className = 'nav-arrow arrow-prev';
                 container.appendChild(prevArrow);
 
-                [[0, 1], [2, 3]].forEach(([a, b]) => {
+                [[0, 1], [2, 3]].forEach(pair => {
                     const col = document.createElement('div');
                     col.className = 'masonry-col';
-                    [a, b].forEach((imgIdx) => {
+                    pair.forEach(imgIdx => {
                         const src = series.images[imgIdx];
                         if (!isSafeAssetPath(src)) return;
                         const item = document.createElement('div');
@@ -548,83 +428,85 @@
                 return article;
             }
 
-            function createDotWrapper(idx, isActive) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'dot-wrapper';
-                wrapper.dataset.index = String(idx);
-                const dot = document.createElement('div');
-                dot.className = 'dot' + (isActive ? ' active' : '');
-                wrapper.appendChild(dot);
-                return wrapper;
-            }
-
             function initGallery() {
-                const sliderFragment = document.createDocumentFragment();
-                const dotsFragment = document.createDocumentFragment();
+                const sliderFrag = document.createDocumentFragment();
+                const dotsFrag = document.createDocumentFragment();
 
                 GALLERY_DATA.forEach((series, idx) => {
-                    sliderFragment.appendChild(createSeriesSection(series, idx === 0));
-                    dotsFragment.appendChild(createDotWrapper(idx, idx === 0));
+                    sliderFrag.appendChild(createSeriesSection(series, idx === 0));
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'dot-wrapper';
+                    wrapper.dataset.index = String(idx);
+                    const dot = document.createElement('div');
+                    dot.className = `dot${idx === 0 ? ' active' : ''}`;
+                    wrapper.appendChild(dot);
+                    dotsFrag.appendChild(wrapper);
                 });
 
-                DOM.slider.innerHTML = '';
-                DOM.slider.appendChild(sliderFragment);
-                DOM.dotsContainer.innerHTML = '';
-                DOM.dotsContainer.appendChild(dotsFragment);
+                DOM.slider.appendChild(sliderFrag);
+                DOM.dotsContainer.appendChild(dotsFrag);
 
                 preloadSlide(0);
-                preloadSlide(CONFIG.PRELOAD.NEXT_SLIDE);
+                preloadSlide(1);
             }
 
-            function toggleMenu() { DOM.menu.classList.toggle('show'); }
-
             function updateSlider() {
-                const offset = -STATE.currentSlide * 100;
-                DOM.slider.style.transition = `transform var(--transition-speed) var(--transition-timing)`;
-                DOM.slider.style.transform = `translate3d(${offset}vw, 0, 0)`;
+                DOM.slider.style.transform = `translate3d(${-STATE.currentSlide * 100}vw, 0, 0)`;
 
-                document.querySelectorAll('.series-section').forEach((s, i) => s.classList.toggle('active', i === STATE.currentSlide));
-                document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === STATE.currentSlide));
+                document.querySelectorAll('.series-section').forEach((el, i) =>
+                    el.classList.toggle('active', i === STATE.currentSlide)
+                );
+                document.querySelectorAll('.dot').forEach((el, i) =>
+                    el.classList.toggle('active', i === STATE.currentSlide)
+                );
 
-                preloadSlide(STATE.currentSlide + CONFIG.PRELOAD.NEXT_SLIDE);
+                preloadSlide(STATE.currentSlide + 1);
                 setTimeout(() => { STATE.isMoving = false; }, CONFIG.TIMING.SLIDE_TRANSITION);
             }
 
-            function moveSlide(d) {
+            function moveSlide(direction) {
                 if (STATE.isMoving || DOM.lightbox.classList.contains('show')) return;
                 STATE.isMoving = true;
-                STATE.currentSlide = (STATE.currentSlide + d + STATE.slideCount) % STATE.slideCount;
+                STATE.currentSlide = (STATE.currentSlide + direction + STATE.slideCount) % STATE.slideCount;
                 updateSlider();
             }
 
             function openLightbox(imgEl) {
-                const srcAttr = imgEl.getAttribute('src');
-                if (!isSafeAssetPath(srcAttr)) return;
+                const src = imgEl.getAttribute('src');
+                if (!isSafeAssetPath(src)) return;
 
-                STATE.lbImages = Array.from(GALLERY_DATA[STATE.currentSlide].images);
-                const foundIdx = STATE.lbImages.indexOf(srcAttr);
-                STATE.lbCurrentIndex = foundIdx >= 0 ? foundIdx : 0;
+                const currentImages = GALLERY_DATA[STATE.currentSlide].images;
+                const found = currentImages.indexOf(src);
+                STATE.lbIndex = found >= 0 ? found : 0;
 
-                DOM.lightboxImg.src = STATE.lbImages[STATE.lbCurrentIndex];
+                DOM.lightboxImg.src = currentImages[STATE.lbIndex];
                 DOM.lightboxImg.style.opacity = '1';
-                DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbCurrentIndex + 1}`;
+                DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbIndex + 1}`;
                 DOM.lightbox.style.display = 'flex';
                 STATE.isMoving = false;
                 STATE.isLbMoving = false;
+
                 setTimeout(() => DOM.lightbox.classList.add('show'), CONFIG.TIMING.LIGHTBOX_SHOW);
             }
 
-            function changeLbImg(d) {
+            function changeLbImg(direction) {
                 if (STATE.isLbMoving) return;
                 STATE.isLbMoving = true;
 
                 DOM.lightboxImg.style.opacity = '0';
                 setTimeout(() => {
-                    STATE.lbCurrentIndex = (STATE.lbCurrentIndex + d + STATE.lbImages.length) % STATE.lbImages.length;
-                    const nextSrc = STATE.lbImages[STATE.lbCurrentIndex];
-                    if (!isSafeAssetPath(nextSrc)) { STATE.isLbMoving = false; return; }
+                    const currentImages = GALLERY_DATA[STATE.currentSlide].images;
+                    STATE.lbIndex = (STATE.lbIndex + direction + currentImages.length) % currentImages.length;
+                    const nextSrc = currentImages[STATE.lbIndex];
+
+                    if (!isSafeAssetPath(nextSrc)) {
+                        STATE.isLbMoving = false;
+                        return;
+                    }
+
                     DOM.lightboxImg.src = nextSrc;
-                    DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbCurrentIndex + 1}`;
+                    DOM.lightboxImg.alt = `Series ${GALLERY_DATA[STATE.currentSlide].id} - Photo ${STATE.lbIndex + 1}`;
                     DOM.lightboxImg.style.opacity = '1';
                     setTimeout(() => { STATE.isLbMoving = false; }, CONFIG.TIMING.LIGHTBOX_FADE_IN);
                 }, CONFIG.TIMING.LIGHTBOX_FADE_OUT);
@@ -638,25 +520,24 @@
             function bindEvents() {
                 document.addEventListener('click', (e) => {
                     if (e.target.closest('[data-action="toggle-menu"]')) {
-                        toggleMenu();
+                        DOM.menu.classList.toggle('show');
                         return;
                     }
                     if (e.target.classList.contains('arrow-prev')) { moveSlide(-1); return; }
                     if (e.target.classList.contains('arrow-next')) { moveSlide(1); return; }
-                    if (e.target.tagName === 'IMG' && e.target.closest('.photo-item')) {
-                        openLightbox(e.target);
+
+                    const photo = e.target.closest('.photo-item');
+                    if (photo) {
+                        const img = photo.querySelector('img');
+                        if (img) openLightbox(img);
                         return;
                     }
-                    const photoItem = e.target.closest('.photo-item');
-                    if (photoItem) {
-                        const img = photoItem.querySelector('img');
-                        if (img) { openLightbox(img); return; }
-                    }
-                    const dotWrapper = e.target.closest('.dot-wrapper');
-                    if (dotWrapper) {
-                        const rawIdx = parseInt(dotWrapper.dataset.index, 10);
-                        if (Number.isInteger(rawIdx) && rawIdx >= 0 && rawIdx < STATE.slideCount) {
-                            STATE.currentSlide = rawIdx;
+
+                    const dot = e.target.closest('.dot-wrapper');
+                    if (dot) {
+                        const idx = parseInt(dot.dataset.index, 10);
+                        if (!isNaN(idx) && idx >= 0 && idx < STATE.slideCount) {
+                            STATE.currentSlide = idx;
                             updateSlider();
                         }
                     }
@@ -667,56 +548,53 @@
                     if (e.type === 'mousedown' && STATE.isTouch) return;
                     if (STATE.isMoving) return;
                     STATE.isDragging = true;
-                    STATE.startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                    STATE.startX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
                 };
 
                 const dragEnd = (e) => {
                     if (!STATE.isDragging) return;
                     STATE.isDragging = false;
-                    const endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
+                    const endX = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
                     const diffX = STATE.startX - endX;
 
                     if (Math.abs(diffX) > CONFIG.SWIPE_THRESHOLD) {
-                        const direction = diffX > 0 ? 1 : -1;
-                        if (DOM.lightbox.classList.contains('show')) changeLbImg(direction);
-                        else moveSlide(direction);
+                        const dir = diffX > 0 ? 1 : -1;
+                        DOM.lightbox.classList.contains('show') ? changeLbImg(dir) : moveSlide(dir);
                     }
                 };
 
-                let wheelAccumulated = 0;
-                let wheelTimeout;
+                let wheelAccum = 0;
+                let wheelTimer;
 
                 document.addEventListener('wheel', (e) => {
                     const isLB = DOM.lightbox.classList.contains('show');
-                    const isOverSlider = e.target.closest('.slider-viewport');
+                    const isSlider = e.target.closest('.slider-viewport');
 
-                    if ((isLB || isOverSlider) && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                    if ((isLB || isSlider) && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                         e.preventDefault();
                     }
 
                     if (isLB) {
-                        if (STATE.isLbMoving) { wheelAccumulated = 0; return; }
-                        wheelAccumulated += e.deltaX;
-                        if (Math.abs(wheelAccumulated) > CONFIG.WHEEL_THRESHOLD.LIGHTBOX) {
-                            const direction = wheelAccumulated > 0 ? 1 : -1;
-                            wheelAccumulated = 0;
-                            changeLbImg(direction);
+                        if (STATE.isLbMoving) { wheelAccum = 0; return; }
+                        wheelAccum += e.deltaX;
+                        if (Math.abs(wheelAccum) > CONFIG.WHEEL_THRESHOLD.LIGHTBOX) {
+                            changeLbImg(wheelAccum > 0 ? 1 : -1);
+                            wheelAccum = 0;
                         }
-                        clearTimeout(wheelTimeout);
-                        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, CONFIG.TIMING.WHEEL_RESET);
+                        clearTimeout(wheelTimer);
+                        wheelTimer = setTimeout(() => { wheelAccum = 0; }, CONFIG.TIMING.WHEEL_RESET);
                         return;
                     }
 
-                    if (STATE.isMoving || !isOverSlider) return;
-                    wheelAccumulated += e.deltaX;
-                    if (Math.abs(wheelAccumulated) > CONFIG.WHEEL_THRESHOLD.SLIDER) {
-                        const direction = wheelAccumulated > 0 ? 1 : -1;
-                        moveSlide(direction);
-                        wheelAccumulated = 0;
-                        clearTimeout(wheelTimeout);
+                    if (STATE.isMoving || !isSlider) return;
+                    wheelAccum += e.deltaX;
+                    if (Math.abs(wheelAccum) > CONFIG.WHEEL_THRESHOLD.SLIDER) {
+                        moveSlide(wheelAccum > 0 ? 1 : -1);
+                        wheelAccum = 0;
+                        clearTimeout(wheelTimer);
                     } else {
-                        clearTimeout(wheelTimeout);
-                        wheelTimeout = setTimeout(() => { wheelAccumulated = 0; }, CONFIG.TIMING.WHEEL_RESET_SLIDER);
+                        clearTimeout(wheelTimer);
+                        wheelTimer = setTimeout(() => { wheelAccum = 0; }, CONFIG.TIMING.WHEEL_RESET_SLIDER);
                     }
                 }, { passive: false });
 
@@ -727,42 +605,32 @@
 
                 document.getElementById('lb-prev-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(-1); });
                 document.getElementById('lb-next-btn').addEventListener('click', (e) => { e.stopPropagation(); changeLbImg(1); });
-
                 DOM.lightbox.addEventListener('click', (e) => {
                     if (!e.target.classList.contains('lb-arrow')) closeLightbox();
                 });
 
-                document.addEventListener('keydown', e => {
+                document.addEventListener('keydown', (e) => {
                     const isLB = DOM.lightbox.classList.contains('show');
                     if (e.key === 'ArrowRight') isLB ? changeLbImg(1) : moveSlide(1);
                     if (e.key === 'ArrowLeft') isLB ? changeLbImg(-1) : moveSlide(-1);
                     if (e.key === 'Escape' && isLB) closeLightbox();
 
-                    const ctrl = e.ctrlKey || e.metaKey;
-                    if (ctrl && (e.key === 's' || e.key === 'S')) { e.preventDefault(); }
-                    if (ctrl && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); }
-                    if (ctrl && e.shiftKey && (e.key === 'i' || e.key === 'I')) { e.preventDefault(); }
+                    const isCtrl = e.ctrlKey || e.metaKey;
+                    if (isCtrl && ['s', 'S', 'u', 'U'].includes(e.key)) e.preventDefault();
+                    if (isCtrl && e.shiftKey && ['i', 'I'].includes(e.key)) e.preventDefault();
                 });
 
                 document.addEventListener('contextmenu', (e) => e.preventDefault());
-
                 document.addEventListener('dragstart', (e) => {
                     if (e.target.tagName === 'IMG') e.preventDefault();
                 });
             }
 
-            (function setBg() {
-                const src = 'assets/000001.webp';
-                if (!isSafeAssetPath(src)) return;
-                document.documentElement.style.setProperty('--bg-image', `url('${src}')`);
-            })();
-
             initGallery();
             bindEvents();
 
             window.addEventListener('load', () => {
-                const loader = document.getElementById('loading-screen');
-                setTimeout(() => { loader.classList.add('fade-out'); }, CONFIG.TIMING.LOADING_DELAY);
+                setTimeout(() => { DOM.loader.classList.add('fade-out'); }, CONFIG.TIMING.LOADING_DELAY);
             });
         })();
     </script>
