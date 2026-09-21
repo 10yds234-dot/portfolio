@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
@@ -80,22 +81,32 @@
             -webkit-user-drag: none;
         }
 
-        html, body {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100lvh;
+        /* 1. html, body: position: fixed 제거 -> 사파리가 노치와 검색창 뒤까지 캔버스를 100% 덮도록 개방 */
+        html {
+            width: 100%; height: 100%;
+            margin: 0; padding: 0;
             overflow: hidden;
             background-color: #000;
+        }
+
+        body {
+            width: 100%; height: 100%;
+            min-height: 100%;
+            margin: 0; padding: 0;
+            overflow: hidden;
+            background-color: transparent;
             color: var(--interface-color);
             font-family: 'Inter', sans-serif;
             font-weight: 300;
             overscroll-behavior: none;
-            touch-action: pan-x pan-y;
+            touch-action: none; /* 브라우저 자체의 튕김 스크롤을 원천 차단 */
         }
 
+        /* 2. 로딩 화면: 상하 여백을 음수로 확장하여 노치와 하단바 뒤까지 완전 차단 */
         #loading-screen {
-            position: fixed; inset: 0;
-            width: 100vw; height: 100lvh;
+            position: fixed;
+            top: -10vh; bottom: -10vh; left: -10vw; right: -10vw;
+            width: 120vw; height: 120vh;
             background: #000;
             z-index: 9999;
             display: flex; justify-content: center; align-items: center;
@@ -119,17 +130,20 @@
             visibility: hidden;
         }
 
+        /* 3. 데스크톱 배경 */
         .bg-fixed {
             position: fixed;
             top: -10vh; left: -10vw;
-            width: 120vw; height: 120lvh;
+            width: 120vw; height: 120vh;
             background: var(--bg-image) center/cover no-repeat;
             z-index: 0;
             pointer-events: none;
         }
 
         nav {
-            position: fixed; top: var(--spacing); left: var(--spacing);
+            position: fixed;
+            top: calc(var(--spacing) + env(safe-area-inset-top, 0px));
+            left: calc(var(--spacing) + env(safe-area-inset-left, 0px));
             z-index: 2000; display: flex; flex-direction: column;
         }
 
@@ -155,20 +169,20 @@
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; font-weight: 100; user-select: text; -webkit-user-select: text; cursor: auto; }
 
         .slider-viewport {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100lvh;
+            position: fixed; inset: 0;
+            width: 100vw; height: 100vh;
             overflow: hidden;
             overscroll-behavior-x: none;
             z-index: 1;
         }
 
         .horizontal-wrapper {
-            display: flex; height: 100lvh;
+            display: flex; height: 100%;
             transition: transform var(--transition-speed) var(--transition-timing);
         }
 
         .series-section {
-            flex: 0 0 100vw; width: 100vw; height: 100lvh;
+            flex: 0 0 100vw; width: 100vw; height: 100%;
             display: flex; justify-content: center; align-items: center;
             opacity: 0.15; transition: opacity 1.3s ease;
         }
@@ -200,7 +214,7 @@
         .arrow-next { right: var(--arrow-distance); transform: translateY(-50%) rotate(45deg); }
 
         .dots-nav {
-            position: fixed; bottom: calc(45px + env(safe-area-inset-bottom));
+            position: fixed; bottom: calc(45px + env(safe-area-inset-bottom, 0px));
             left: 50%; transform: translateX(-50%);
             display: flex; z-index: 1000;
         }
@@ -209,8 +223,10 @@
         .dot.active { background-color: #fff; opacity: 0.9; transform: scale(1.2); }
 
         #lightbox {
-            position: fixed; inset: 0; width: 100vw; height: 100lvh;
-            background: rgba(0, 0, 0, 0.95);
+            position: fixed;
+            top: -10vh; bottom: -10vh; left: -10vw; right: -10vw;
+            width: 120vw; height: 120vh;
+            background: rgba(0, 0, 0, 0.96);
             display: none; justify-content: center; align-items: center;
             z-index: 3000; opacity: 0; transition: opacity 0.5s; cursor: pointer;
             touch-action: pan-y; overscroll-behavior-x: none;
@@ -232,7 +248,7 @@
         .lb-arrow:hover { opacity: 1 !important; }
 
         footer {
-            position: fixed; bottom: calc(var(--spacing) + env(safe-area-inset-bottom));
+            position: fixed; bottom: calc(var(--spacing) + env(safe-area-inset-bottom, 0px));
             right: var(--spacing); font-size: 0.6rem; opacity: 0.3; z-index: 1000;
         }
 
@@ -242,6 +258,7 @@
             clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
         }
 
+        /* 4. 모바일 세로 모드: 노치부터 검색창 끝까지 100% 덮도록 회전 배경 여유 버퍼 적용 */
         @media (max-width: 850px) and (orientation: portrait) {
             :root { --spacing: 15px; --photo-gap: 10px; }
             nav {
@@ -252,10 +269,13 @@
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
 
+            /* 90도 회전 시 width가 화면 세로 길이가 되므로, 세로 높이보다 넉넉하게 확장하여 노치와 검색창 뒤를 가득 채움 */
             .bg-fixed {
-                top: 50lvh; left: 50vw;
-                width: calc(100lvh + 120px); height: calc(100vw + 80px);
+                top: 50%; left: 50%;
+                width: calc(100vh + 220px);
+                height: calc(100vw + 100px);
                 transform: translate(-50%, -50%) rotate(90deg);
+                background: var(--bg-image) center/cover no-repeat;
             }
 
             .masonry-container { width: 70vw; margin-top: calc(20px + env(safe-area-inset-top, 0px)); }
@@ -263,16 +283,16 @@
             .menu-item { margin-bottom: 15px; }
             .menu-label { margin-bottom: 4px; }
             .menu-content { line-height: 1.4; font-size: 0.8rem; }
-            .dots-nav { bottom: calc(28px + env(safe-area-inset-bottom)); }
+            .dots-nav { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
         }
 
         @media (max-device-width: 930px) and (orientation: landscape) {
             :root { --spacing: 12px; --photo-gap: 8px; }
-            nav { top: 10px; left: calc(var(--spacing) + env(safe-area-inset-left)); }
+            nav { top: 10px; left: calc(var(--spacing) + env(safe-area-inset-left, 0px)); }
             .logo { font-size: 1rem; }
             .menu-content { font-size: 0.7rem; line-height: 1.4; }
             .menu-label { font-size: 0.6rem; }
-            .series-section { height: 100lvh; width: 100vw; }
+            .series-section { height: 100%; width: 100vw; }
             .masonry-container { width: auto; height: 50vh; max-width: 70vw; margin: 0 auto; transform: translateY(-30px); }
             .masonry-col { height: 100%; justify-content: center; flex: 0 1 auto; }
             .photo-item { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
