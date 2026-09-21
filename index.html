@@ -82,20 +82,21 @@
             -webkit-user-drag: none;
         }
 
+        /* 1. 도화지: fixed를 절대 쓰지 않고 사파리가 바닥 끝까지 캔버스를 열도록 지정 */
         html {
-            width: 100vw;
-            height: 100lvh;
+            width: 100%;
+            height: 100%;
+            min-height: 100lvh;
             margin: 0; padding: 0;
             overflow: hidden;
             background-color: #000;
         }
 
-        /* 1. 사파리의 자동 줌아웃을 방지하고 물리 캔버스를 100lvh로 완전 고정 */
         body {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw;
-            height: 100lvh;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 100lvh;
             margin: 0; padding: 0;
             overflow: hidden;
             background-color: #000;
@@ -109,7 +110,7 @@
         #loading-screen {
             position: absolute;
             top: 0; left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100lvh;
             background: #000;
             z-index: 9999;
@@ -134,11 +135,11 @@
             visibility: hidden;
         }
 
-        /* 2. 데스크톱 배경: 오버플로우 없는 정확한 100vw x 100lvh */
+        /* 2. 데스크톱 배경 */
         .bg-fixed {
             position: absolute;
             top: 0; left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100lvh;
             background: var(--bg-image) center/cover no-repeat;
             z-index: 0;
@@ -173,6 +174,7 @@
         .menu-label { font-size: 0.68rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; font-weight: 100; }
         .menu-content { font-size: 0.85rem; line-height: 1.6; opacity: 0.9; font-weight: 100; user-select: text; -webkit-user-select: text; cursor: auto; }
 
+        /* 3. 뷰포트 레이어 */
         .slider-viewport {
             position: absolute;
             top: 0; left: 0;
@@ -271,7 +273,7 @@
             clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
         }
 
-        /* 3. 모바일 세로 모드 최적화 */
+        /* 4. 모바일 세로 모드 핵심 보정 */
         @media (max-width: 850px) and (orientation: portrait) {
             :root {
                 --spacing: 16px;
@@ -285,27 +287,27 @@
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
 
-            /* 90도 회전 시 가로/세로를 1:1로 치환하여 단 1px의 오버플로우 없이 액정 100% 밀착 */
+            /* A. 배경 여유분을 125lvh로 대폭 주어 하단 검색창 밑바닥 끝까지 완전히 관통 */
             .bg-fixed {
                 position: absolute;
                 top: 50%; left: 50%;
-                width: 100lvh;
-                height: 100vw;
+                width: 125lvh;
+                height: 125vw;
                 transform: translate(-50%, -50%) rotate(90deg);
                 background: var(--bg-image) center/cover no-repeat;
             }
 
-            /* 상단 노치와 하단 검색창 높이를 상쇄하여 갤러리를 가시 영역 정중앙에 배치 */
+            /* B. 상단 노치와 하단 검색창(약 90px) 사이 '실제 눈에 보이는 가시 영역' 정중앙에 사진을 배치 */
             .series-section {
                 padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
-                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 65px);
+                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 85px);
                 box-sizing: border-box;
             }
 
-            /* 모바일 화면에 맞춰 갤러리를 86vw로 확대 (기존 70vw의 축소감 해소) */
+            /* C. 70vw의 좁은 미니어처 느낌을 없애고 폰 화면에 꽉 차도록 84vw로 확장 */
             .masonry-container {
-                width: 86vw;
-                max-width: 440px;
+                width: 84vw;
+                max-width: 400px;
                 margin: 0;
             }
 
@@ -314,9 +316,9 @@
             .menu-label { margin-bottom: 4px; }
             .menu-content { line-height: 1.4; font-size: 0.8rem; }
 
-            /* 인디케이터 점을 하단 검색창 바로 위에 안정적으로 배치 */
+            /* D. 인디케이터 점이 검색창 캡슐에 걸치지 않고 캡슐 바로 위에 깔끔하게 안착 */
             .dots-nav {
-                bottom: calc(55px + env(safe-area-inset-bottom, 0px));
+                bottom: calc(75px + env(safe-area-inset-bottom, 0px));
             }
         }
 
