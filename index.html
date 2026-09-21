@@ -83,18 +83,19 @@
         }
 
         html {
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100lvh;
             margin: 0; padding: 0;
             overflow: hidden;
             background-color: #000;
         }
 
+        /* 1. 사파리의 자동 줌아웃을 방지하고 물리 캔버스를 100lvh로 완전 고정 */
         body {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            min-height: 100lvh;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100lvh;
             margin: 0; padding: 0;
             overflow: hidden;
             background-color: #000;
@@ -107,9 +108,9 @@
 
         #loading-screen {
             position: absolute;
-            top: -50px; left: -50px;
-            width: calc(100vw + 100px);
-            height: calc(100lvh + 100px);
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100lvh;
             background: #000;
             z-index: 9999;
             display: flex; justify-content: center; align-items: center;
@@ -133,12 +134,12 @@
             visibility: hidden;
         }
 
-        /* 데스크톱 배경 */
+        /* 2. 데스크톱 배경: 오버플로우 없는 정확한 100vw x 100lvh */
         .bg-fixed {
             position: absolute;
-            top: -50px; left: -50px;
-            width: calc(100vw + 100px);
-            height: calc(100lvh + 100px);
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100lvh;
             background: var(--bg-image) center/cover no-repeat;
             z-index: 0;
             pointer-events: none;
@@ -224,7 +225,7 @@
 
         .dots-nav {
             position: absolute;
-            bottom: calc(50px + env(safe-area-inset-bottom, 0px));
+            bottom: calc(45px + env(safe-area-inset-bottom, 0px));
             left: 50%; transform: translateX(-50%);
             display: flex; z-index: 1000;
         }
@@ -270,9 +271,12 @@
             clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
         }
 
-        /* 모바일 세로 모드 최적화 */
+        /* 3. 모바일 세로 모드 최적화 */
         @media (max-width: 850px) and (orientation: portrait) {
-            :root { --spacing: 15px; --photo-gap: 10px; }
+            :root {
+                --spacing: 16px;
+                --photo-gap: 12px;
+            }
             nav {
                 top: calc(18px + env(safe-area-inset-top, 0px));
                 left: calc(var(--spacing) + env(safe-area-inset-left, 0px));
@@ -281,27 +285,28 @@
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
 
-            /* 1. 배경을 대폭 확장하여 노치와 하단 검색창 뒤를 여유롭게 관통 */
+            /* 90도 회전 시 가로/세로를 1:1로 치환하여 단 1px의 오버플로우 없이 액정 100% 밀착 */
             .bg-fixed {
                 position: absolute;
                 top: 50%; left: 50%;
-                width: calc(100lvh + 220px);
-                height: calc(100vw + 120px);
+                width: 100lvh;
+                height: 100vw;
                 transform: translate(-50%, -50%) rotate(90deg);
                 background: var(--bg-image) center/cover no-repeat;
             }
 
-            /* 2. 상단 노치와 하단 검색창 사이 '진짜 가시 영역'의 정중앙에 사진이 오도록 패딩 보정 */
+            /* 상단 노치와 하단 검색창 높이를 상쇄하여 갤러리를 가시 영역 정중앙에 배치 */
             .series-section {
-                padding-top: calc(10px + env(safe-area-inset-top, 0px));
-                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+                padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 65px);
                 box-sizing: border-box;
             }
 
-            /* 하단으로 쏠리게 만들던 margin-top 제거 */
+            /* 모바일 화면에 맞춰 갤러리를 86vw로 확대 (기존 70vw의 축소감 해소) */
             .masonry-container {
-                width: 70vw;
-                margin-top: 0;
+                width: 86vw;
+                max-width: 440px;
+                margin: 0;
             }
 
             .nav-arrow, .lb-arrow { display: none; }
@@ -309,9 +314,9 @@
             .menu-label { margin-bottom: 4px; }
             .menu-content { line-height: 1.4; font-size: 0.8rem; }
 
-            /* 3. 인디케이터 점이 하단 검색창에 걸치지 않고 바로 위에 뜨도록 위치 설정 */
+            /* 인디케이터 점을 하단 검색창 바로 위에 안정적으로 배치 */
             .dots-nav {
-                bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+                bottom: calc(55px + env(safe-area-inset-bottom, 0px));
             }
         }
 
