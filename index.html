@@ -83,21 +83,14 @@
             -webkit-user-drag: none;
         }
 
-        html {
+        /* 1. 사파리의 오프셋 스크롤을 막기 위해 뷰포트를 (0, 0)에 고정 */
+        html, body {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             height: 100lvh;
-            min-height: 100lvh;
-            background-color: #000;
-            overflow: hidden;
-        }
-
-        body {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            height: 100lvh;
-            min-height: 100lvh;
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -106,16 +99,16 @@
             font-family: 'Inter', sans-serif;
             font-weight: 300;
             overscroll-behavior: none;
+            touch-action: pan-x pan-y;
         }
 
-        /* 1. 로딩 화면: absolute 및 상하단 확장으로 사파리 검색창 뒤까지 빈틈없이 커버 */
+        /* 2. 로딩 화면: 노치부터 검색창 뒤까지 100lvh로 완전 커버 */
         #loading-screen {
-            position: absolute;
-            top: -50px;
+            position: fixed;
+            top: 0;
             left: 0;
             width: 100vw;
-            height: calc(100lvh + 150px);
-            min-height: 100lvh;
+            height: 100lvh;
             background: #000;
             z-index: 9999;
             display: flex;
@@ -146,14 +139,16 @@
             touch-action: pan-y;
         }
 
+        /* 3. 슬라이더 뷰포트도 전체 물리적 화면(100lvh)으로 확장 */
         .slider-viewport {
-            position: relative;
-            z-index: 1;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100vw;
-            height: 100vh;
             height: 100lvh;
             overflow: hidden;
             overscroll-behavior-x: none;
+            z-index: 1;
         }
 
         img {
@@ -176,8 +171,9 @@
             background: transparent;
         }
 
+        /* 4. 데스크톱 배경 */
         .bg-fixed {
-            position: absolute;
+            position: fixed;
             top: -10vh;
             left: -10vw;
             width: 120vw;
@@ -220,14 +216,12 @@
 
         .horizontal-wrapper {
             display: flex;
-            height: 100vh;
             height: 100lvh;
             transition: transform var(--transition-speed) var(--transition-timing);
         }
         .series-section {
             flex: 0 0 100vw;
             width: 100vw;
-            height: 100vh;
             height: 100lvh;
             display: flex;
             justify-content: center;
@@ -278,8 +272,10 @@
 
         #lightbox {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100lvh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100lvh;
             background: rgba(0, 0, 0, 0.95);
             display: none;
             justify-content: center;
@@ -338,13 +334,12 @@
             border-width: 0;
         }
 
-        /* 2. 모바일 세로 모드 개선: 배경 크기 대폭 확장 + 레이아웃 살짝 아래로 조정 */
+        /* 5. 모바일 세로 모드: 노치부터 검색창 끝까지 전 영역 덮기 */
         @media (max-width: 850px) and (orientation: portrait) {
             :root { --spacing: 15px; --photo-gap: 10px; }
             
-            /* 상단 노치/다이내믹 아일랜드 아래로 네비게이션을 살짝 내림 */
             nav {
-                top: calc(var(--spacing) + env(safe-area-inset-top, 0px) + 8px);
+                top: calc(18px + env(safe-area-inset-top, 0px));
                 left: calc(var(--spacing) + env(safe-area-inset-left, 0px));
                 flex-direction: row;
                 align-items: flex-start;
@@ -353,23 +348,20 @@
             .logo { font-size: 1.3rem; }
             .menu-container.show { margin-top: 5px; }
 
-            /* 배경사진: 위아래로 넉넉하게 덮도록 확장하고 살짝 아래로 내려 중심 보정 */
+            /* 사파리 가시 뷰포트 왜곡을 피하기 위해 50lvh, 50vw로 물리 중심을 잡음 */
             .bg-fixed {
-                top: 50%;
-                left: 50%;
-                width: calc(100lvh + 200px);
-                height: calc(100vw + 100px);
-                min-width: calc(100vh + 200px);
-                min-height: calc(100vw + 100px);
-                transform: translate(-50%, calc(-50% + 20px)) rotate(90deg) scale(1.15);
+                top: 50lvh;
+                left: 50vw;
+                width: calc(100lvh + 120px);
+                height: calc(100vw + 80px);
+                transform: translate(-50%, -50%) rotate(90deg);
                 background-size: cover;
                 background-position: center;
             }
 
-            /* 갤러리 영역을 살짝 내려 전체 화면에 자연스럽게 배치 */
             .masonry-container {
                 width: 70vw;
-                margin-top: calc(65px + env(safe-area-inset-top, 0px));
+                margin-top: calc(20px + env(safe-area-inset-top, 0px));
             }
 
             .nav-arrow, .lb-arrow { display: none; }
